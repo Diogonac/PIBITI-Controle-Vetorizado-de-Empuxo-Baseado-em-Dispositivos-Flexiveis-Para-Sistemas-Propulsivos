@@ -1,0 +1,198 @@
+#include "estimador_atitude.h"
+
+// Classe do estimador de atitude
+EstimadorAtitude::EstimadorAtitude():BNO055(IMU_SDA, IMU_SCL)
+{
+    Phi = 0.0;
+    Theta = 0.0;
+    Psi = 0.0;
+
+    P = 0.0;
+    Q = 0.0;
+    R = 0.0;
+
+    // Condições iniciais dos offset dos ângulos de euler
+    offset_phi = 0.0;
+    offset_theta = 0.0;
+    offset_psi = 0.0;
+
+    // Condições iniciais dos offset das velocidades angulares
+    offset_gx = 0.0;
+    offset_gy = 0.0;
+    offset_gz = 0.0;
+
+    verifica_imu = false;
+
+}
+
+
+// Inicializa a IMU
+void EstimadorAtitude::config_imu()
+{
+
+    //============= Configurações iniciais no BNO055 ================
+    BNO055.reset(); //Reseta o BNO055
+    status_BNO055 = BNO055.getSystemStatus(BNO055_SYS_ERR_ADDR); //Verifica o status do BNO055
+    status_check_BNO055 = BNO055.check(); //Verifica se tem comunicação com o BNO055
+    printf("Status BNO055: %d\r\n", status_BNO055); //Indica 0 para operação nominal do BNO055
+    printf("Verifica comunicacao BNO055: %d\r\n", status_check_BNO055); //Indica 1 para operação nominal do BNO055
+    BNO055.SetExternalCrystal(true); //Indica a existencia de um cristal externo
+    wait_ms(675);
+    BNO055.setpowermode(POWER_MODE_NORMAL); //Define o modo de alimentação do BNO055
+    wait_ms(25); //Aguarda a troca de modo de alimentação
+    BNO055.setmode(OPERATION_MODE_CONFIG); //Configura o modo padrão para iniciar a calibração
+    wait_ms(25); //Aguarda o BNO055 trocar de modo de operação
+
+//============= Unidade das variáveis do BNO055 ================
+    BNO055.set_accel_units(MPERSPERS); // m/s2
+    BNO055.set_anglerate_units(RAD_PER_SEC); // rad/s
+    BNO055.set_angle_units(RADIANS); // rad
+    BNO055.set_temp_units(CENTIGRADE); // °C
+    BNO055.set_orientation(ANDROID); // Sentido de rotação ANDROID = Regra da mão direita
+    BNO055.set_mapping(1); // Ajuste do eixo de coordenadas / orientação
+
+    //=================== Calibração do BNO055 =====================
+//    BNO055.setmode(OPERATION_MODE_CONFIG); //Configura o modo padrão para iniciar a calibração
+//    wait_ms(25); //Aguarda o BNO055 trocar de modo de operação
+//    BNO055.write_calibration_data(); //Calibração dos sensores
+//    wait_ms(10);
+//    BNO055.get_calib();
+
+//    while(BNO055.calib == 0) {
+//
+//        BNO055.get_calib();
+//        pc.printf("Leitura de calibracao: %d \r\n", BNO055.calib); //Realiza um selftest no BNO055
+//
+//    }
+
+//    BNO055.write_calibration_data(); //Calibração dos sensores
+//    wait_ms(10);
+    status_selftest = BNO055.getSystemStatus(BNO055_SELFTEST_RESULT_ADDR); //15 = todos os sensores então OK
+    printf("SelfTest Status: %d \r\n", status_selftest); //Realiza um selftest no BNO055
+    wait_ms(25);
+    BNO055.setmode(OPERATION_MODE_IMUPLUS); //Configura o mode de fusão entre acelerômetro e giroscópio taxa de atualização máxima: 100Hz
+    wait_ms(25); //Aguarda o BNO055 trocar de modo de operação
+
+
+    if(status_selftest == 15 && status_check_BNO055 == 1 && status_BNO055 == 0) {
+
+        verifica_imu = true;
+
+    } else {
+
+        verifica_imu = false;
+    }
+
+    wait(1);
+    
+    // Define os offset dos ângulos de euler
+    BNO055.get_angles();
+
+    offset_phi = BNO055.euler.pitch;
+    offset_theta = BNO055.euler.roll;
+    offset_psi = BNO055.euler.yaw;
+
+    // Define os offset das velocidades angulares
+    BNO055.get_gyro();
+
+    offset_gx = BNO055.gyro.x;
+    offset_gy = BNO055.gyro.y;
+    offset_gz = BNO055.gyro.z;
+
+    printf("Offset dos angulos (rad) \r\n");
+    printf("Phi= %f, Theta= %f, Psi= %f \r\n", offset_phi, offset_theta, offset_psi);
+    printf("\r\n");
+
+    printf("Offset das velocidades angular (rad/s) \r\n");
+    printf("GX= %f, GY= %f, GZ= %f \r\n", offset_gx, offset_gy, offset_gz);
+    printf("\r\n");
+
+}
+
+// Estima os ângulos de Euler (rad) e as velocidades angular (rad/s)
+void EstimadorAtitude::estima()
+{
+
+    BNO055.get_angles();
+
+// Pitch e Roll estão trocados conforme a convensão utilizada
+
+    Phi = BNO055.euler.pitch - offset_phi; // Ângulo formado pela rotação de (x) (phi)
+    Theta = BNO055.euler.roll - offset_theta; // Ângulo formado pela rotação de (y) (theta)
+    Psi =  BNO055.euler.yaw - offset_psi; //(z) (psi)
+
+    BNO055.get_gyro();
+
+    P = BNO055.gyro.x - offset_gx; //kalman_gx(BNO055.gyro.x, ruido_cov_gx, estima_cov_gx);
+    Q = BNO055.gyro.y - offset_gy; //kalman_gy(BNO055.gyro.y, ruido_cov_gy, estima_cov_gy);
+    R = BNO055.gyro.z - offset_gz; //kalman_gz(BNO055.gyro.z, ruido_cov_z, estima_cov_gz);
+
+
+//
+//    ax = kalman(ax, BNO055.accel.x, erro_cov_ax, ruido_cov_ax, estima_cov_ax);
+//    ay = kalman(ay, BNO055.accel.y, erro_cov_ay, ruido_cov_ay, estima_cov_ay);
+//    az = kalman(az, BNO055.accel.z, erro_cov_az, ruido_cov_az, estima_cov_az);
+
+    //printf("Com_Filtro_P= %f, Sem_Filtro_P= %f, Com_Filtro_Q= %f, Sem_Filtro_Q= %f, Com_Filtro_AX= %f, Sem_Filtro_AX= %f, Com_Filtro_AY= %f, Sem_Filtro_AY= %f,Com_Filtro_AZ= %f, Sem_Filtro_AZ= %f\r\n", p, BNO055.gyro.x, q, BNO055.gyro.y, ax, BNO055.accel.x, ay, BNO055.accel.y, az, BNO055.accel.z);
+
+    //printf("Com_Filtro_P= %f, Sem_Filtro_P= %f,Com_Filtro_Q= %f, Sem_Filtro_Q= %f\r\n", p, BNO055.gyro.x, q, BNO055.gyro.y);
+
+}
+
+// Aplica o filtro Kalman na variavel de interesse
+//ouble EstimadorAtitude::kalman_gx(double variavel_raw, double ruido_cov, double estima_cov)
+//{
+//
+//    k_gx = erro_cov_gx * H / (H * erro_cov_gx * H + ruido_cov);
+//
+//    gx = gx + k_gx * (variavel_raw - H * gx);
+//
+//    erro_cov_gx = (1 - k_gx * H) * erro_cov_gx + estima_cov;
+//
+//    //printf("k_gx= %f\r\n", k_gx);
+//
+//    return gx;
+//}
+//
+//double EstimadorAtitude::kalman_gy(double variavel_raw, double ruido_cov, double estima_cov)
+//{
+//
+//    k_gy = erro_cov_gy * H / (H * erro_cov_gy * H + ruido_cov);
+//
+//    gy = gy + k_gy * (variavel_raw - H * gy);
+//
+//    erro_cov_gy = (1 - k_gy * H) * erro_cov_gy + estima_cov;
+//
+//    //printf("k_gy= %f\r\n", k_gy);
+//
+//    return gy;
+//}
+
+//double EstimadorAtitude::kalman_ax(double variavel_raw, double ruido_cov, double estima_cov)
+//{
+//
+//    k_gy = erro_cov_gy * H / (H * erro_cov_gy * H + ruido_cov);
+//
+//    gy = gy + k_gy * (variavel_raw - H * gy);
+//
+//    erro_cov_gy = (1 - k_gy * H) * erro_cov_gy + estima_cov;
+//
+//    printf("k_gy= %f\r\n", k_gy);
+//
+//    return gy;
+//}
+
+
+//
+//double EstimadorAtitude::kalman(double variavel_raw)
+//{
+//
+//    k = erro_cov_gx * H / (H * erro_cov_gx * H + ruido_cov_gx);
+//
+//    u_hat = u_hat + k * (variavel_raw - H * u_hat);
+//
+//    erro_cov_gx = (1 - k * H) * erro_cov_gx + estima_cov_gx;
+//
+//    printf("k= %f, u_hat= %f, erro_cov= %f\r\n", k, u_hat, erro_cov_gx);
+//    return u_hat;
+//}
