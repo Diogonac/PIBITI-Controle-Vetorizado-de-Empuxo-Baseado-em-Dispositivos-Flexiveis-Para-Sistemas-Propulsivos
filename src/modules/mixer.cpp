@@ -152,5 +152,6 @@ void Mixer::mixer(double f_x, double f_y, double f_z)
 double Mixer::controle_valvula(double abertura_valvula)
 {
 
+    return abertura_valvula;    
 
 }
