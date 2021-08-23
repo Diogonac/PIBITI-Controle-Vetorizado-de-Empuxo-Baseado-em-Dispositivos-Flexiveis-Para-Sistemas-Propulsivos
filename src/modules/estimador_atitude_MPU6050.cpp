@@ -50,12 +50,12 @@ void EstimadorAtitudeMPU::config_MPU()
     MPU6050.setBW(MPU6050_BW_20);
 
     //=================== Calibração dos servos =====================
-    servo1.calibrate(0.0019, 0.001, 180.0); //Define as configurações do servo 1: pulsewidth_MÁX / pulsewidth_MíN / Ângulo de varredura total
-    servo2.calibrate(0.0019, 0.001, 180.0); //Define as configurações do servo 2: pulsewidth_MÁX / pulsewidth_MíN / Ângulo de varredura total
+    servo1.calibrate(0.0025, 0.0005, 180.0); //Define as configurações do servo 1: pulsewidth_MÁX / pulsewidth_MíN / Ângulo de varredura total
+    servo2.calibrate(0.0025, 0.0005, 180.0); //Define as configurações do servo 2: pulsewidth_MÁX / pulsewidth_MíN / Ângulo de varredura total
 
 //=================== Verificação dos servos ====================
-    servo1.position(75.0 + of_1); //Define a posição inicial do servo 1
-    servo2.position(75.0 + of_2); //Define a posição inicial do servo 2
+    servo1.position(90.0 + of_1); //Define a posição inicial do servo 1
+    servo2.position(90.0 + of_2); //Define a posição inicial do servo 2
     wait_ms(10); //Aguarda o deslocamento
 
     wait(1);
@@ -90,7 +90,7 @@ void EstimadorAtitudeMPU::estima_MPU()
 }
 
 
-void EstimadorAtitudeMPU::calibra_angulo(int tempo, double incremento)
+void EstimadorAtitudeMPU::calibra_angulo(double tempo, double incremento)
 {
 
     for (pos = 70; pos <= 110; pos += incremento) {
