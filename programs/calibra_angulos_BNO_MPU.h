@@ -73,7 +73,7 @@ int main()
 
         //pc.printf("AX= %f, AY= %f, AZ= %f, Phi= %f, Theta= %f\r\n", estima_atitudeMPU.ax, estima_atitudeMPU.ay, estima_atitudeMPU.az, estima_atitudeMPU.Phi_MPU, estima_atitudeMPU.Theta_MPU);
 
-        estima_atitudeMPU.calibra_angulo(0.5, 0.5);
+        estima_atitudeMPU.calibra_angulo(1.0, 0.15);
 
 //                cont_atitude.controle(phi_r, theta_r, estima_atitude.Phi, estima_atitude.Theta, estima_atitude.P, estima_atitude.Q, p_r, q_r);
 //
