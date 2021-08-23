@@ -5,7 +5,7 @@
 Serial pc (SERIAL_TX1, SERIAL_RX1); //Comunicação com USB TX, RX
 
 //================ Configura servos =================
-Servo servo1(SERVO1);
+Servo servo1(D3);
 Servo servo2(SERVO2);
 
 int count_varredura = 0; //Contador par indicar a quantidade de varreduras efetuadas
