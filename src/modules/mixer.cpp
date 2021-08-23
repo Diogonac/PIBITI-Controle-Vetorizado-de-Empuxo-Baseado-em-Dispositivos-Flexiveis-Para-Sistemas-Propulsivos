@@ -1,4 +1,5 @@
 #include "mixer.h"
+#include <cstdio>
 
 
 
@@ -13,7 +14,7 @@ Mixer::Mixer():valvula(VALVULA), LED_amarelo(AMARELO), servo1(SERVO1), servo2(SE
 
     verifica_servos = false;
 
-    pos = 0;
+    pos = 0.0;
 
 }
 
@@ -22,8 +23,8 @@ void Mixer::config_servos(void)
 
 
     //=================== Calibração dos servos =====================
-    servo1.calibrate(0.0019, 0.001, 180.0); //Define as configurações do servo 1: pulsewidth_MÁX / pulsewidth_MíN / Ângulo de varredura total
-    servo2.calibrate(0.0019, 0.001, 180.0); //Define as configurações do servo 2: pulsewidth_MÁX / pulsewidth_MíN / Ângulo de varredura total
+    servo1.calibrate(0.0025, 0.0005, 180.0); //Define as configurações do servo 1: pulsewidth_MÁX / pulsewidth_MíN / Ângulo de varredura total
+    servo2.calibrate(0.0025, 0.0005, 180.0); //Define as configurações do servo 2: pulsewidth_MÁX / pulsewidth_MíN / Ângulo de varredura total
 
 //=================== Verificação dos servos ====================
     servo1.position(90.0); //Define a posição inicial do servo 1
@@ -33,25 +34,28 @@ void Mixer::config_servos(void)
     printf("\r\n"); //Pula uma linha no leitor
     printf("Inicio da varredura\r\n"); //Indica que a varredura de 30º nos dois servos foi iniciada
 
-    for (pos = 90; pos <= 105; pos += 1) {
+    for (pos = 90; pos <= 105; pos += 0.15) {
         //Varre a abertura de 90º até 105º com um incremento de 1º
         servo1.position(pos); //Imprime o Ângulo no servo 1
         servo2.position(pos); //Imprime o Ângulo no servo 2
-        wait_ms(50); //Aguarda o deslocamento
+        printf("Posição: %f \r\n", pos);
+        wait_ms(5); //Aguarda o deslocamento
     }
 
-    for (pos = 105; pos >= 75; pos -= 1) {
+    for (pos = 105; pos >= 75; pos -= 0.15) {
         //Varre a abertura de 105º até 75º com um incremento de 1º
         servo1.position(pos); //Imprime o Ângulo no servo 1
-        servo2.position(pos); //Imprime o Ângulo no servo 2
-        wait_ms(50); //Aguarda o deslocamento
+        servo2.position(pos); //Imprime o Ângulo no servo 27
+        printf("Posição: %f \r\n", pos);
+        wait_ms(5); //Aguarda o deslocamento
     }
 
-    for (pos = 75; pos <= 90; pos += 1) {
+    for (pos = 75; pos <= 90; pos += 0.15) {
         //Varre a abertura de 75º até 90º com um incremento de 1º
         servo1.position(pos); //Imprime o Ângulo no servo 1
         servo2.position(pos); //Imprime o Ângulo no servo 2
-        wait_ms(50); //Aguarda o deslocamento
+        printf("Posição: %f \r\n", pos);
+        wait_ms(5); //Aguarda o deslocamento
     }
 
     wait(2);
@@ -87,31 +91,32 @@ void Mixer::actuate(double f_x, double f_y, double f_z)
     desloca_phi = rint((((180.000f * phi_servo1) / pi) ) * 1000.0) / 1000.0;
     desloca_theta = rint((((180.000f * theta_servo2) / pi) ) * 1000.0) / 1000.0;
 
-    if(desloca_phi >= desloca_theta) {
+    // if(desloca_phi >= desloca_theta) {
 
-        tempo_servos = constante_velocidade * abs(phi_total - desloca_phi - 90);
+    //     tempo_servos = constante_velocidade * abs(phi_total - desloca_phi - 90);
 
-    } else {
+    // } else {
 
-        tempo_servos = constante_velocidade * abs(theta_total - desloca_theta - 90);
+    //     tempo_servos = constante_velocidade * abs(theta_total - desloca_theta - 90);
 
-    }
+    // }
 
-    if(tempo_servos <= 0.5) {
+    // if(tempo_servos <= 5) {
 
-        tempo_servos = 0.5;
+    //     tempo_servos = 5;
 
-    }
+    // }
 
-    if(tempo_servos >= 20.0) {
+    // if(tempo_servos >= 20.0) {
 
-        tempo_servos = 20.0;
+    //     tempo_servos = 20.0;
 
-    }
-
+    // }
+    
+    tempo_servos = 5.0;
     //printf("tempo servo= %f \r\n", tempo_servos);
 
-    // printf("%f,%f,%f,%f,%f,%f,%f\r\n", empuxo_total, phi_total, desloca_phi, f_z, abs(phi_total - desloca_phi - 90), abs(theta_total - desloca_theta - 90), tempo_servos);
+     printf("%f,%f,%f,%f,%f,%f,%f\r\n", empuxo_total, phi_total, desloca_phi, f_z, abs(phi_total - desloca_phi - 90), abs(theta_total - desloca_theta - 90), tempo_servos);
 
 
     phi_total = (desloca_phi + 90.000f) + desloca_phi * consteante_phi;

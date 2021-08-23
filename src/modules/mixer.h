@@ -26,7 +26,7 @@ public:
 
     void config_servos(void);
 
-    int pos;
+    double pos;
     bool verifica_servos;
 
 private:
