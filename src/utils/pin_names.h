@@ -10,17 +10,17 @@ const PinName SERVO2 = D6;
 
 
 // Pinos de comumicação I2C
-//const PinName IMU_SDA = D14; 
-//const PinName IMU_SCL = D15;
+const PinName IMU_SDA = D14; 
+const PinName IMU_SCL = D15;
 //
-//const PinName MPU_SDA = PB_3; 
-//const PinName MPU_SCL = PB_10;
+const PinName MPU_SDA = PC_14; 
+const PinName MPU_SCL = PC_15;
 
-const PinName IMU_SDA = D0; 
-const PinName IMU_SCL = D1;
+// const PinName IMU_SDA = D0; 
+// const PinName IMU_SCL = D1;
 
-const PinName MPU_SDA = D14; 
-const PinName MPU_SCL = D15;
+// const PinName MPU_SDA = D14; 
+// const PinName MPU_SCL = D15;
 
 
 // Pinos de comumicação UART

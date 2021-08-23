@@ -26,7 +26,7 @@ const double ce_min = -7.5;
 
 // Constantes dos servos
 //const double tempo_servos = 0.15;
-const double constante_velocidade = 2.0;
+const double constante_velocidade = 5.0;
 const double consteante_phi = 1.0;
 const double consteante_theta = 1.05;
 
