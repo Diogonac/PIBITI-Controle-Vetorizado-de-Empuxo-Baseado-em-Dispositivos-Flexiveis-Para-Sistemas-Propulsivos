@@ -28,7 +28,7 @@ public:
     // Acelerações e velocidades angulares para o filtro
     double ax, ay, az, gx, gy, gz;
 
-    void calibra_angulo(int tempo, double incremento);
+    void calibra_angulo(double tempo, double incremento);
 
     double pos, of_1, of_2;
 
