@@ -11,21 +11,6 @@ EstimadorAtitudeMPU::EstimadorAtitudeMPU() : MPU6050(MPU_SDA, MPU_SCL), servo1(S
     
     of_1 = 0.0;
     of_2 = 0.0;
-
-//    P = 0.0;
-//    Q = 0.0;
-//    R = 0.0;
-//
-//    // Condições iniciais dos offset dos ângulos de euler
-//    offset_phi = 0.0;
-//    offset_theta = 0.0;
-//    offset_psi = 0.0;
-//
-//    // Condições iniciais dos offset das velocidades angulares
-//    offset_gx = 0.0;
-//    offset_gy = 0.0;
-//    offset_gz = 0.0;
-
 }
 
 
@@ -68,25 +53,13 @@ void EstimadorAtitudeMPU::estima_MPU()
 
     MPU6050.getAccelero(acc_MPU);
 
-// Pitch e Roll estão trocados conforme a convensão utilizada
-
+    // Pitch e Roll estão trocados conforme a convensão utilizada
     ax = acc_MPU[0];
     ay = acc_MPU[1];
     az = acc_MPU[2];
 
     Phi_MPU = atan2((ay),(az)) * 180 / pi;
     Theta_MPU = atan2((ax),(az)) * 180 / pi;
-
-
-//    BNO055.get_gyro();
-//
-//    P = BNO055.gyro.x - offset_gx; //kalman_gx(BNO055.gyro.x, ruido_cov_gx, estima_cov_gx);
-//    Q = BNO055.gyro.y - offset_gy; //kalman_gy(BNO055.gyro.y, ruido_cov_gy, estima_cov_gy);
-//    R = BNO055.gyro.z - offset_gz; //kalman_gz(BNO055.gyro.z, ruido_cov_z, estima_cov_gz);
-
-
-    //printf("AX= %f, AY= %f,AZ= %f\r\n", ax, ay, az);
-
 }
 
 
@@ -115,4 +88,12 @@ void EstimadorAtitudeMPU::calibra_angulo(double tempo, double incremento)
         wait_ms(tempo); //Aguarda o deslocamento
     }
 
+}
+
+void EstimadorAtitudeMPU::movimenta_servo(double angulo, double delay){
+
+    servo1.position(angulo); //Imprime o Ângulo no servo 1
+    servo2.position(angulo); //Imprime o Ângulo no servo 2
+
+    wait_ms(delay);
 }

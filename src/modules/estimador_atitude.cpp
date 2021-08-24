@@ -115,7 +115,7 @@ void EstimadorAtitude::estima()
 
     BNO055.get_angles();
 
-// Pitch e Roll estão trocados conforme a convensão utilizada
+    // Pitch e Roll estão trocados conforme a convensão utilizada
 
     Phi = BNO055.euler.pitch - offset_phi; // Ângulo formado pela rotação de (x) (phi)
     Theta = BNO055.euler.roll - offset_theta; // Ângulo formado pela rotação de (y) (theta)

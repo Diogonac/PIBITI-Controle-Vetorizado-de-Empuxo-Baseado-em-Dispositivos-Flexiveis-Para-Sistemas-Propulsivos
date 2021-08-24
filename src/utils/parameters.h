@@ -28,7 +28,7 @@ const double ce_min = -7.5;
 //const double tempo_servos = 0.15;
 const double constante_velocidade = 5.0;
 const double consteante_phi = 1.0;
-const double consteante_theta = 1.05;
+const double consteante_theta = 1.0;
 
 
 // Filtro Kalman

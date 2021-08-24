@@ -47,7 +47,7 @@ void Servo::write(double percent) {
 
 void Servo::position(double degrees) {
     //float offset = _range_max * (degrees / _degrees);
-    double offset = 1.11111e-05 * degrees + 5.00000e-04;
+    double offset = 1.11111e-05 * degrees + 5.00000e-04; // 5us -- 0º / 1,5ms -- 90º / 2ms -- 180º; 
     
     _pwm.pulsewidth(clamp(offset, _range_min, _range_max));
 }

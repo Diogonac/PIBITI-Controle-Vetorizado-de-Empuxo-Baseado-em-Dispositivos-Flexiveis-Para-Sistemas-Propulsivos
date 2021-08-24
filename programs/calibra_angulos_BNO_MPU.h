@@ -5,9 +5,7 @@
 Serial pc (SERIAL_TX1, SERIAL_RX1); //Comunicação com USB TX, RX
 
 // Imports
-//Mixer mixer;
 ControladorAtitude cont_atitude;
-//EstimadorAtitude estima_atitude;
 InicializaPerifericos inicializa;
 EstimadorAtitudeMPU estima_atitudeMPU;
 
@@ -26,7 +24,8 @@ double pos = 0.0;
 
 
 // Tempo de amostragem
-const double dt = 0.002; // 50 Hz
+const double dt = 0.002; // 500 Hz
+
 void callback(void);
 
 int main()
@@ -42,57 +41,30 @@ int main()
     q_r = 0.0;
 
     // Configuração dos periféricos
-    //mixer.config_servos();
-    //estima_atitude.config_imu();
     estima_atitudeMPU.config_MPU();
-
-    //inicializa.verifica(mixer.verifica_servos, estima_atitude.verifica_imu);
-
 
     //Definição da taxa de amostragem
     amostragem.attach(&callback, dt);
 
-    //while(inicializa.sistema_verificado) {
+    //Calibração inicial dos servos
+    estima_atitudeMPU.calibra_angulo(1.0, 0.15);
+
     while(1) {
-//    estima_atitude.estima();
 
-        //p --> wx | q -- > wy | r --> wz
-//    while(abs(estima_atitude.Phi) <= pi /6.0 && abs(estima_atitude.Theta) <= pi /6.0 && abs(estima_atitude.P) <= 4.0* pi && abs (estima_atitude.Q) <= 4.0* pi && abs(estima_atitude.R) <= 4.0*pi) {
-//
-//        if(flag) {
-//
-//            flag = false;
-
-        //estima_atitude.estima();
 
         estima_atitudeMPU.estima_MPU();
-        //printf("%f,%f,%f\r\n", estima_atitudeMPU.ax, estima_atitudeMPU.ay, estima_atitudeMPU.az);
-//wait(0.002);
-        //pc.printf("YAW= %f, ROLL= %f, PITCH= %f, GIROX= %f, GIROY= %f \r\n", BNO055.euler.yaw, BNO055.euler.roll, BNO055.euler.pitch, BNO055.gyro.x, BNO055.gyro.y);
-        //pc.printf("%f,%f,%f,%f,%f,%f,%d\r\n", estima_atitude.Phi, estima_atitude.Theta, estima_atitude.Psi, estima_atitude.P, estima_atitude.Q, estima_atitude.R, tempo.read_ms());
 
-        //pc.printf("AX= %f, AY= %f, AZ= %f, Phi= %f, Theta= %f\r\n", estima_atitudeMPU.ax, estima_atitudeMPU.ay, estima_atitudeMPU.az, estima_atitudeMPU.Phi_MPU, estima_atitudeMPU.Theta_MPU);
+        estima_atitudeMPU.movimenta_servo(90.0, 5.0);
 
-        estima_atitudeMPU.calibra_angulo(1.0, 0.15);
-
-//                cont_atitude.controle(phi_r, theta_r, estima_atitude.Phi, estima_atitude.Theta, estima_atitude.P, estima_atitude.Q, p_r, q_r);
-//
-//                mixer.actuate(cont_atitude.f_x, cont_atitude.f_y, m * g);
-
-//        }
-//
-//        tempo.reset();
-    }
-
-    //mixer.estado_seguro();
-    //inicializa.aviso_sonoro();
+        
     
     //pc.printf("PITCH= %f, ROLL= %f, P= %f, q= %f, r= %f\r\n", estima_atitude.Theta, estima_atitude.Phi, estima_atitude.P, estima_atitude.Q, estima_atitude.R);
 }
-//}
+
+}
+
 
 void callback()
 {
     flag = true;
-
 }

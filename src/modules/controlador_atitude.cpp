@@ -31,27 +31,18 @@ double ControladorAtitude::controlador_siso(double angulo_r, double angulo, doub
 
     ganho_PID = kp * e + kd * ce;
     
+    // if(e < 0.0 & ce < 0) saida_fuzzy = e_min;
     
-    if(e < 0.0 & ce < 0) saida_fuzzy = e_min;
-    
-     if(e < 0.0 & ce == 0) saida_fuzzy = ce_min;
+    //  if(e < 0.0 & ce == 0) saida_fuzzy = ce_min;
      
-      if(e < 0.0 & ce > 0) saida_fuzzy = 0.0;
+    //   if(e < 0.0 & ce > 0) saida_fuzzy = 0.0;
       
-       if(e == 0.0 & ce < 0) saida_fuzzy = ce_min;
+    //    if(e == 0.0 & ce < 0) saida_fuzzy = ce_min;
        
-        if(e == 0.0 & ce == 0) saida_fuzzy = 0.0;
-        
-        
-        
-    
-    
+    //     if(e == 0.0 & ce == 0) saida_fuzzy = 0.0;
     
     variavel_SISO = ganho_PID;
 
     return variavel_SISO;
 
 }
-
-
-

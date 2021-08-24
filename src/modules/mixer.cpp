@@ -114,13 +114,14 @@ void Mixer::actuate(double f_x, double f_y, double f_z)
     // }
     
     tempo_servos = 5.0;
+
     //printf("tempo servo= %f \r\n", tempo_servos);
 
      printf("%f,%f,%f,%f,%f,%f,%f\r\n", empuxo_total, phi_total, desloca_phi, f_z, abs(phi_total - desloca_phi - 90), abs(theta_total - desloca_theta - 90), tempo_servos);
 
-
     phi_total = (desloca_phi + 90.000f) + desloca_phi * consteante_phi;
     theta_total = (desloca_theta + 90.000f) + desloca_theta * consteante_theta;
+
     // Aciona os servos
     servo1.position(phi_total);
     servo2.position(theta_total);
@@ -141,14 +142,12 @@ da válvula e os ângulos desejados nos tamanhos de pulsos */
 void Mixer::mixer(double f_x, double f_y, double f_z)
 {
 
-// Calcula o empuxo total
+    // Calcula o empuxo total
     empuxo_total = sqrt((f_x * f_x) + (f_y * f_y) + (f_z * f_z));
 
-// Calcula os ângulos | phi --> roll(x) / theta --> pitch(y)
+    // Calcula os ângulos | phi --> roll(x) / theta --> pitch(y)
     phi_servo1 = -1*atan((-1*f_y)/f_z);
     theta_servo2 = -1*atan(f_x/f_z);
-
-
 
 }
 

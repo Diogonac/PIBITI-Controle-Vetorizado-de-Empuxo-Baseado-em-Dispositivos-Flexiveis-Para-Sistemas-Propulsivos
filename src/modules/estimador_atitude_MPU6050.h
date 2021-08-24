@@ -22,6 +22,9 @@ public:
     // Estima os ângulos de Euler (rad) e as velocidades angular (rad/s)
     void estima_MPU();
 
+    //Movimenta os servos dado o input
+    void movimenta_servo(double angulo, double delay);
+
     // Ângulos de Euler de interesse
     double Phi_MPU, Theta_MPU, Psi_MPU;
 
@@ -39,18 +42,7 @@ private:
     Servo servo1;
     Servo servo2;
 
-//    // Variáveis para armazenar os offset dos ângulos de euler
-//    double offset_phi;
-//    double offset_theta;
-//    double offset_psi;
-//
-//    // Variáveis para armazenar os offset das velocidades angulares
-//    double offset_gx;
-//    double offset_gy;
-//    double offset_gz;
-
     double acc_MPU[3];
-
 
 };
 
