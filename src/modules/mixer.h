@@ -27,6 +27,9 @@ public:
     void config_servos(void);
 
     double pos;
+
+    double delta_phi[2];
+    
     bool verifica_servos;
 
 private:
@@ -57,6 +60,8 @@ private:
 
     // Converte o empuxo total em sinal para abertura da válvula
     double controle_valvula(double abertura_valvula);
+
+    
 
 };
 

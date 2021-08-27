@@ -52,9 +52,12 @@ int main()
     while(1) {
 
 
-        estima_atitudeMPU.estima_MPU();
+        //estima_atitudeMPU.estima_MPU();
 
-        estima_atitudeMPU.movimenta_servo(90.0, 5.0);
+        // estima_atitudeMPU.movimenta_servo(90.0, 5.0);
+        // estima_atitudeMPU.movimenta_servo(100.0, 5.0);
+
+        estima_atitudeMPU.calibra_angulo(1.5, 0.15);
 
         
     

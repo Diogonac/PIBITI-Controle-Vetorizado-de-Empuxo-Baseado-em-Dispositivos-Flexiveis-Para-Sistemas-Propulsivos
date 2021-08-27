@@ -71,8 +71,8 @@ void EstimadorAtitudeMPU::calibra_angulo(double tempo, double incremento)
         servo1.position((pos + of_1) * consteante_phi); //Imprime o Ângulo no servo 1
         //servo2.position(pos + of_2); //Imprime o Ângulo no servo 2
 
-        estima_MPU();
-        printf("%f,%f,%f,%f\r\n", ax, ay, az, pos);
+        // estima_MPU();
+        // printf("%f,%f,%f,%f\r\n", ax, ay, az, pos);
 
         wait_ms(tempo); //Aguarda o deslocamento
     }
@@ -82,8 +82,8 @@ void EstimadorAtitudeMPU::calibra_angulo(double tempo, double incremento)
         servo1.position((pos + of_1) * consteante_phi); //Imprime o Ângulo no servo 1
         //servo2.position(pos + of_2); //Imprime o Ângulo no servo 2
 
-        estima_MPU();
-        printf("%f,%f,%f,%f\r\n", ax, ay, az, pos);
+        // estima_MPU();
+        // printf("%f,%f,%f,%f\r\n", ax, ay, az, pos);
 
         wait_ms(tempo); //Aguarda o deslocamento
     }

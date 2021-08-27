@@ -23,8 +23,8 @@ void Mixer::config_servos(void)
 
 
     //=================== Calibração dos servos =====================
-    servo1.calibrate(0.0025, 0.0005, 180.0); //Define as configurações do servo 1: pulsewidth_MÁX / pulsewidth_MíN / Ângulo de varredura total
-    servo2.calibrate(0.0025, 0.0005, 180.0); //Define as configurações do servo 2: pulsewidth_MÁX / pulsewidth_MíN / Ângulo de varredura total
+    servo1.calibrate(0.0025, 0.0005, 120.0); //Define as configurações do servo 1: pulsewidth_MÁX / pulsewidth_MíN / Ângulo de varredura total
+    servo2.calibrate(0.0025, 0.0005, 120.0); //Define as configurações do servo 2: pulsewidth_MÁX / pulsewidth_MíN / Ângulo de varredura total
 
 //=================== Verificação dos servos ====================
     servo1.position(90.0); //Define a posição inicial do servo 1
@@ -113,6 +113,10 @@ void Mixer::actuate(double f_x, double f_y, double f_z)
 
     // }
     
+
+    
+
+
     tempo_servos = 5.0;
 
     //printf("tempo servo= %f \r\n", tempo_servos);

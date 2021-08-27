@@ -44,6 +44,8 @@ private:
 
     double acc_MPU[3];
 
+    double delta_angulo[2];
+
 };
 
 #endif
