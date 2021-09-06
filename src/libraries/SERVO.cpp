@@ -45,18 +45,24 @@ void Servo::write(double percent) {
     _p = clamp(percent, 0.0, 1.0);
 }
 
+void Servo::largura_pulso( int largura){
+
+    _pwm.pulsewidth_us(largura);
+
+}
+
 void Servo::position(double degrees) {
     //float offset = _range_max * (degrees / _degrees);
-    double offset = 1.11111e-05 * degrees + 5.00000e-04; // 5us -- 0º / 1,5ms -- 90º / 2ms -- 180º; 
+    double offset = 11 * degrees + 550; // 
     
-    _pwm.pulsewidth(clamp(offset, _range_min, _range_max));
+    _pwm.pulsewidth_us(clamp(offset, _range_min, _range_max));
 }
 
 void Servo::calibrate(double range_max, double range_min, double degrees) {
     _range_max = range_max;
     _range_min = range_min;
     _degrees = degrees;
-    _pwm.period_ms(20);
+   _pwm.period_ms(20);
 }
 
 double Servo::read() {

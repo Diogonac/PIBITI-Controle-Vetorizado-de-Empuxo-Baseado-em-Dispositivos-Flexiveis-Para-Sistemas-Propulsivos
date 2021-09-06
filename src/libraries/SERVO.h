@@ -63,6 +63,8 @@ public:
      * @param percent A normalised number 0.0-1.0 to represent the full range.
      */
     void write(double percent);
+
+    void largura_pulso( int largura);
     
     /**  Read the servo motors current position
      *
