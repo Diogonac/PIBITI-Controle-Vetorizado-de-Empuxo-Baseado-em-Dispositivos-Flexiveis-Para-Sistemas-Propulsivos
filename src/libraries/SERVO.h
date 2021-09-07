@@ -84,7 +84,7 @@ public:
      * @param degrees Angle from centre to maximum/minimum position in degrees
      */
     //void calibrate(float range = 0.0015, float degrees = 60.0); 
-    void calibrate(double range_max = 0.0025, double range_min = 0.00050, double degrees = 180.0);
+    void calibrate(double range_max = 2500, double range_min = 550, double degrees = 180.0);
         
     /**  Shorthand for the write and read functions */
     Servo& operator= (double percent);
