@@ -4,7 +4,6 @@
 #include "mbed.h"
 #include "imports.h"
 
-
 // Classe Mixer
 class Mixer
 
@@ -28,8 +27,10 @@ public:
 
     double pos;
 
-    double delta_phi[2];
+    //void angulo_atual (double phi_atual, double theta_atual); // Coleta os ângulos apos a atuação dos servos
     
+    double delta_angulos[2];
+
     bool verifica_servos;
 
 private:
@@ -47,7 +48,7 @@ private:
     Servo servo1;
     Servo servo2;
 
-    double tempo_servos, desloca_phi, desloca_theta;
+    double tempo_servos, desloca_phi, desloca_theta, delta_phi, delta_theta;
     // Empuxo total (N)
     double empuxo_total;
 
