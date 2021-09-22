@@ -53,7 +53,7 @@ int main()
         estima_atitude.estima();
 
         //p --> wx | q -- > wy | r --> wz
-        while(abs(estima_atitude.Phi) <= pi /6.0 && abs(estima_atitude.Theta) <= pi /6.0 && abs(estima_atitude.P) <= 4.0* pi && abs (estima_atitude.Q) <= 4.0* pi && abs(estima_atitude.R) <= 4.0*pi) {
+        while(abs(estima_atitude.Phi) <= pi /12.0 && abs(estima_atitude.Theta) <= pi /12.0 && abs(estima_atitude.P) <= 4.0* pi && abs (estima_atitude.Q) <= 4.0* pi && abs(estima_atitude.R) <= 4.0*pi) {
 
             if(flag) {
                 
