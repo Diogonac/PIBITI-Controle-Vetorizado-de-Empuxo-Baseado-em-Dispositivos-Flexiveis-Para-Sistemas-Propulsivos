@@ -5,21 +5,25 @@
 
 // Classe do construtor
 Mixer::Mixer()
-    : valvula(VALVULA), LED_amarelo(AMARELO), servo1(SERVO1), servo2(SERVO2) {
+    : valvula(VALVULA), LED_amarelo(AMARELO), servo1(SERVO1), servo2(SERVO2), MPU6050(MPU_SDA, MPU_SCL) {
 
   LED_amarelo = 0;
   //
-  phi_total = 90.0;
-  theta_total = 90.0;
+  phi_total = offset_servo1;
+  theta_total = offset_servo2;
 
   verifica_servos = false;
 
   pos = 0.0;
 
-  delta_angulos[0] = 90.0;
-  delta_angulos[1] = 90.0;
+  delta_angulos[0] = offset_servo1;
+  delta_angulos[1] = offset_servo2;
 
   tempo_servos = 5.0;
+
+      Phi_MPU = 0.0;
+    Theta_MPU = 0.0;
+    Psi_MPU = 0.0;
 
 }
 
@@ -34,9 +38,9 @@ void Mixer::config_servos(void) {
                            // / pulsewidth_MíN / Ângulo de varredura total
 
   //=================== Verificação dos servos ====================
-  servo1.position(90.0); // Define a posição inicial do servo 1
-  servo2.position(90.0); // Define a posição inicial do servo 2
-  wait_ms(10);           // Aguarda o deslocamento
+  servo1.position(offset_servo1); // Define a posição inicial do servo 1
+  servo2.position(offset_servo2); // Define a posição inicial do servo 2
+  wait_ms(10);                    // Aguarda o deslocamento
 
   printf("\r\n");                    // Pula uma linha no leitor
   printf("Inicio da varredura\r\n"); // Indica que a varredura de 30º nos dois
@@ -70,6 +74,9 @@ void Mixer::config_servos(void) {
   printf("Varredura completa\r\n"); // Indica que a varredura de 30º nos dois
                                     // servos foi concluida
 
+  servo1.position(offset_servo1); // Define a posição inicial do servo 1
+  servo2.position(offset_servo2); // Define a posição inicial do servo 2
+
   verifica_servos = true;
 }
 
@@ -78,8 +85,8 @@ void Mixer::estado_seguro(void) {
   // Contição dos avisos sonoros e luminosos
   LED_amarelo = 1;
 
-  servo1.position(90.0);
-  servo2.position(90.0);
+  servo1.position(offset_servo1);
+  servo2.position(offset_servo2);
 
   wait_ms(tempo_servos);
 }
@@ -96,12 +103,14 @@ void Mixer::actuate(double f_x, double f_y, double f_z) {
   desloca_phi = rint((((180.000f * phi_servo1) / pi)) * 1000.0) / 1000.0;
   desloca_theta = rint((((180.000f * theta_servo2) / pi)) * 1000.0) / 1000.0;
 
-
- //printf("%f,%f,%f,%f,%f,%f,%f\r\n", empuxo_total, phi_total, desloca_phi, f_z,abs(phi_total - desloca_phi - 90),abs(theta_total - desloca_theta - 90), tempo_servos);
+  // printf("%f,%f,%f,%f,%f,%f,%f\r\n", empuxo_total, phi_total, desloca_phi,
+  // f_z,abs(phi_total - desloca_phi - 90),abs(theta_total - desloca_theta -
+  // 90), tempo_servos);
 
   // Calcula o ângulo que o os servos devem se mover
-  phi_total = (desloca_phi + 90.000f);     //+ desloca_phi * consteante_phi;
-  theta_total = (desloca_theta + 90.000f); //+ desloca_theta * consteante_theta;
+  phi_total = (desloca_phi + offset_servo1); //+ desloca_phi * consteante_phi;
+  theta_total =
+      (desloca_theta + offset_servo2); //+ desloca_theta * consteante_theta;
 
   // Calcula o delta angulo que será impresso nos servos
   delta_phi = abs(phi_total - delta_angulos[0]);
@@ -126,9 +135,13 @@ void Mixer::actuate(double f_x, double f_y, double f_z) {
     tempo_servos = 20.0;
   }
 
-  printf("Delta_phi= %f, Delta_theta= %f, Tempo_servos= %f \r\n", delta_phi, delta_theta, tempo_servos);
+  // printf("Delta_phi= %f, Delta_theta= %f, Tempo_servos= %f, phi_total= %f,
+  // theta_total= %f\r\n", delta_phi, delta_theta, tempo_servos, phi_total,
+  // theta_total);
 
   // Aciona os servos
+
+  // if(phi_total > 110 || phi_total < 70)
   servo1.position(phi_total);
   servo2.position(theta_total);
   wait_ms(tempo_servos);
@@ -144,11 +157,57 @@ void Mixer::actuate(double f_x, double f_y, double f_z) {
   // \r\n", empuxo_total, f_x, f_y, f_z, phi_total, theta_total);
 }
 
-// void Mixer::angulo_atual(double phi_atual, double theta_atual) {
+void Mixer::calibra_servo_MPU(void) {
 
-//     delta_angulos[0] = phi_atual;
-//     delta_angulos[1] = theta_atual;
-// }
+  for (int i = 0; i < 16; i++) {
+
+    servo1.position(offset_servo1 + lista_angulos[i]);
+    // servo2.position(offset_servo2 + lista_angulos[i]);
+    wait(2);
+    estima_MPU();
+    printf("Theta_MPU= %f, Servo= %f \r\n",(90.0 + Theta_MPU),(offset_servo1 + lista_angulos[i]));
+    wait(2);
+  }
+
+  servo1.position(offset_servo1);
+
+    for (int i = 0; i < 16; i++) {
+
+    servo1.position(offset_servo1 + lista_angulos[i]);
+    // servo2.position(offset_servo2 + lista_angulos[i]);
+    wait(2);
+    estima_MPU();
+    printf("Theta_MPU= %f, Servo= %f \r\n",(90.0 - Theta_MPU),(offset_servo1 + lista_angulos[i]));
+    wait(2);
+  }
+
+  servo1.position(offset_servo1);
+
+  for (int i = 0; i < 16; i++) {
+
+    // servo1.position(offset_servo1 + lista_angulos[i]);
+    servo2.position(offset_servo2 + lista_angulos[i]);
+
+    wait(2);
+    estima_MPU();
+    printf("Phi_MPU= %f, Servo= %f \r\n",(90.0 + Phi_MPU),(offset_servo2 + lista_angulos[i]));
+    wait(2);
+  }
+
+  servo2.position(offset_servo2);
+    for (int i = 0; i < 16; i++) {
+
+    // servo1.position(offset_servo1 + lista_angulos[i]);
+    servo2.position(offset_servo2 + lista_angulos[i]);
+
+    wait(2);
+    estima_MPU();
+    printf("Phi_MPU= %f, Servo= %f \r\n",(90.0 + Phi_MPU),(offset_servo2 + lista_angulos[i]));
+    wait(2);
+  }
+
+  servo2.position(offset_servo2);
+}
 
 /* Converte os vetores de empuxo no vetor empuxo total para calcular a abertura
 da válvula e os ângulos desejados nos tamanhos de pulsos */
@@ -159,11 +218,51 @@ void Mixer::mixer(double f_x, double f_y, double f_z) {
 
   // Calcula os ângulos | phi --> roll(x) / theta --> pitch(y)
   phi_servo1 = -1 * atan((-1 * f_y) / f_z);
-  theta_servo2 = -1 * atan(f_x / f_z);
+  theta_servo2 = atan(f_x / f_z);
 }
 
 // Converte o empuxo total em sinal para abertura da válvula
 double Mixer::controle_valvula(double abertura_valvula) {
 
   return abertura_valvula;
+}
+
+
+// Inicializa a IMU
+void Mixer::config_MPU()
+{
+
+    printf("Iniciando MPU6050\r\n");
+
+    if(MPU6050.testConnection() == 1) {
+
+        printf("MPU6050 - Status: OK\r\n");
+
+    } else {
+
+        printf("MPU6050 - Status: Sem resposta \r\n");
+
+    }
+
+    MPU6050.setAcceleroRange(MPU6050_ACCELERO_RANGE_2G);
+    MPU6050.setGyroRange(MPU6050_GYRO_RANGE_250);
+    MPU6050.setBW(MPU6050_BW_20);
+
+    wait_ms(10); //Aguarda o deslocamento
+
+}
+
+// Estima os ângulos de Euler (rad) e as velocidades angular (rad/s)
+void Mixer::estima_MPU()
+{
+
+    MPU6050.getAccelero(acc_MPU);
+
+    // Pitch e Roll estão trocados conforme a convensão utilizada
+    ax = acc_MPU[0];
+    ay = acc_MPU[1];
+    az = acc_MPU[2];
+
+    Phi_MPU = atan2((ay),(az)) * 180 / pi;
+    Theta_MPU = atan2((ax),(az)) * 180 / pi;
 }

@@ -52,8 +52,9 @@ int main()
     while(1) {
 
 
-        //estima_atitudeMPU.estima_MPU();
+        estima_atitudeMPU.estima_MPU();
 
+        pc.printf("Phi_MPU= %f, Theta_MPU= %f \r\n", estima_atitudeMPU.Phi_MPU, estima_atitudeMPU.Theta_MPU);
         // estima_atitudeMPU.movimenta_servo(90.0, 5.0);
         // estima_atitudeMPU.movimenta_servo(100.0, 5.0);
 
