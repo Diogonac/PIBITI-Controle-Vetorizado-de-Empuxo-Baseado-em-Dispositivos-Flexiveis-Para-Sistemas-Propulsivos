@@ -4,8 +4,7 @@
 // EstimadorAtitude estima_atitude;
 
 // Classe do construtor
-Mixer::Mixer()
-    : valvula(VALVULA), LED_amarelo(AMARELO), servo1(SERVO1), servo2(SERVO2), MPU6050(MPU_SDA, MPU_SCL) {
+Mixer::Mixer() : valvula(VALVULA), LED_amarelo(AMARELO), servo1(SERVO1), servo2(SERVO2), MPU6050(MPU_SDA, MPU_SCL) {
 
   LED_amarelo = 0;
   //
@@ -21,7 +20,7 @@ Mixer::Mixer()
 
   tempo_servos = 5.0;
 
-      Phi_MPU = 0.0;
+    Phi_MPU = 0.0;
     Theta_MPU = 0.0;
     Psi_MPU = 0.0;
 
@@ -30,11 +29,9 @@ Mixer::Mixer()
 void Mixer::config_servos(void) {
 
   //=================== Calibração dos servos =====================
-  servo1.calibrate(2500, 550,
-                   180.0); // Define as configurações do servo 1: pulsewidth_MÁX
+  servo1.calibrate(2500, 550, 180.0); // Define as configurações do servo 1: pulsewidth_MÁX
                            // / pulsewidth_MíN / Ângulo de varredura total
-  servo2.calibrate(2500, 550,
-                   180.0); // Define as configurações do servo 2: pulsewidth_MÁX
+  servo2.calibrate(2500, 550, 180.0); // Define as configurações do servo 2: pulsewidth_MÁX
                            // / pulsewidth_MíN / Ângulo de varredura total
 
   //=================== Verificação dos servos ====================
@@ -103,14 +100,9 @@ void Mixer::actuate(double f_x, double f_y, double f_z) {
   desloca_phi = rint((((180.000f * phi_servo1) / pi)) * 1000.0) / 1000.0;
   desloca_theta = rint((((180.000f * theta_servo2) / pi)) * 1000.0) / 1000.0;
 
-  // printf("%f,%f,%f,%f,%f,%f,%f\r\n", empuxo_total, phi_total, desloca_phi,
-  // f_z,abs(phi_total - desloca_phi - 90),abs(theta_total - desloca_theta -
-  // 90), tempo_servos);
-
   // Calcula o ângulo que o os servos devem se mover
-  phi_total = (desloca_phi + offset_servo1); //+ desloca_phi * consteante_phi;
-  theta_total =
-      (desloca_theta + offset_servo2); //+ desloca_theta * consteante_theta;
+  phi_total = (desloca_phi + offset_servo1); 
+  theta_total = (desloca_theta + offset_servo2);
 
   // Calcula o delta angulo que será impresso nos servos
   delta_phi = abs(phi_total - delta_angulos[0]);
@@ -135,13 +127,7 @@ void Mixer::actuate(double f_x, double f_y, double f_z) {
     tempo_servos = 20.0;
   }
 
-  // printf("Delta_phi= %f, Delta_theta= %f, Tempo_servos= %f, phi_total= %f,
-  // theta_total= %f\r\n", delta_phi, delta_theta, tempo_servos, phi_total,
-  // theta_total);
-
   // Aciona os servos
-
-  // if(phi_total > 110 || phi_total < 70)
   servo1.position(phi_total);
   servo2.position(theta_total);
   wait_ms(tempo_servos);
@@ -152,9 +138,6 @@ void Mixer::actuate(double f_x, double f_y, double f_z) {
   // Aciona a valvula
   valvula = controle_valvula(empuxo_total);
 
-  // debug
-  // printf("Empuxo_total= %f, f_x= %f, f_y= %f, f_z= %f, phi= %f, theta= %f
-  // \r\n", empuxo_total, f_x, f_y, f_z, phi_total, theta_total);
 }
 
 void Mixer::calibra_servo_MPU(void) {
@@ -170,18 +153,20 @@ void Mixer::calibra_servo_MPU(void) {
   }
 
   servo1.position(offset_servo1);
+  wait(1);
 
     for (int i = 0; i < 16; i++) {
 
-    servo1.position(offset_servo1 + lista_angulos[i]);
+    servo1.position(offset_servo1 - lista_angulos[i]);
     // servo2.position(offset_servo2 + lista_angulos[i]);
     wait(2);
     estima_MPU();
-    printf("Theta_MPU= %f, Servo= %f \r\n",(90.0 - Theta_MPU),(offset_servo1 + lista_angulos[i]));
+    printf("Theta_MPU= %f, Servo= %f \r\n",(90.0 - Theta_MPU),(offset_servo1 - lista_angulos[i]));
     wait(2);
   }
 
   servo1.position(offset_servo1);
+  wait(1);
 
   for (int i = 0; i < 16; i++) {
 
@@ -195,18 +180,22 @@ void Mixer::calibra_servo_MPU(void) {
   }
 
   servo2.position(offset_servo2);
+  wait(1);
+
     for (int i = 0; i < 16; i++) {
 
     // servo1.position(offset_servo1 + lista_angulos[i]);
-    servo2.position(offset_servo2 + lista_angulos[i]);
+    servo2.position(offset_servo2 - lista_angulos[i]);
 
     wait(2);
     estima_MPU();
-    printf("Phi_MPU= %f, Servo= %f \r\n",(90.0 + Phi_MPU),(offset_servo2 + lista_angulos[i]));
+    printf("Phi_MPU= %f, Servo= %f \r\n",(90.0 - Phi_MPU),(offset_servo2 - lista_angulos[i]));
     wait(2);
   }
 
   servo2.position(offset_servo2);
+  wait(1);
+
 }
 
 /* Converte os vetores de empuxo no vetor empuxo total para calcular a abertura
