@@ -11,10 +11,10 @@ InicializaPerifericos::InicializaPerifericos():LED_verde(VERDE), LED_vermelho(VE
 
 }
 
-void InicializaPerifericos::verifica(bool estado_inicializacao_servos, bool estado_inicializacao_imu)
+void InicializaPerifericos::verifica(bool estado_inicializacao_servos, bool estado_inicializacao_imu, bool estado_inicializacao_mpu)
 {
 
-    if(estado_inicializacao_servos == 1 && estado_inicializacao_imu == 1) { //&& verifica_imu == true
+    if(estado_inicializacao_servos == 1 && estado_inicializacao_imu == 1 && estado_inicializacao_mpu == 1) { //&& verifica_imu == true
     
         aviso_sonoro();
         wait(1);

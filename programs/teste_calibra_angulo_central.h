@@ -43,11 +43,13 @@ int main()
     estima_atitude.config_imu();
     mixer.config_MPU();
     
-    inicializa.verifica(mixer.verifica_servos, estima_atitude.verifica_imu);
+    inicializa.verifica(mixer.verifica_servos, estima_atitude.verifica_imu, mixer.verifica_MPU);
     
 
     //Definição da taxa de amostragem
     amostragem.attach(&callback, dt);
+
+    // mixer.calibra_servo_MPU();
 
     while(inicializa.sistema_verificado) {
 
@@ -63,6 +65,7 @@ int main()
                 estima_atitude.estima();
                 mixer.estima_MPU();
                 mixer.calibra_servo_MPU();
+                //mixer.verifica_calib_servo_MPU();
 
             
 

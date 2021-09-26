@@ -7,11 +7,12 @@
 Mixer::Mixer() : valvula(VALVULA), LED_amarelo(AMARELO), servo1(SERVO1), servo2(SERVO2), MPU6050(MPU_SDA, MPU_SCL) {
 
   LED_amarelo = 0;
-  //
+  
   phi_total = offset_servo1;
   theta_total = offset_servo2;
 
   verifica_servos = false;
+  verifica_MPU = false;
 
   pos = 0.0;
 
@@ -140,62 +141,81 @@ void Mixer::actuate(double f_x, double f_y, double f_z) {
 
 }
 
+void Mixer::verifica_calib_servo_MPU(void){
+
+    wait(1);
+    estima_MPU();
+    wait(1);
+  for (int i = 0; i < 16; i++) {
+    // printf("Theta_MPU= %f, Servo= %f \r\n",(90.0 + Theta_MPU),(offset_servo1 + lista_angulos[i]));
+    printf("%f,%f\r\n",(90.0 + Theta_MPU),(offset_servo1 + lista_angulos[i]));
+    theta_calib = 0.74385 * (offset_servo1 - lista_angulos[i]) + 17.653;
+    servo1.position(theta_calib);
+    wait(2);
+    estima_MPU();
+  }
+  theta_calib = 0.74385 * (offset_servo1) + 17.653;    
+  servo1.position(theta_calib);
+
+
+}
 void Mixer::calibra_servo_MPU(void) {
-
-  for (int i = 0; i < 16; i++) {
-
-    servo1.position(offset_servo1 + lista_angulos[i]);
-    // servo2.position(offset_servo2 + lista_angulos[i]);
+    wait(1);
+    estima_MPU();
+    wait(1);
+  for (int i = 0; i < 31; i++) {
+    // printf("Theta_MPU= %f, Servo= %f \r\n",(90.0 + Theta_MPU),(offset_servo1 + lista_angulos[i]));
+    theta_calib = lista_angulos[i] * 1.3272 -39.92;
+    printf("%f,%f\r\n",(Theta_MPU - 90.0),(lista_angulos[i]));
+    servo1.position(theta_calib);
     wait(2);
     estima_MPU();
-    printf("Theta_MPU= %f, Servo= %f \r\n",(90.0 + Theta_MPU),(offset_servo1 + lista_angulos[i]));
-    wait(2);
-  }
+   }
 
-  servo1.position(offset_servo1);
-  wait(1);
+//     servo1.position(offset_servo1);
+//     wait(1);
+//     estima_MPU();
+//     wait(1);
+//     for (int i = 0; i < 16; i++) {
+    
+//     // printf("Theta_MPU= %f, Servo= %f \r\n",(90.0 - Theta_MPU),(offset_servo1 - lista_angulos[i]));
+//     theta_calib =
+//     printf("%f,%f\r\n",(90.0 - Theta_MPU),(offset_servo1 - lista_angulos[i]));
+//     servo1.position(offset_servo1 - lista_angulos[i]);
+//     wait(2);
+//     estima_MPU();
+//   }
 
-    for (int i = 0; i < 16; i++) {
+//     servo1.position(offset_servo1);
+//     wait(1);
+//     estima_MPU();
+//     wait(1);
 
-    servo1.position(offset_servo1 - lista_angulos[i]);
-    // servo2.position(offset_servo2 + lista_angulos[i]);
-    wait(2);
-    estima_MPU();
-    printf("Theta_MPU= %f, Servo= %f \r\n",(90.0 - Theta_MPU),(offset_servo1 - lista_angulos[i]));
-    wait(2);
-  }
+//   for (int i = 0; i <16; i++) {
+//     // printf("Phi_MPU= %f, Servo= %f \r\n",(90.0 + Phi_MPU),(offset_servo2 + lista_angulos[i]));
+//     printf("%f,%f\r\n",(90.0 + Phi_MPU),(offset_servo2 + lista_angulos[i]));
+//     servo2.position(offset_servo2 + lista_angulos[i]);
+//     wait(2);
+//     estima_MPU();
+//   }
 
-  servo1.position(offset_servo1);
-  wait(1);
+//     servo2.position(offset_servo2);
+//      wait(1);
+//     estima_MPU();
+//     wait(1);
 
-  for (int i = 0; i < 16; i++) {
+//     for (int i = 0; i < 16; i++) {
+//     // printf("Phi_MPU= %f, Servo= %f \r\n",(90.0 - Phi_MPU),(offset_servo2 - lista_angulos[i]));
+//     printf("%f,%f\r\n",(90.0 - Phi_MPU),(offset_servo2 - lista_angulos[i]));
+//     servo2.position(offset_servo2 - lista_angulos[i]);
+//     wait(2);
+//     estima_MPU();
+//   }
 
-    // servo1.position(offset_servo1 + lista_angulos[i]);
-    servo2.position(offset_servo2 + lista_angulos[i]);
-
-    wait(2);
-    estima_MPU();
-    printf("Phi_MPU= %f, Servo= %f \r\n",(90.0 + Phi_MPU),(offset_servo2 + lista_angulos[i]));
-    wait(2);
-  }
-
-  servo2.position(offset_servo2);
-  wait(1);
-
-    for (int i = 0; i < 16; i++) {
-
-    // servo1.position(offset_servo1 + lista_angulos[i]);
-    servo2.position(offset_servo2 - lista_angulos[i]);
-
-    wait(2);
-    estima_MPU();
-    printf("Phi_MPU= %f, Servo= %f \r\n",(90.0 - Phi_MPU),(offset_servo2 - lista_angulos[i]));
-    wait(2);
-  }
-
-  servo2.position(offset_servo2);
-  wait(1);
-
+//     servo2.position(offset_servo2);
+//     wait(1);
+//     estima_MPU();
+//     wait(1);
 }
 
 /* Converte os vetores de empuxo no vetor empuxo total para calcular a abertura
@@ -226,10 +246,12 @@ void Mixer::config_MPU()
     if(MPU6050.testConnection() == 1) {
 
         printf("MPU6050 - Status: OK\r\n");
+        verifica_MPU = true;
 
     } else {
 
         printf("MPU6050 - Status: Sem resposta \r\n");
+        verifica_MPU = false;
 
     }
 
@@ -252,6 +274,10 @@ void Mixer::estima_MPU()
     ay = acc_MPU[1];
     az = acc_MPU[2];
 
-    Phi_MPU = atan2((ay),(az)) * 180 / pi;
-    Theta_MPU = atan2((ax),(az)) * 180 / pi;
+    Phi_MPU = (atan2((ay),(az)) * 180 / pi) + 90.0;
+    Theta_MPU = (atan2((ax),(az)) * 180 / pi);
+
+    //printf("%f %f %f\r\n", ax, ay, az);
+    //printf("%f %f\r\n", Phi_MPU, Theta_MPU);
+    
 }

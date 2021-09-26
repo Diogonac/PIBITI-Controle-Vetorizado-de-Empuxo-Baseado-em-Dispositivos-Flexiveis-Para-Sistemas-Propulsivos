@@ -41,8 +41,9 @@ int main()
     // Configuração dos periféricos
     mixer.config_servos();
     estima_atitude.config_imu();
+    mixer.config_MPU();
     
-    inicializa.verifica(mixer.verifica_servos, estima_atitude.verifica_imu);
+    inicializa.verifica(mixer.verifica_servos, estima_atitude.verifica_imu, mixer.verifica_MPU);
     
 
     //Definição da taxa de amostragem

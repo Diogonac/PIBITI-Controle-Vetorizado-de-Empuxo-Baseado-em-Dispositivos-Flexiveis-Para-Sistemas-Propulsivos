@@ -17,7 +17,7 @@ public:
 
 
     /* Chama as subfunções de inicialização dos perifericos */
-    void verifica(bool estado_inicializacao_servos, bool estado_inicializacao_imu);
+    void verifica(bool estado_inicializacao_servos, bool estado_inicializacao_imu, bool estado_inicializacao_mpu);
     
     bool sistema_verificado;
     

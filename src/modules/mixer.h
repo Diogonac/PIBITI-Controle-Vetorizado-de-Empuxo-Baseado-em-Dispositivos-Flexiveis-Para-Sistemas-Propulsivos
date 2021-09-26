@@ -27,6 +27,10 @@ public:
 
     void calibra_servo_MPU(void);
 
+    void verifica_calib_servo_MPU(void);
+
+    double theta_calib;
+
     double pos;
 
     //void angulo_atual (double phi_atual, double theta_atual); // Coleta os ângulos apos a atuação dos servos
@@ -79,7 +83,7 @@ private:
     double controle_valvula(double abertura_valvula);
 
     // Lista de calibração
-    double lista_angulos[16] = {0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0};   
+    double lista_angulos[31] = {75.0, 76.0, 77.0, 78.0, 79.0, 80.0, 81.0, 82.0, 83.0, 84.0, 85.0, 86.0, 87.0, 88.0, 89.0, 90.0, 91.0, 92.0, 93.0, 94.0, 95.0, 96.0, 97.0, 98.0, 99.0, 100.0, 101.0, 102.0, 103.0, 104.0, 105.0};   
 
     // Objeto da IMU
     MPU6050 MPU6050;
