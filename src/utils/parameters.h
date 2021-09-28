@@ -13,6 +13,15 @@ const double I_yy = 0.001103f; // kg.m^2
 const double I_zz = 29.0e-6; // kg.m^2
 const double l = 0.0425f;    // m
 
+// Constantes das curvas de calibração dos ângulos
+/* 
+(Ângulo no servo) = [(Ângulo desejado no ponto central) - (t2 ou p2)] / (t1 ou p1)
+*/
+const double t1 = 0.7275;
+const double t2 = -150.8; 
+const double p1 = 0.6772;
+const double p2 = 27.64; 
+
 // Constantes dos controladores
 const double KP = 250.0;//537.50f;
 const double KD = 27.0;//32.0f;

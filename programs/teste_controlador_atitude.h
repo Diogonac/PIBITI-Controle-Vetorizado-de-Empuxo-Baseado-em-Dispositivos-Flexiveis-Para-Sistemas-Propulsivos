@@ -61,9 +61,10 @@ int main()
                 flag = false;
 
                 estima_atitude.estima();
+                mixer.estima_MPU();
 
                 //pc.printf("YAW= %f, ROLL= %f, PITCH= %f, GIROX= %f, GIROY= %f \r\n", BNO055.euler.yaw, BNO055.euler.roll, BNO055.euler.pitch, BNO055.gyro.x, BNO055.gyro.y);
-               // pc.printf("%f,%f,%f,%f,%f,%f,%d\r\n", estima_atitude.Phi, estima_atitude.Theta, estima_atitude.Psi, estima_atitude.P, estima_atitude.Q, estima_atitude.R, tempo.read_ms());
+               //pc.printf("P_ref= %f %f %f,%f,%f,%f,%d\r\n", estima_atitude.Phi, estima_atitude.Theta, estima_atitude.Psi, estima_atitude.P, estima_atitude.Q, estima_atitude.R, tempo.read_ms());
 
                 cont_atitude.controle(phi_r, theta_r, estima_atitude.Phi, estima_atitude.Theta, estima_atitude.P, estima_atitude.Q, p_r, q_r);
 

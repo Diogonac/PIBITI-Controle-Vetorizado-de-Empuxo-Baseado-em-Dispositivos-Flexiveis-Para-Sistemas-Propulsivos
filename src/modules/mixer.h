@@ -29,7 +29,7 @@ public:
 
     void verifica_calib_servo_MPU(void);
 
-    double theta_calib;
+    double theta_calib, phi_calib;
 
     double pos;
 

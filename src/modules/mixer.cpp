@@ -129,12 +129,20 @@ void Mixer::actuate(double f_x, double f_y, double f_z) {
   }
 
   // Aciona os servos
-  servo1.position(phi_total);
-  servo2.position(theta_total);
-  wait_ms(tempo_servos);
+//   theta_calib = (theta_total-t2) / t1;
+//   phi_calib = (phi_total-p2) / p1;
 
-  delta_angulos[0] = phi_total;
-  delta_angulos[1] = theta_total;
+  theta_calib = (theta_total*t1 + t2)*-1;
+  phi_calib = phi_total*p1 + p2;
+
+  servo1.position(phi_calib);
+  servo2.position(theta_calib);
+  wait_ms(tempo_servos);
+  estima_MPU();
+  printf("Phi_ref= %f, Phi= %f, Theta_ref= %f, Theta= %f, Theta_total= %f, Phi_total= %f\r\n",phi_calib, Phi_MPU, theta_calib, Theta_MPU, theta_total, phi_total);
+
+  delta_angulos[0] = phi_calib;
+  delta_angulos[1] = theta_calib;
 
   // Aciona a valvula
   valvula = controle_valvula(empuxo_total);
@@ -146,32 +154,53 @@ void Mixer::verifica_calib_servo_MPU(void){
     wait(1);
     estima_MPU();
     wait(1);
-  for (int i = 0; i < 16; i++) {
+  for (int i = 0; i < 31; i++) {
     // printf("Theta_MPU= %f, Servo= %f \r\n",(90.0 + Theta_MPU),(offset_servo1 + lista_angulos[i]));
-    printf("%f,%f\r\n",(90.0 + Theta_MPU),(offset_servo1 + lista_angulos[i]));
-    theta_calib = 0.74385 * (offset_servo1 - lista_angulos[i]) + 17.653;
+    printf("%f %f %f\r\n",Theta_MPU, lista_angulos[i], theta_calib);
+    theta_calib = (lista_angulos[i]-t2) / t1;
     servo1.position(theta_calib);
     wait(2);
     estima_MPU();
   }
-  theta_calib = 0.74385 * (offset_servo1) + 17.653;    
-  servo1.position(theta_calib);
-
-
-}
-void Mixer::calibra_servo_MPU(void) {
+    servo1.position((90.0-t2) / t1);
     wait(1);
     estima_MPU();
     wait(1);
   for (int i = 0; i < 31; i++) {
     // printf("Theta_MPU= %f, Servo= %f \r\n",(90.0 + Theta_MPU),(offset_servo1 + lista_angulos[i]));
-    theta_calib = lista_angulos[i] * 1.3272 -39.92;
-    printf("%f,%f\r\n",(Theta_MPU - 90.0),(lista_angulos[i]));
-    servo1.position(theta_calib);
+    printf("%f %f %f\r\n",Phi_MPU, lista_angulos[i], phi_calib);
+    phi_calib = (lista_angulos[i]-p2) / p1;
+    servo2.position(phi_calib);
     wait(2);
     estima_MPU();
-   }
+  }
+  servo2.position((90.0-p2) / p1);
 
+}
+
+void Mixer::calibra_servo_MPU(void) {
+//     wait(1);
+//     estima_MPU();
+//     wait(1);
+//   for (int i = 0; i < 31; i++) {
+//     // printf("Theta_MPU= %f, Servo= %f \r\n",(90.0 + Theta_MPU),(offset_servo1 + lista_angulos[i]));
+//     printf("%f,%f\r\n",(Theta_MPU),(lista_angulos[i]));
+//     servo2.position(lista_angulos[i]);
+//     wait(2);
+//     estima_MPU();
+//    }
+//     wait(1);
+//     estima_MPU();
+//     wait(1);
+//   for (int i = 0; i < 31; i++) {
+//     // printf("Theta_MPU= %f, Servo= %f \r\n",(90.0 + Theta_MPU),(offset_servo1 + lista_angulos[i]));
+    
+    servo2.position(lista_angulos[14]);
+//     wait(5);
+//     estima_MPU();
+//     printf("%f,%f\r\n",(Phi_MPU),(lista_angulos[i]));
+
+//    }
 //     servo1.position(offset_servo1);
 //     wait(1);
 //     estima_MPU();
@@ -275,7 +304,7 @@ void Mixer::estima_MPU()
     az = acc_MPU[2];
 
     Phi_MPU = (atan2((ay),(az)) * 180 / pi) + 90.0;
-    Theta_MPU = (atan2((ax),(az)) * 180 / pi);
+    Theta_MPU = (atan2((ax),(az)) * 180 / pi) -90.0;
 
     //printf("%f %f %f\r\n", ax, ay, az);
     //printf("%f %f\r\n", Phi_MPU, Theta_MPU);
