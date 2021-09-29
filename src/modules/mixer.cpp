@@ -129,17 +129,18 @@ void Mixer::actuate(double f_x, double f_y, double f_z) {
   }
 
   // Aciona os servos
-//   theta_calib = (theta_total-t2) / t1;
-//   phi_calib = (phi_total-p2) / p1;
+  theta_calib = (theta_total-p2) / p1;
+  phi_calib = (phi_total-t2) / t1;
 
-  theta_calib = (theta_total*t1 + t2)*-1;
-  phi_calib = phi_total*p1 + p2;
+//   theta_calib = (theta_total*t1 + t2)*-1;
+//   phi_calib = phi_total*p1 + p2;
 
   servo1.position(phi_calib);
   servo2.position(theta_calib);
   wait_ms(tempo_servos);
   estima_MPU();
   printf("Phi_ref= %f, Phi= %f, Theta_ref= %f, Theta= %f, Theta_total= %f, Phi_total= %f\r\n",phi_calib, Phi_MPU, theta_calib, Theta_MPU, theta_total, phi_total);
+//   printf("%f %f %f %f %f %f\r\n",phi_calib, Phi_MPU, theta_calib, Theta_MPU, theta_total, phi_total);
 
   delta_angulos[0] = phi_calib;
   delta_angulos[1] = theta_calib;
@@ -286,7 +287,7 @@ void Mixer::config_MPU()
 
     MPU6050.setAcceleroRange(MPU6050_ACCELERO_RANGE_2G);
     MPU6050.setGyroRange(MPU6050_GYRO_RANGE_250);
-    MPU6050.setBW(MPU6050_BW_20);
+    MPU6050.setBW(MPU6050_BW_5);
 
     wait_ms(10); //Aguarda o deslocamento
 
@@ -304,7 +305,7 @@ void Mixer::estima_MPU()
     az = acc_MPU[2];
 
     Phi_MPU = (atan2((ay),(az)) * 180 / pi) + 90.0;
-    Theta_MPU = (atan2((ax),(az)) * 180 / pi) -90.0;
+    Theta_MPU = ((atan2((ax),(az)) * 180 / pi) -90.0)*-1;
 
     //printf("%f %f %f\r\n", ax, ay, az);
     //printf("%f %f\r\n", Phi_MPU, Theta_MPU);

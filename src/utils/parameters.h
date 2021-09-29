@@ -18,7 +18,7 @@ const double l = 0.0425f;    // m
 (Ângulo no servo) = [(Ângulo desejado no ponto central) - (t2 ou p2)] / (t1 ou p1)
 */
 const double t1 = 0.7275;
-const double t2 = -150.8; 
+const double t2 = 29.2; 
 const double p1 = 0.6772;
 const double p2 = 27.64; 
 
