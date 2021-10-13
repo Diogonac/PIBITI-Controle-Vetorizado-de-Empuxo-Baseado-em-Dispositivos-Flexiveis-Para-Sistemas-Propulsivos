@@ -23,8 +23,10 @@ const double p1 = 0.6772;
 const double p2 = 27.64; 
 
 // Constantes dos controladores
-const double KP = 250.0;//537.50f;
-const double KD = 27.0;//32.0f;
+const double KP = 300.0;//215.0;//488.0;//250.0;//537.50f;
+const double KD = 25.5;//22.5;//45.0;//27.0;//32.0f;
+// const double KP = 10.966045224442436;
+// const double KD = 26.666666666666668;
 
 const double e_max = 15.0;
 const double e_min = -15.0;

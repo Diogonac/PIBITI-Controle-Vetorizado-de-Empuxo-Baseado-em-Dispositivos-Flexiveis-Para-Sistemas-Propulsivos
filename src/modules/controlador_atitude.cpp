@@ -19,6 +19,8 @@ void ControladorAtitude::controle(double phi_r, double theta_r, double phi, doub
 
     f_y = controlador_siso(phi_r, phi, p_r, p, KP, KD) * (I_xx/l);
 
+    //printf("%f %f\r\n", f_x, f_y);
+
 }
 
 
@@ -26,22 +28,14 @@ void ControladorAtitude::controle(double phi_r, double theta_r, double phi, doub
 double ControladorAtitude::controlador_siso(double angulo_r, double angulo, double v_angular_r, double v_angular, double kp, double kd)
 {
 
-    e = (angulo_r - angulo);
+     e = (angulo_r - angulo);
     ce = (v_angular_r - v_angular);
 
     ganho_PID = kp * e + kd * ce;
-    
-    // if(e < 0.0 & ce < 0) saida_fuzzy = e_min;
-    
-    //  if(e < 0.0 & ce == 0) saida_fuzzy = ce_min;
-     
-    //   if(e < 0.0 & ce > 0) saida_fuzzy = 0.0;
-      
-    //    if(e == 0.0 & ce < 0) saida_fuzzy = ce_min;
-       
-    //     if(e == 0.0 & ce == 0) saida_fuzzy = 0.0;
-    
     variavel_SISO = ganho_PID;
+
+    // variavel_SISO = kd * (kp * e - v_angular);
+
 
     return variavel_SISO;
 
