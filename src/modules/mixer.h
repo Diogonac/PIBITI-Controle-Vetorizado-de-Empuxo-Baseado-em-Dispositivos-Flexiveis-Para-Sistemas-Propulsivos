@@ -14,19 +14,20 @@ public:
     // Construtor da classe
     Mixer();
 
-
     /* Aciona a válvula para entregar o empuxo (N) total desejado (baseado nos
     vetores empuxo) e os servos (graus) */
     void actuate(double f_x, double f_y, double f_z);
     
-
-
+    // Desloca o ponto central para 0º quando a condição limite for atingida
     void estado_seguro(void);
 
+    // Verifica e configura o movimento dos servos  
     void config_servos(void);
 
+    // Desloca o servo e mede o ângulo do ponto central
     void calibra_servo_MPU(void);
 
+    // Confere a calibração do ângulo central
     void verifica_calib_servo_MPU(void);
 
     double theta_calib, phi_calib;
@@ -49,6 +50,8 @@ public:
 
     // Ângulos de Euler de interesse
     double Phi_MPU, Theta_MPU, Psi_MPU;
+    double Phi_MPU_MM, Theta_MPU_MM, Psi_MPU_MM;
+    double sum_phi, sum_theta;
 
     // Acelerações e velocidades angulares para o filtro
     double ax, ay, az, gx, gy, gz;
@@ -89,6 +92,7 @@ private:
     MPU6050 MPU6050;
 
     double acc_MPU[3];
+    
     
 };
 
