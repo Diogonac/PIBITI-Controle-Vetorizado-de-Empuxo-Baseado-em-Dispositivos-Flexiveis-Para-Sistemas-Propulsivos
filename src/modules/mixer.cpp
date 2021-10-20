@@ -4,7 +4,9 @@
 // EstimadorAtitude estima_atitude;
 
 // Classe do construtor
-Mixer::Mixer() : valvula(VALVULA), LED_amarelo(AMARELO), servo1(SERVO1), servo2(SERVO2), MPU6050(MPU_SDA, MPU_SCL) {
+Mixer::Mixer()
+    : valvula(VALVULA), LED_amarelo(AMARELO), servo1(SERVO1), servo2(SERVO2),
+      MPU6050(MPU_SDA, MPU_SCL) {
 
   LED_amarelo = 0;
 
@@ -31,14 +33,26 @@ Mixer::Mixer() : valvula(VALVULA), LED_amarelo(AMARELO), servo1(SERVO1), servo2(
 
   sum_phi = 0.0;
   sum_theta = 0.0;
+}
 
+double Mixer::seguranca_servos(double angulo) {
+
+  if (angulo > 105.0 | angulo < 75.0) {
+
+    angulo = 90.0;
+  } else {
+    angulo = angulo;
+  }
+  return angulo;
 }
 
 void Mixer::config_servos(void) {
 
   //=================== Calibração dos servos =====================
-  servo1.calibrate(2500, 550, 180.0); // Define as configurações do servo 1: pulsewidth_MÁX / pulsewidth_MíN / Ângulo de varredura total
-  servo2.calibrate(2500, 550, 180.0); // Define as configurações do servo 2: pulsewidth_MÁX / pulsewidth_MíN / Ângulo de varredura total
+  servo1.calibrate(2500, 550, 180.0); // Define as configurações do servo 1: pulsewidth_MÁX
+                           // / pulsewidth_MíN / Ângulo de varredura total
+  servo2.calibrate(2500, 550, 180.0); // Define as configurações do servo 2: pulsewidth_MÁX
+                           // / pulsewidth_MíN / Ângulo de varredura total
 
   //=================== Verificação dos servos ====================
 
@@ -46,14 +60,15 @@ void Mixer::config_servos(void) {
   theta_calib = (offset_servo2 - t2) / t1; // Define a posição inicial do servo 2
   phi_calib = (offset_servo1 - p2) / p1; // Define a posição inicial do servo 1
 
-  // Aciona os servos 
-  servo1.position(phi_calib);
-  servo2.position(theta_calib);
+  // Aciona os servos
+  servo1.position(seguranca_servos(phi_calib));
+  servo2.position(seguranca_servos(theta_calib));
 
   wait_ms(10); // Aguarda o deslocamento
 
   printf("\r\n");                    // Pula uma linha no leitor
-  printf("Inicio da varredura\r\n"); // Indica que a varredura de 30º nos dois servos foi iniciada
+  printf("Inicio da varredura\r\n"); // Indica que a varredura de 30º nos dois
+                                     // servos foi iniciada
 
   for (pos = 90; pos <= 105; pos += 0.15) {
     // Varre a abertura de 90º até 105º com um incremento de 0.15º
@@ -80,16 +95,17 @@ void Mixer::config_servos(void) {
   }
 
   wait(2);
-  printf("Varredura completa\r\n"); // Indica que a varredura de 30º nos dois servos foi concluida
+  printf("Varredura completa\r\n"); // Indica que a varredura de 30º nos dois
+                                    // servos foi concluida
 
   // Correção dos ângulos para a posição de segurança
   theta_calib = (offset_servo2 - t2) / t1; // Define a posição inicial do servo 2
   phi_calib = (offset_servo1 - p2) / p1; // Define a posição inicial do servo 1
 
-  // Aciona os servos 
-  servo1.position(phi_calib);
-  servo2.position(theta_calib);
-  
+  // Aciona os servos
+  servo1.position(seguranca_servos(phi_calib));
+  servo2.position(seguranca_servos(theta_calib));
+
   wait_ms(10); // Aguarda o deslocamento
 
   verifica_servos = true;
@@ -104,9 +120,9 @@ void Mixer::estado_seguro(void) {
   theta_calib = (offset_servo2 - t2) / t1;
   phi_calib = (offset_servo1 - p2) / p1;
 
-  // Aciona os servos 
-  servo1.position(phi_calib);
-  servo2.position(theta_calib);
+  // Aciona os servos
+  servo1.position(seguranca_servos(phi_calib));
+  servo2.position(seguranca_servos(theta_calib));
 
   wait_ms(10); // Aguarda o deslocamento
 }
@@ -117,7 +133,7 @@ void Mixer::actuate(double f_x, double f_y, double f_z) {
   // Contição dos avisos sonoros e luminosos
   LED_amarelo = 0;
 
-  // Calcula os ângulos desejados do ponto central 
+  // Calcula os ângulos desejados do ponto central
   mixer(f_x, f_y, f_z);
 
   // Converte os ângulos desejados do ponto central em grau)
@@ -152,13 +168,16 @@ void Mixer::actuate(double f_x, double f_y, double f_z) {
     tempo_servos = 20.0;
   }
 
-  // Calibra os ângulos do servo 
+  // Calibra os ângulos do servo
   theta_calib = (theta_total - t2) / t1;
   phi_calib = (phi_total - p2) / p1;
 
-  // Aciona os servos 
-  servo1.position(phi_calib);
-  servo2.position(theta_calib);
+  // Implementar rotina de verificação de angulo, fora do intervalo 75 - 105 ->
+  // desconsiderar
+
+  // Aciona os servos
+  servo1.position(seguranca_servos(phi_calib));
+  servo2.position(seguranca_servos(theta_calib));
 
   wait_ms(tempo_servos); // Aguarda o deslocamento
 
@@ -166,7 +185,7 @@ void Mixer::actuate(double f_x, double f_y, double f_z) {
 
   printf("%f %f %f %f\r\n", Phi_MPU, Theta_MPU, desloca_phi, desloca_theta);
 
-  // Armazena os dados do ângulo nos servos 
+  // Armazena os dados do ângulo nos servos
   delta_angulos[0] = phi_calib;
   delta_angulos[1] = theta_calib;
 
@@ -206,7 +225,6 @@ void Mixer::verifica_calib_servo_MPU(void) {
   }
 
   servo2.position((90.0 - p2) / p1);
-
 }
 
 void Mixer::calibra_servo_MPU(void) {
@@ -219,44 +237,42 @@ void Mixer::calibra_servo_MPU(void) {
     // printf("Theta_MPU= %f, Servo= %f \r\n",(90.0 + Theta_MPU),(offset_servo1
     // + lista_angulos[i]));
     theta_calib = (lista_angulos[i] - t2) / t1;
-    servo2.position(lista_angulos[i] + 90.0);
+    servo2.position(seguranca_servos(lista_angulos[i] + 90.0));
     wait(2);
     sum_theta = 0.0;
-    for( int y = 0; y<499; y++){
-    estima_MPU();
-    //printf("%f %f %f\r\n", -Theta_MPU, lista_angulos[i], theta_calib);
-    sum_theta += -Theta_MPU;
-    wait_ms(2);
-  }
-  Theta_MPU_MM = sum_theta / 500;
-  printf("%f %f %f\r\n", Theta_MPU_MM, lista_angulos[i], theta_calib);
+    for (int y = 0; y < 499; y++) {
+      estima_MPU();
+      // printf("%f %f %f\r\n", -Theta_MPU, lista_angulos[i], theta_calib);
+      sum_theta += -Theta_MPU;
+      wait_ms(2);
+    }
+    Theta_MPU_MM = sum_theta / 500;
+    printf("%f %f %f\r\n", Theta_MPU_MM, lista_angulos[i], theta_calib);
   }
 
-  servo1.position(90.0);
+  servo1.position(seguranca_servos(90.0));
   wait(1);
-
 
   for (int i = 17; i >= 0; i--) {
     // printf("Theta_MPU= %f, Servo= %f \r\n",(90.0 + Theta_MPU),(offset_servo1
     // + lista_angulos[i]));
 
     phi_calib = (lista_angulos[i] - p2) / p1;
-    servo1.position(lista_angulos[i] + 90.0);
+    servo1.position(seguranca_servos(lista_angulos[i] + 90.0));
     wait(2);
     sum_phi = 0.0;
-    for(int y = 0; y<499; y++){
-    estima_MPU();
-    //printf("%f %f %f\r\n", Phi_MPU, lista_angulos[i], phi_calib);
-    sum_phi += Phi_MPU;
-    wait_ms(2);
+    for (int y = 0; y < 499; y++) {
+      estima_MPU();
+      // printf("%f %f %f\r\n", Phi_MPU, lista_angulos[i], phi_calib);
+      sum_phi += Phi_MPU;
+      wait_ms(2);
     }
     Phi_MPU_MM = sum_phi / 500;
     printf("%f %f %f\r\n", Phi_MPU_MM, lista_angulos[i], phi_calib);
   }
 
-  servo2.position(90.0);
+  servo2.position(seguranca_servos(90.0));
   wait(1);
-  
 }
 
 /* Converte os vetores de empuxo no vetor empuxo total para calcular a abertura
@@ -303,44 +319,44 @@ void Mixer::config_MPU() {
 // Estima os ângulos de Euler (rad) e as velocidades angular (rad/s)
 void Mixer::estima_MPU() {
 
-//   sum_phi = 0.0;
-//   sum_theta = 0.0;
+  //   sum_phi = 0.0;
+  //   sum_theta = 0.0;
 
-//   for(int p = 0; p < 29; p++){
-      
-//   MPU6050.getAccelero(acc_MPU);
+  //   for(int p = 0; p < 29; p++){
 
-//   // Pitch e Roll estão trocados conforme a convensão utilizada
-//   ax = acc_MPU[0];
-//   ay = acc_MPU[1];
-//   az = acc_MPU[2];
+  //   MPU6050.getAccelero(acc_MPU);
 
-//   Theta_MPU = (atan2((ay), (az)) * 180 / pi);
-//   Phi_MPU = ((atan2((ax), (az)) * 180 / pi));
-    
-//   sum_phi += Phi_MPU;
-//   sum_theta += Theta_MPU;
+  //   // Pitch e Roll estão trocados conforme a convensão utilizada
+  //   ax = acc_MPU[0];
+  //   ay = acc_MPU[1];
+  //   az = acc_MPU[2];
 
-//   }
-  
-//   Theta_MPU_MM = sum_theta / 30.0;
-//   Phi_MPU_MM = sum_phi / 30.0;
+  //   Theta_MPU = (atan2((ay), (az)) * 180 / pi);
+  //   Phi_MPU = ((atan2((ax), (az)) * 180 / pi));
+
+  //   sum_phi += Phi_MPU;
+  //   sum_theta += Theta_MPU;
+
+  //   }
+
+  //   Theta_MPU_MM = sum_theta / 30.0;
+  //   Phi_MPU_MM = sum_phi / 30.0;
 
   // printf("%f %f %f\r\n", ax, ay, az);
   // printf("%f %f\r\n", Phi_MPU, Theta_MPU);
 
-    MPU6050.getAccelero(acc_MPU);
+  MPU6050.getAccelero(acc_MPU);
 
   // Pitch e Roll estão trocados conforme a convensão utilizada
   ax = acc_MPU[0];
   ay = acc_MPU[1];
   az = acc_MPU[2];
 
-//   Theta_MPU = (atan2((ay), (az)) * 180 / pi);
-//   Phi_MPU = ((atan2((ax), (az)) * 180 / pi));
+  //   Theta_MPU = (atan2((ay), (az)) * 180 / pi);
+  //   Phi_MPU = ((atan2((ax), (az)) * 180 / pi));
   // Testar os seguintes comandos!
-  Phi_MPU = (atan(ay / az) * 180.0 / pi); // ay e az não recebem - pois considera-se g+ (g rela e z imu estão em sentidos opostos)
-  Theta_MPU = (atan2(ax, (((az>0)-(az<0))*sqrt(ay*ay + az*az))) * 180.0 / pi);
-    //printf("%f %f\r\n", Phi_MPU, Theta_MPU);
-
+  Phi_MPU = (atan(ay / az) * 180.0 / pi); // ay e az não recebem - pois considera-se g+ (g rela e z imu
+                  // estão em sentidos opostos)
+  Theta_MPU = (atan2(ax, (((az > 0) - (az < 0)) * sqrt(ay * ay + az * az))) * 180.0 / pi);
+  // printf("%f %f\r\n", Phi_MPU, Theta_MPU);
 }
