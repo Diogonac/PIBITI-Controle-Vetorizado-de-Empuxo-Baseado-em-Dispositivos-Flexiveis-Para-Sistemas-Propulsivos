@@ -5,8 +5,8 @@
 
 // Pinos dos atuadores
 const PinName VALVULA = D6;
-const PinName SERVO1 = D4;
-const PinName SERVO2 = D2;
+const PinName SERVO1 = D2; // Antigo D4
+const PinName SERVO2 = D4; // Antigo D2
 
 
 // Pinos de comumicação I2C

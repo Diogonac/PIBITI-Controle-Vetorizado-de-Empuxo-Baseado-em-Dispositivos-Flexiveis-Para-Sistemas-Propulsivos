@@ -62,9 +62,9 @@ int main()
                 
                 flag = false;
 
-                estima_atitude.estima();
+                //estima_atitude.estima();
                 //mixer.estima_MPU();
-                //mixer.calibra_servo_MPU();
+                mixer.calibra_servo_MPU();
                 //mixer.verifica_calib_servo_MPU();
 
             
