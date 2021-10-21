@@ -241,6 +241,9 @@ void Mixer::verifica_calib_servo_MPU(void) {
 
 void Mixer::calibra_servo_MPU(void) {
 
+  printf("\r\n");
+  printf("Calibração iniciada");
+  printf("\r\n");
   wait(1);
   estima_MPU();
   wait(1);
@@ -252,7 +255,7 @@ void Mixer::calibra_servo_MPU(void) {
     servo2.position(seguranca_servos(lista_angulos[i] + 90.0));
     wait(2);
     sum_theta = 0.0;
-    for (int y = 0; y < 499; y++) {
+    for (int y = 0; y < 500; y++) {
       estima_MPU();
       // printf("%f %f %f\r\n", -Theta_MPU, lista_angulos[i], theta_calib);
       sum_theta += -Theta_MPU;
@@ -273,7 +276,7 @@ void Mixer::calibra_servo_MPU(void) {
     servo1.position(seguranca_servos(lista_angulos[i] + 90.0));
     wait(2);
     sum_phi = 0.0;
-    for (int y = 0; y < 499; y++) {
+    for (int y = 0; y < 500; y++) {
       estima_MPU();
       // printf("%f %f %f\r\n", Phi_MPU, lista_angulos[i], phi_calib);
       sum_phi += Phi_MPU;
@@ -282,9 +285,11 @@ void Mixer::calibra_servo_MPU(void) {
     Phi_MPU_MM = sum_phi / 500;
     printf("%f %f %f\r\n", Phi_MPU_MM, lista_angulos[i], phi_calib);
   }
-
+  
   servo2.position(seguranca_servos(90.0));
   wait(1);
+
+  printf("Calibração finalizada\r\n");
 }
 
 /* Converte os vetores de empuxo no vetor empuxo total para calcular a abertura
