@@ -208,7 +208,7 @@ class MPU6050 {
      *
      * @param data - pointer to float array with length three: data[0] = X, data[1] = Y, data[2] = Z
      */   
-     void getGyro( float *data);     
+     void getGyro( double *data);     
      
      /**
      * Reads temperature data.

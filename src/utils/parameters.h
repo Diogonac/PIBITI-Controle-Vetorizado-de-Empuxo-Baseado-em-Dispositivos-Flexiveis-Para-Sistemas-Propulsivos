@@ -1,6 +1,12 @@
 #ifndef parameters_h
 #define parameters_h
 
+// Tempo de amostragem
+const double dt = 0.02; // 50 Hz
+
+// LPF phi constants
+const float wc = 50.0;
+const float alpha = (wc * dt) / (1 + wc * dt);
 
 // Constantest físicas
 const double pi = 3.142f;

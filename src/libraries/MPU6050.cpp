@@ -126,19 +126,19 @@ void MPU6050::getAccelero( double *data ) {
         data[2]=(double)temp[2] / 16384.0 * 9.81;
         }
     if (currentAcceleroRange == MPU6050_ACCELERO_RANGE_4G){
-        data[0]=(float)temp[0] / 8192.0 * 9.81;
-        data[1]=(float)temp[1] / 8192.0 * 9.81;
-        data[2]=(float)temp[2] / 8192.0 * 9.81;
+        data[0]=(double)temp[0] / 8192.0 * 9.81;
+        data[1]=(double)temp[1] / 8192.0 * 9.81;
+        data[2]=(double)temp[2] / 8192.0 * 9.81;
         }
     if (currentAcceleroRange == MPU6050_ACCELERO_RANGE_8G){
-        data[0]=(float)temp[0] / 4096.0 * 9.81;
-        data[1]=(float)temp[1] / 4096.0 * 9.81;
-        data[2]=(float)temp[2] / 4096.0 * 9.81;
+        data[0]=(double)temp[0] / 4096.0 * 9.81;
+        data[1]=(double)temp[1] / 4096.0 * 9.81;
+        data[2]=(double)temp[2] / 4096.0 * 9.81;
         }
     if (currentAcceleroRange == MPU6050_ACCELERO_RANGE_16G){
-        data[0]=(float)temp[0] / 2048.0 * 9.81;
-        data[1]=(float)temp[1] / 2048.0 * 9.81;
-        data[2]=(float)temp[2] / 2048.0 * 9.81;
+        data[0]=(double)temp[0] / 2048.0 * 9.81;
+        data[1]=(double)temp[1] / 2048.0 * 9.81;
+        data[2]=(double)temp[2] / 2048.0 * 9.81;
         }
     
     #ifdef DOUBLE_ACCELERO
@@ -193,28 +193,28 @@ void MPU6050::getGyroRaw( int *data ) {
     data[2] = (int)(short)((temp[4]<<8) + temp[5]);
 }
 
-void MPU6050::getGyro( float *data ) {
+void MPU6050::getGyro( double *data ) {
     int temp[3];
     this->getGyroRaw(temp);
     if (currentGyroRange == MPU6050_GYRO_RANGE_250) {
-        data[0]=(float)temp[0] / 7505.7;
-        data[1]=(float)temp[1] / 7505.7;
-        data[2]=(float)temp[2] / 7505.7;
+        data[0]=(double)temp[0] / 7505.7;
+        data[1]=(double)temp[1] / 7505.7;
+        data[2]=(double)temp[2] / 7505.7;
         }
     if (currentGyroRange == MPU6050_GYRO_RANGE_500){
-        data[0]=(float)temp[0] / 3752.9;
-        data[1]=(float)temp[1] / 3752.9;
-        data[2]=(float)temp[2] / 3752.9;
+        data[0]=(double)temp[0] / 3752.9;
+        data[1]=(double)temp[1] / 3752.9;
+        data[2]=(double)temp[2] / 3752.9;
         }
     if (currentGyroRange == MPU6050_GYRO_RANGE_1000){
-        data[0]=(float)temp[0] / 1879.3;;
-        data[1]=(float)temp[1] / 1879.3;
-        data[2]=(float)temp[2] / 1879.3;
+        data[0]=(double)temp[0] / 1879.3;;
+        data[1]=(double)temp[1] / 1879.3;
+        data[2]=(double)temp[2] / 1879.3;
         }
     if (currentGyroRange == MPU6050_GYRO_RANGE_2000){
-        data[0]=(float)temp[0] / 939.7;
-        data[1]=(float)temp[1] / 939.7;
-        data[2]=(float)temp[2] / 939.7;
+        data[0]=(double)temp[0] / 939.7;
+        data[1]=(double)temp[1] / 939.7;
+        data[2]=(double)temp[2] / 939.7;
         }
 }
 //--------------------------------------------------

@@ -4,9 +4,7 @@
 // EstimadorAtitude estima_atitude;
 
 // Classe do construtor
-Mixer::Mixer()
-    : valvula(VALVULA), LED_amarelo(AMARELO), servo1(SERVO1), servo2(SERVO2),
-      MPU6050(MPU_SDA, MPU_SCL) {
+Mixer::Mixer() : valvula(VALVULA), LED_amarelo(AMARELO), servo1(SERVO1), servo2(SERVO2), MPU6050(MPU_SDA, MPU_SCL) {
 
   LED_amarelo = 0;
 
@@ -23,16 +21,32 @@ Mixer::Mixer()
 
   tempo_servos = 5.0;
 
+  // Condição inicial dos angulos de Euler com o filtro complementar
   Phi_MPU = 0.0;
   Theta_MPU = 0.0;
   Psi_MPU = 0.0;
 
+  // Condição inicial dos angulos de Euler pelos dados do acc
+  Phi_MPU_a = 0.0;
+  Theta_MPU_a = 0.0;
+  
+  // Condição inicial dos angulos de Euler pelos dados do gyr
+  Phi_MPU_g = 0.0;
+  Theta_MPU_g = 0.0;
+  Psi_MPU_g = 0.0;
+
+  // Condição inicial das médias e somatórias dos angulos para a calibração dos servos
   Phi_MPU_MM = 0.0;
   Theta_MPU_MM = 0.0;
-  Psi_MPU_MM = 0.0;
 
   sum_phi = 0.0;
   sum_theta = 0.0;
+
+  // Condição inicial do erro sistemático para correção na integração numérica
+  p_bias = 0.0;
+  q_bias = 0.0;
+  r_bias = 0.0;
+  
 }
 
 double Mixer::seguranca_servos(double angulo) {
@@ -49,10 +63,9 @@ double Mixer::seguranca_servos(double angulo) {
 void Mixer::config_servos(void) {
 
   //=================== Calibração dos servos =====================
-  servo1.calibrate(2500, 550, 180.0); // Define as configurações do servo 1: pulsewidth_MÁX
-                           // / pulsewidth_MíN / Ângulo de varredura total
-  servo2.calibrate(2500, 550, 180.0); // Define as configurações do servo 2: pulsewidth_MÁX
-                           // / pulsewidth_MíN / Ângulo de varredura total
+  /* Define as configurações dos servos: pulsewidth_MÁX pulsewidth_MíN / Ângulo de varredura total */
+  servo1.calibrate(2500, 550, 180.0); 
+  servo2.calibrate(2500, 550, 180.0); 
 
   //=================== Verificação dos servos ====================
 
@@ -95,8 +108,7 @@ void Mixer::config_servos(void) {
   }
 
   wait(2);
-  printf("Varredura completa\r\n"); // Indica que a varredura de 30º nos dois
-                                    // servos foi concluida
+  printf("Varredura completa\r\n"); 
 
   // Correção dos ângulos para a posição de segurança
   theta_calib = (offset_servo2 - t2) / t1; // Define a posição inicial do servo 2
@@ -311,52 +323,68 @@ void Mixer::config_MPU() {
 
   MPU6050.setAcceleroRange(MPU6050_ACCELERO_RANGE_8G);
   MPU6050.setGyroRange(MPU6050_GYRO_RANGE_500);
-  MPU6050.setBW(MPU6050_BW_20);
+  MPU6050.setBW(MPU6050_BW_256);
 
-  wait_ms(10); // Aguarda o deslocamento
+  wait_ms(10); 
+
+  sum_p = 0.0;
+  sum_q = 0.0;
+  sum_r = 0.0;
+
+  for (int i = 0; i < 500; i++) {
+
+    // Leitura das velocidades angulares
+    MPU6050.getGyro(gyr_MPU);
+
+    gx = gyr_MPU[0];
+    gy = gyr_MPU[1];
+    gz = gyr_MPU[2];
+
+    sum_p += gx;
+    sum_q += gy;
+    sum_r += gz;
+
+    wait(dt);
+  }
+
+  p_bias = sum_p / 500;
+  q_bias = sum_q / 500;
+  r_bias = sum_r / 500; 
+
+  printf("\r\n");
+  printf("MPU6050 calibrado");
+
 }
 
 // Estima os ângulos de Euler (rad) e as velocidades angular (rad/s)
 void Mixer::estima_MPU() {
 
-  //   sum_phi = 0.0;
-  //   sum_theta = 0.0;
-
-  //   for(int p = 0; p < 29; p++){
-
-  //   MPU6050.getAccelero(acc_MPU);
-
-  //   // Pitch e Roll estão trocados conforme a convensão utilizada
-  //   ax = acc_MPU[0];
-  //   ay = acc_MPU[1];
-  //   az = acc_MPU[2];
-
-  //   Theta_MPU = (atan2((ay), (az)) * 180 / pi);
-  //   Phi_MPU = ((atan2((ax), (az)) * 180 / pi));
-
-  //   sum_phi += Phi_MPU;
-  //   sum_theta += Theta_MPU;
-
-  //   }
-
-  //   Theta_MPU_MM = sum_theta / 30.0;
-  //   Phi_MPU_MM = sum_phi / 30.0;
-
-  // printf("%f %f %f\r\n", ax, ay, az);
-  // printf("%f %f\r\n", Phi_MPU, Theta_MPU);
-
+  // Leitura das acelerações e velocidades angulares
   MPU6050.getAccelero(acc_MPU);
+  MPU6050.getGyro(gyr_MPU);
 
   // Pitch e Roll estão trocados conforme a convensão utilizada
   ax = acc_MPU[0];
   ay = acc_MPU[1];
   az = acc_MPU[2];
 
-  //   Theta_MPU = (atan2((ay), (az)) * 180 / pi);
-  //   Phi_MPU = ((atan2((ax), (az)) * 180 / pi));
-  // Testar os seguintes comandos!
-  Phi_MPU = (atan(ay / az) * 180.0 / pi); // ay e az não recebem - pois considera-se g+ (g rela e z imu
-                  // estão em sentidos opostos)
-  Theta_MPU = (atan2(ax, (((az > 0) - (az < 0)) * sqrt(ay * ay + az * az))) * 180.0 / pi);
-  // printf("%f %f\r\n", Phi_MPU, Theta_MPU);
+  p = gyr_MPU[0] - p_bias;
+  q = gyr_MPU[1] - q_bias;
+  r = gyr_MPU[2] - r_bias;
+
+  // Estima phi e theta com os dados do  acc
+  Phi_MPU_a = (atan(ay / az) * 180.0 / pi); // ay e az não recebem - pois considera-se g+ (g rela e z imuestão em sentidos opostos)
+  Theta_MPU_a = (atan2(ax, -(((az > 0) - (az < 0)) * sqrt(ay * ay + az * az))) * 180.0 / pi);
+
+  // Estima phi, theta e psi com os dados do gyr
+  Phi_MPU_g = Phi_MPU + (p + sin(Phi_MPU) * tan(Theta_MPU) * q + cos(Phi_MPU) * tan(Theta_MPU) * r) * dt;
+  Theta_MPU_g = Theta_MPU + (cos(Phi_MPU) * q - sin(Phi_MPU) * r) * dt;
+  Psi_MPU_g = Psi_MPU + (sin(Phi_MPU) * (1 / cos(Theta_MPU)) * q + cos(Phi_MPU) * (1 / cos(Theta_MPU)) * r) * dt;
+
+  // Fusão dos dados do acc com o gyr para estimar os angulos e Euler com filtro complementar (LPF + HPF)
+  Phi_MPU = (1 - alpha) * Phi_MPU_g + alpha * Phi_MPU_a; 
+  Theta_MPU = (1 - alpha) * Theta_MPU_g + alpha * Theta_MPU_a; 
+  Psi_MPU = Psi_MPU_g;
+
+  // printf("%f,%f,%f\r\n", Phi_MPU, Theta_MPU, Psi_MPU);
 }

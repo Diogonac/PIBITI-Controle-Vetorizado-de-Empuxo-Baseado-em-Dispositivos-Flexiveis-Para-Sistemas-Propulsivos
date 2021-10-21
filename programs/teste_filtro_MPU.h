@@ -1,8 +1,10 @@
-#include "mbed.h"
 #include "imports.h"
+#include "mbed.h"
 
 //============ Configura porta serial ===============
-Serial pc (SERIAL_TX1, SERIAL_RX1); //Comunicação com USB TX, RX
+Serial pc(SERIAL_TX1, SERIAL_RX1); // Comunicação com USB TX, RX
+// Define serial command variable
+char command;
 
 // Imports
 Mixer mixer;
@@ -21,54 +23,49 @@ bool flag;
 // Variáveis de referencia
 double phi_r, theta_r, p_r, q_r;
 
-
-// Tempo de amostragem
-const double dt = 0.002; // 500 Hz
 void callback(void);
 
-int main()
-{
-    tempo.start();
-    
-    pc.baud(115200); //Define a velocidade da porta USB
+int main() {
+  tempo.start();
 
-    // Defino o valor das veriáveis de referência
-    phi_r = 0.0;
-    theta_r = 0.0;
-    p_r = 0.0;
-    q_r = 0.0;
+  pc.baud(115200); // Define a velocidade da porta USB
 
-    // Configuração dos periféricos
-    mixer.config_servos();
-    estima_atitude.config_imu();
-    mixer.config_MPU();
-    
-    inicializa.verifica(mixer.verifica_servos, estima_atitude.verifica_imu, mixer.verifica_MPU);
-    
+  // Defino o valor das veriáveis de referência
+  phi_r = 0.0;
+  theta_r = 0.0;
+  p_r = 0.0;
+  q_r = 0.0;
 
-    //Definição da taxa de amostragem
-    amostragem.attach(&callback, dt);
+  // Configuração dos periféricos
+  mixer.config_servos();
+  estima_atitude.config_imu();
+  mixer.config_MPU();
 
-    //mixer.calibra_servo_MPU();
+  inicializa.verifica(mixer.verifica_servos, estima_atitude.verifica_imu,
+                      mixer.verifica_MPU);
 
-    while(inicializa.sistema_verificado) {
+  // Definição da taxa de amostragem
+  amostragem.attach(&callback, dt);
 
-            if(flag) {
-                
-                flag = false;
+  // mixer.calibra_servo_MPU();
 
-                mixer.estima_MPU();
+  while (inicializa.sistema_verificado) {
 
+    if (flag) {
 
-            }
-            
-            tempo.reset();
+      flag = false;
 
-        }
+      mixer.estima_MPU();
+    }
+
+    // Print attitude
+    if (pc.readable()) {
+      command = pc.getc();
+      if (command == 'p') {
+        pc.printf("%f,%f,%f\n", mixer.Phi_MPU, mixer.Theta_MPU, mixer.Psi_MPU);
+      }
+    }
+  }
 }
 
-void callback()
-{
-    flag = true;
-
-}
+void callback() { flag = true; }

@@ -22,8 +22,6 @@ bool flag;
 double phi_r, theta_r, p_r, q_r;
 
 
-// Tempo de amostragem
-const double dt = 0.02; // 50 Hz
 void callback(void);
 
 int main()
