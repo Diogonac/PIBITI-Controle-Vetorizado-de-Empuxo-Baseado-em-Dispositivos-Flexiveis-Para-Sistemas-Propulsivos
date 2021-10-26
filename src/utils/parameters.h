@@ -5,11 +5,11 @@
 const double dt = 0.02; // 50 Hz
 
 // LPF phi constants
-const float wc = 50.0;
+const float wc = 10.0;
 const float alpha = (wc * dt) / (1 + wc * dt);
 
 // Constantest físicas
-const double pi = 3.142f;
+const double pi = 3.14159265359f;
 const double g = 9.807f;       // m/s^2
 
 // Constantes do sistema mecânico
@@ -27,6 +27,12 @@ const double t1 = 0.7275;
 const double t2 = 29.2; 
 const double p1 = 0.6772;
 const double p2 = 27.64; 
+
+const double T1 = 1.306;
+const double T2 = -34.91; 
+const double P1 = 1.564;
+const double P2 = -48.01; 
+
 
 // Constantes dos controladores
 const double KP = 300.0;//215.0;//488.0;//250.0;//537.50f;

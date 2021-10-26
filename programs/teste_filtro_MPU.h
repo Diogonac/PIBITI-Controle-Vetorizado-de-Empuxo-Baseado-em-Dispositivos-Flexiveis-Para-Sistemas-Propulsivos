@@ -28,7 +28,7 @@ void callback(void);
 int main() {
   tempo.start();
 
-  pc.baud(115200); // Define a velocidade da porta USB
+  pc.baud(9600); // Define a velocidade da porta USB
 
   // Defino o valor das veriáveis de referência
   phi_r = 0.0;
@@ -56,9 +56,10 @@ int main() {
       flag = false;
 
       mixer.estima_MPU();
+    //   pc.printf("phi= %f, theta= %f,psi= %f\n", mixer.Phi_MPU, mixer.Theta_MPU, mixer.Psi_MPU);
     }
 
-    // Print attitude
+    //Print attitude
     if (pc.readable()) {
       command = pc.getc();
       if (command == 'p') {

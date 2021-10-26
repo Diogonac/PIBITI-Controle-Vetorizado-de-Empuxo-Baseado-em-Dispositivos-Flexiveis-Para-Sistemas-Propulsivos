@@ -51,7 +51,7 @@ Mixer::Mixer() : valvula(VALVULA), LED_amarelo(AMARELO), servo1(SERVO1), servo2(
 
 double Mixer::seguranca_servos(double angulo) {
 
-  if (angulo > 105.0 | angulo < 75.0) {
+  if (angulo > 100.0 & angulo < 70.0) {
 
     angulo = 90.0;
   } else {
@@ -207,36 +207,59 @@ void Mixer::actuate(double f_x, double f_y, double f_z) {
 
 void Mixer::verifica_calib_servo_MPU(void) {
 
+  printf("\r\n");
+  printf("Verificação iniciada");
+  printf("\r\n");
+  servo1.position(seguranca_servos((P1 * 90.0) + P2));
+  servo2.position(seguranca_servos((T1 * 90.0) + T2));
   wait(1);
   estima_MPU();
   wait(1);
 
-  for (int i = 0; i < 31; i++) {
-    // printf("Theta_MPU= %f, Servo= %f \r\n",(90.0 + Theta_MPU),(offset_servo1
-    // + lista_angulos[i]));
-    printf("%f %f %f\r\n", Theta_MPU, lista_angulos[i], theta_calib);
-    theta_calib = (lista_angulos[i] - t2) / t1;
-    servo1.position(theta_calib);
+  for (int i = 0; i < 17; i++) {
+
+    servo2.position(seguranca_servos(T1 * (lista_angulos[i] + 90.0) + T2));
     wait(2);
-    estima_MPU();
+    sum_theta = 0.0;
+
+    for (int y = 0; y < 500; y++) {
+      estima_MPU();
+      printf("%f %f %f\r\n", (-Theta_MPU * 180.0 / pi) + 90.0, lista_angulos[i] + 90.0, T1 * (lista_angulos[i] + 90.0) + T2);
+      sum_theta += (-Theta_MPU * 180.0 / pi);
+      wait_ms(2);
+    }
+
+    Theta_MPU_MM = sum_theta / 500;    
+
   }
 
-  servo1.position((90.0 - t2) / t1);
-  wait(1);
-  estima_MPU();
+  servo1.position(seguranca_servos((P1 * 90.0) + P2));
+  servo2.position(seguranca_servos((T1 * 90.0) + T2));
   wait(1);
 
-  for (int i = 0; i < 31; i++) {
-    // printf("Theta_MPU= %f, Servo= %f \r\n",(90.0 + Theta_MPU),(offset_servo1
-    // + lista_angulos[i]));
-    printf("%f %f %f\r\n", Phi_MPU, lista_angulos[i], phi_calib);
-    phi_calib = (lista_angulos[i] - p2) / p1;
-    servo2.position(phi_calib);
+    for (int i = 0; i < 17; i++) {
+
+    servo1.position(seguranca_servos(P1 * (lista_angulos[i] + 90.0) + P2));
     wait(2);
-    estima_MPU();
-  }
+    sum_phi = 0.0;
 
-  servo2.position((90.0 - p2) / p1);
+    for (int y = 0; y < 500; y++) {
+      estima_MPU();
+      printf("%f %f %f\r\n", (Phi_MPU * 180.0 / pi) + 90.0, lista_angulos[i] + 90.0, P1 * (lista_angulos[i] + 90.0) + P2);
+      sum_phi += (Phi_MPU * 180.0 / pi);
+      wait_ms(2);
+    }
+
+    Phi_MPU_MM = sum_phi / 500;
+
+  }
+  
+  servo1.position(seguranca_servos(90.0));
+  servo2.position(seguranca_servos(90.0));
+  wait(1);
+
+  printf("Calibração finalizada\r\n");
+    
 }
 
 void Mixer::calibra_servo_MPU(void) {
@@ -244,52 +267,92 @@ void Mixer::calibra_servo_MPU(void) {
   printf("\r\n");
   printf("Calibração iniciada");
   printf("\r\n");
+  servo1.position(seguranca_servos((P1 * 90.0) + P2));
+  servo2.position(seguranca_servos((T1 * 90.0) + T2));
   wait(1);
   estima_MPU();
   wait(1);
 
-  for (int i = 17; i >= 0; i--) {
+      for (int y = 0; y < 500; y++) {
+      estima_MPU();
+      printf("%f\r\n", (Phi_MPU * 180.0 / pi) + 90.0);
+      wait_ms(2);
+    }
+
+  for (int i = 0; i < 17; i++) {
     // printf("Theta_MPU= %f, Servo= %f \r\n",(90.0 + Theta_MPU),(offset_servo1
     // + lista_angulos[i]));
-    theta_calib = (lista_angulos[i] - t2) / t1;
+    //theta_calib = (lista_angulos[i] - t2) / t1;
     servo2.position(seguranca_servos(lista_angulos[i] + 90.0));
     wait(2);
     sum_theta = 0.0;
+
     for (int y = 0; y < 500; y++) {
       estima_MPU();
-      // printf("%f %f %f\r\n", -Theta_MPU, lista_angulos[i], theta_calib);
-      sum_theta += -Theta_MPU;
+       //printf("%f %f %f\r\n", -Theta_MPU * 180.0 / pi, lista_angulos[i], theta_calib);
+      sum_theta += (-Theta_MPU * 180.0 / pi);
       wait_ms(2);
     }
+
     Theta_MPU_MM = sum_theta / 500;
-    printf("%f %f %f\r\n", Theta_MPU_MM, lista_angulos[i], theta_calib);
+    theta_data_calib[i] = Theta_MPU_MM + 90.0; // Já colocar +90.0?
+    printf("%f %f\r\n", Theta_MPU_MM + 90.0, lista_angulos[i] + 90.0);
+
   }
 
-  servo1.position(seguranca_servos(90.0));
+    // for (int y = 0; y < 500; y++) {
+    //   estima_MPU();
+    //   printf("%f\r\n", (-Theta_MPU * 180.0 / pi) + 90.0);
+    //   wait_ms(2);
+    // }
+
+  servo1.position(seguranca_servos((P1 * 90.0) + P2));
+  servo2.position(seguranca_servos((T1 * 90.0) + T2));
   wait(1);
 
-  for (int i = 17; i >= 0; i--) {
-    // printf("Theta_MPU= %f, Servo= %f \r\n",(90.0 + Theta_MPU),(offset_servo1
-    // + lista_angulos[i]));
-
-    phi_calib = (lista_angulos[i] - p2) / p1;
-    servo1.position(seguranca_servos(lista_angulos[i] + 90.0));
-    wait(2);
-    sum_phi = 0.0;
-    for (int y = 0; y < 500; y++) {
-      estima_MPU();
-      // printf("%f %f %f\r\n", Phi_MPU, lista_angulos[i], phi_calib);
-      sum_phi += Phi_MPU;
-      wait_ms(2);
-    }
-    Phi_MPU_MM = sum_phi / 500;
-    printf("%f %f %f\r\n", Phi_MPU_MM, lista_angulos[i], phi_calib);
-  }
+//   for (int i = 0; i < 17; i++) {
+//     // printf("Theta_MPU= %f, Servo= %f \r\n",(90.0 + Theta_MPU),(offset_servo1
+//     // + lista_angulos[i]));
+//     servo1.position(seguranca_servos(lista_angulos[i] + 90.0));
+//     wait(2);
+//     sum_phi = 0.0;
+//     for (int y = 0; y < 500; y++) {
+//       estima_MPU();
+//        //printf("%f %f %f\r\n", Phi_MPU * 180.0 / pi, lista_angulos[i], phi_calib);
+//       sum_phi += (Phi_MPU * 180.0 / pi);
+//       wait_ms(2);
+//     }
+//     Phi_MPU_MM = sum_phi / 500;
+//     phi_data_calib[i] = Phi_MPU_MM + 90.0; // Já colocar +90.0?
+//     printf("%f %f\r\n", Phi_MPU_MM + 90.0, lista_angulos[i] + 90.0);
+//   }
   
+  servo1.position(seguranca_servos((P1 * 90.0) + P2));
   servo2.position(seguranca_servos(90.0));
   wait(1);
 
   printf("Calibração finalizada\r\n");
+  printf("Resultados\r\n");
+
+  printf("Angulos_REF= [");
+  for(int k = 0; k < 17; k++){
+    printf(", %f", lista_angulos[k]);
+  }
+  printf(" ];");
+
+  printf("\r\n");
+  printf("Angulos_Phi= [");
+  for(int k = 0; k < 17; k++){
+    printf(", %f", phi_data_calib[k]);
+  }
+  printf(" ];");
+
+  printf("\r\n");
+  printf("Angulos_Theta= [");
+  for(int k = 0; k < 17; k++){
+    printf(", %f", theta_data_calib[k]);
+  }
+   printf(" ];\r\n");
 }
 
 /* Converte os vetores de empuxo no vetor empuxo total para calcular a abertura
@@ -378,8 +441,10 @@ void Mixer::estima_MPU() {
   r = gyr_MPU[2] - r_bias;
 
   // Estima phi e theta com os dados do  acc
-  Phi_MPU_a = (atan(ay / az) * 180.0 / pi); // ay e az não recebem - pois considera-se g+ (g rela e z imuestão em sentidos opostos)
-  Theta_MPU_a = (atan2(ax, -(((az > 0) - (az < 0)) * sqrt(ay * ay + az * az))) * 180.0 / pi);
+//   Phi_MPU_a = (atan(ay / az) * 180.0 / pi); // ay e az não recebem - pois considera-se g+ (g rela e z imuestão em sentidos opostos)
+//   Theta_MPU_a = (atan2(ax, -(((az > 0) - (az < 0)) * sqrt(ay * ay + az * az))) * 180.0 / pi);
+  Phi_MPU_a = (atan2(ay, az)); // ay e az não recebem - pois considera-se g+ (g rela e z imuestão em sentidos opostos)
+  Theta_MPU_a = (atan2(ax, (((az > 0) - (az < 0)) * sqrt(ay * ay + az * az))));
 
   // Estima phi, theta e psi com os dados do gyr
   Phi_MPU_g = Phi_MPU + (p + sin(Phi_MPU) * tan(Theta_MPU) * q + cos(Phi_MPU) * tan(Theta_MPU) * r) * dt;

@@ -54,7 +54,7 @@ public:
     double p_bias, q_bias, r_bias; // Erro sistemático da integração numérica
     double p, q, r; // Velocidades angular com a correção do erro sistemático 
     double sum_p, sum_q, sum_r; // somatória para o cálculo do erro sistemático
-
+    
     // Variáveis para calcular a média dos valores dos ângulos na calibração dos servos
     double Phi_MPU_MM, Theta_MPU_MM; // Média dos ângulos
     double sum_phi, sum_theta; // Somatória dos ângulos 
@@ -104,7 +104,11 @@ private:
     // Armazena os dados do MPU6050 
     double acc_MPU[3];
     double gyr_MPU[3];
-    
+
+    // Armazena os dados dos ângulos calibrados
+    double phi_data_calib[17];
+    double theta_data_calib[17];
+
 };
 
 #endif

@@ -69,6 +69,7 @@ int main()
                cont_atitude.controle(phi_r, theta_r, estima_atitude.Phi, estima_atitude.Theta, estima_atitude.P, estima_atitude.Q, p_r, q_r);
 
                 mixer.actuate(cont_atitude.f_x, cont_atitude.f_y, m * g);
+                // pc.printf("%f,%f,%f\n", mixer.Phi_MPU, mixer.Theta_MPU, mixer.Psi_MPU);//
 
             }
             
