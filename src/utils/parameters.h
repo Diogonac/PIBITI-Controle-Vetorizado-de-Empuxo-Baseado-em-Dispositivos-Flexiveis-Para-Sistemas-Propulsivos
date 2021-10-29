@@ -28,15 +28,20 @@ const double t2 = 29.2;
 const double p1 = 0.6772;
 const double p2 = 27.64; 
 
-const double T1 = 1.306;
-const double T2 = -34.91; 
-const double P1 = 1.564;
-const double P2 = -48.01; 
+const double T1 = 1.296;
+const double T2 = -34.38; 
+const double P1 = 1.586;
+const double P2 = -50.18; 
+
+const double T1_f = 0.9813;
+const double T2_f = 1.449; 
+const double P1_f = 0.9998;
+const double P2_f = -0.03386; 
 
 
 // Constantes dos controladores
 const double KP = 300.0;//215.0;//488.0;//250.0;//537.50f;
-const double KD = 25.5;//22.5;//45.0;//27.0;//32.0f;
+const double KD = 35.0;//22.5;//45.0;//27.0;//32.0f;
 // const double KP = 10.966045224442436;
 // const double KD = 26.666666666666668;
 

@@ -27,6 +27,9 @@ public:
     // Desloca o servo e mede o ângulo do ponto central
     void calibra_servo_MPU(void);
 
+    // Calibra uma segunda vez os ângulos
+    void calibra_servo_MPU_ajuste_fino(void);
+
     // Confere a calibração do ângulo central
     void verifica_calib_servo_MPU(void);
 
@@ -89,8 +92,9 @@ private:
 
     // Lista com os ângulos que os servos serão calibrados
     // double lista_angulos[31] = {75.0, 76.0, 77.0, 78.0, 79.0, 80.0, 81.0, 82.0, 83.0, 84.0, 85.0, 86.0, 87.0, 88.0, 89.0, 90.0, 91.0, 92.0, 93.0, 94.0, 95.0, 96.0, 97.0, 98.0, 99.0, 100.0, 101.0, 102.0, 103.0, 104.0, 105.0};   
-    //double lista_angulos[31] = {-15.0, -14.0, -13.0, -12.0, -11.0, -10.0, -9.0, -8.0, -7.0, -6.0, -5.0, -4.0, -3.0, -2.0, -1.0, 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0};  
-    double lista_angulos[17] = {-16.0, -14.0, -12.0, -10.0, -8.0, -6.0, -4.0, -2.0, 0.0, 2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0, 16.0};
+    double lista_angulos_2[31] = {-15.0, -14.0, -13.0, -12.0, -11.0, -10.0, -9.0, -8.0, -7.0, -6.0, -5.0, -4.0, -3.0, -2.0, -1.0, 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0};  
+    double lista_angulos[13] = {-12.0, -10.0, -8.0, -6.0, -4.0, -2.0, 0.0, 2.0, 4.0, 6.0, 8.0, 10.0, 12.0};
+    double lista_angulos_verifica[7] = {-12.0, -10.0, -5.0, 0.0, 5.0, 10.0, 12.0};
 
     // Variáveis para calcular o deslocamento dos servos
     double tempo_servos, desloca_phi, desloca_theta, delta_phi, delta_theta;
@@ -106,8 +110,8 @@ private:
     double gyr_MPU[3];
 
     // Armazena os dados dos ângulos calibrados
-    double phi_data_calib[17];
-    double theta_data_calib[17];
+    double phi_data_calib[13];
+    double theta_data_calib[13];
 
 };
 

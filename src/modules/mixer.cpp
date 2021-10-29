@@ -181,21 +181,16 @@ void Mixer::actuate(double f_x, double f_y, double f_z) {
   }
 
   // Calibra os ângulos do servo
-  theta_calib = (theta_total - t2) / t1;
-  phi_calib = (phi_total - p2) / p1;
-
-  // Implementar rotina de verificação de angulo, fora do intervalo 75 - 105 ->
-  // desconsiderar
 
   // Aciona os servos
-  servo1.position(seguranca_servos(phi_calib));
-  servo2.position(seguranca_servos(theta_calib));
+  servo1.position(seguranca_servos(P1_f*((P1 * phi_total) + P2) + P2_f));
+  servo2.position(seguranca_servos((T1_f*(T1 * theta_total) + T2) + T2_f));
 
   wait_ms(tempo_servos); // Aguarda o deslocamento
 
   estima_MPU(); // Coleta os dados do MPU
 
-  printf("%f %f %f %f\r\n", Phi_MPU, Theta_MPU, desloca_phi, desloca_theta);
+  printf("%f %f %f %f\r\n", (Phi_MPU * 180.0 / pi),  (-Theta_MPU * 180.0 / pi), desloca_phi, desloca_theta);
 
   // Armazena os dados do ângulo nos servos
   delta_angulos[0] = phi_calib;
@@ -210,15 +205,23 @@ void Mixer::verifica_calib_servo_MPU(void) {
   printf("\r\n");
   printf("Verificação iniciada");
   printf("\r\n");
+  //servo1.position(seguranca_servos(P1_f*((P1 * 90.0) + P2) + P2_f));
+  //servo2.position(seguranca_servos((T1_f*(T1 * 90.0) + T2) + T2_f));
+
   servo1.position(seguranca_servos((P1 * 90.0) + P2));
   servo2.position(seguranca_servos((T1 * 90.0) + T2));
   wait(1);
   estima_MPU();
   wait(1);
 
-  for (int i = 0; i < 17; i++) {
+  for (int i = 0; i < 13; i++) {
 
-    servo2.position(seguranca_servos(T1 * (lista_angulos[i] + 90.0) + T2));
+    //servo2.position(seguranca_servos(T1 * (lista_angulos[i] + 90.0) + T2));
+    servo1.position(seguranca_servos(P1_f*((P1 * 90.0) + P2) + P2_f));
+    //servo2.position(seguranca_servos((T1_f*(T1 * (lista_angulos[i] + 90.0)) + T2) + T2_f));
+    servo1.position(seguranca_servos((P1 * 90.0) + P2));
+    servo2.position(seguranca_servos((T1 * (lista_angulos[i] + 90.0)) + T2));
+
     wait(2);
     sum_theta = 0.0;
 
@@ -237,9 +240,13 @@ void Mixer::verifica_calib_servo_MPU(void) {
   servo2.position(seguranca_servos((T1 * 90.0) + T2));
   wait(1);
 
-    for (int i = 0; i < 17; i++) {
+    for (int i = 0; i < 13; i++) {
 
-    servo1.position(seguranca_servos(P1 * (lista_angulos[i] + 90.0) + P2));
+    //servo1.position(seguranca_servos(P1 * (lista_angulos[i] + 90.0) + P2));
+    //servo2.position(seguranca_servos((T1_f*(T1 * 90.0) + T2) + T2_f));
+    //servo1.position(seguranca_servos(P1_f*((P1 * (lista_angulos[i] + 90.0)) + P2) + P2_f));
+    servo2.position(seguranca_servos((T1 * 90.0) + T2));
+    servo1.position(seguranca_servos((P1 * (lista_angulos[i] + 90.0)) + P2));
     wait(2);
     sum_phi = 0.0;
 
@@ -254,15 +261,116 @@ void Mixer::verifica_calib_servo_MPU(void) {
 
   }
   
+  //servo1.position(seguranca_servos(P1_f*((P1 * 90.0) + P2) + P2_f));
+  //servo2.position(seguranca_servos((T1_f*(T1 * 90.0) + T2) + T2_f));
+
+  servo1.position(seguranca_servos((P1 * 90.0) + P2));
+  servo2.position(seguranca_servos((T1 * 90.0) + T2));
+  wait(1);
+
+  printf("Verificação finalizada\r\n");
+    
+}
+
+void Mixer::calibra_servo_MPU(void) {
+
+  printf("\r\n");
+  printf("Calibração iniciada");
+  printf("\r\n");
+  servo1.position(seguranca_servos(90.0));
+  servo2.position(seguranca_servos(90.0));
+  wait(1);
+  estima_MPU();
+  wait(1);
+
+
+
+//   for (int i = 0; i < 13; i++) {
+//     // printf("Theta_MPU= %f, Servo= %f \r\n",(90.0 + Theta_MPU),(offset_servo1
+//     // + lista_angulos[i]));
+//     //theta_calib = (lista_angulos[i] - t2) / t1;
+//     servo2.position(seguranca_servos(lista_angulos[i] + 90.0));
+//     wait(2);
+//     sum_theta = 0.0;
+
+//     for (int y = 0; y < 500; y++) {
+//       estima_MPU();
+//        //printf("%f %f %f\r\n", -Theta_MPU * 180.0 / pi, lista_angulos[i], theta_calib);
+//       sum_theta += (-Theta_MPU * 180.0 / pi);
+//       wait_ms(2);
+//     }
+
+//     Theta_MPU_MM = sum_theta / 500;
+//     theta_data_calib[i] = Theta_MPU_MM + 90.0; // Já colocar +90.0?
+//     printf("%f %f\r\n", Theta_MPU_MM + 90.0, lista_angulos[i] + 90.0);
+
+//   }
+
+//   servo1.position(seguranca_servos(90.0));
+//   servo2.position(seguranca_servos(90.0));
+
+//       for (int y = 0; y < 500; y++) {
+//       estima_MPU();
+//       printf("%f\r\n", (-Theta_MPU * 180.0 / pi) + 90.0);
+//       wait_ms(2);
+//     }
+
+//   wait(1);
+
+
+  for (int i = 0; i < 13; i++) {
+    // printf("Theta_MPU= %f, Servo= %f \r\n",(90.0 + Theta_MPU),(offset_servo1
+    // + lista_angulos[i]));
+    servo1.position(seguranca_servos(lista_angulos[i] + 90.0));
+    wait(2);
+    sum_phi = 0.0;
+    for (int y = 0; y < 500; y++) {
+      estima_MPU();
+       //printf("%f %f %f\r\n", Phi_MPU * 180.0 / pi, lista_angulos[i], phi_calib);
+      sum_phi += (Phi_MPU * 180.0 / pi);
+      wait_ms(2);
+    }
+    Phi_MPU_MM = sum_phi / 500;
+    phi_data_calib[i] = Phi_MPU_MM + 90.0; // Já colocar +90.0?
+    printf("%f %f\r\n", Phi_MPU_MM + 90.0, lista_angulos[i] + 90.0);
+  }
+
+      for (int y = 0; y < 500; y++) {
+      estima_MPU();
+      printf("%f\r\n", (Phi_MPU * 180.0 / pi) + 90.0);
+      wait_ms(2);
+    }
+  
   servo1.position(seguranca_servos(90.0));
   servo2.position(seguranca_servos(90.0));
   wait(1);
 
   printf("Calibração finalizada\r\n");
-    
+  printf("Resultados\r\n");
+
+  printf("Angulos_REF= [");
+  for(int k = 0; k < 13; k++){
+    printf(", %f", lista_angulos[k]);
+  }
+  printf(" ];");
+
+  printf("\r\n");
+  printf("Angulos_Phi= [");
+  for(int k = 0; k < 13; k++){
+    printf(", %f", phi_data_calib[k]);
+  }
+  printf(" ];");
+
+  printf("\r\n");
+  printf("Angulos_Theta= [");
+  for(int k = 0; k < 13; k++){
+    printf(", %f", theta_data_calib[k]);
+  }
+   printf(" ];\r\n");
 }
 
-void Mixer::calibra_servo_MPU(void) {
+
+void Mixer::calibra_servo_MPU_ajuste_fino(void) {
 
   printf("\r\n");
   printf("Calibração iniciada");
@@ -273,87 +381,94 @@ void Mixer::calibra_servo_MPU(void) {
   estima_MPU();
   wait(1);
 
+
+
+//   for (int i = 0; i < 13; i++) {
+//     // printf("Theta_MPU= %f, Servo= %f \r\n",(90.0 + Theta_MPU),(offset_servo1
+//     // + lista_angulos[i]));
+//     //theta_calib = (lista_angulos[i] - t2) / t1;
+//     //servo2.position(seguranca_servos(lista_angulos[i] + 90.0));
+//     servo2.position(seguranca_servos((T1 * (lista_angulos[i] + 90.0)) + T2));
+//     wait(2);
+//     sum_theta = 0.0;
+
+//     for (int y = 0; y < 500; y++) {
+//       estima_MPU();
+//        //printf("%f %f %f\r\n", -Theta_MPU * 180.0 / pi, lista_angulos[i], theta_calib);
+//       sum_theta += (-Theta_MPU * 180.0 / pi);
+//       wait_ms(2);
+//     }
+
+//     Theta_MPU_MM = sum_theta / 500;
+//     theta_data_calib[i] = Theta_MPU_MM + 90.0; // Já colocar +90.0?
+//     printf("%f %f\r\n", Theta_MPU_MM + 90.0, lista_angulos[i] + 90.0);
+
+//   }
+
+//   servo1.position(seguranca_servos((P1 * 90.0) + P2));
+//   servo2.position(seguranca_servos((T1 * 90.0) + T2));
+
+//       for (int y = 0; y < 500; y++) {
+//       estima_MPU();
+//       printf("%f\r\n", (-Theta_MPU * 180.0 / pi) + 90.0);
+//       wait_ms(2);
+//     }
+
+//   wait(1);
+
+
+  for (int i = 0; i < 13; i++) {
+    // printf("Theta_MPU= %f, Servo= %f \r\n",(90.0 + Theta_MPU),(offset_servo1
+    // + lista_angulos[i]));
+    //servo1.position(seguranca_servos(lista_angulos[i] + 90.0));
+    servo1.position(seguranca_servos((P1 * (lista_angulos[i] + 90.0)) + P2));
+    wait(2);
+    sum_phi = 0.0;
+    for (int y = 0; y < 500; y++) {
+      estima_MPU();
+       //printf("%f %f %f\r\n", Phi_MPU * 180.0 / pi, lista_angulos[i], phi_calib);
+      sum_phi += (Phi_MPU * 180.0 / pi);
+      wait_ms(2);
+    }
+    Phi_MPU_MM = sum_phi / 500;
+    phi_data_calib[i] = Phi_MPU_MM + 90.0; // Já colocar +90.0?
+    printf("%f %f\r\n", Phi_MPU_MM + 90.0, lista_angulos[i] + 90.0);
+  }
+
       for (int y = 0; y < 500; y++) {
       estima_MPU();
       printf("%f\r\n", (Phi_MPU * 180.0 / pi) + 90.0);
       wait_ms(2);
     }
-
-  for (int i = 0; i < 17; i++) {
-    // printf("Theta_MPU= %f, Servo= %f \r\n",(90.0 + Theta_MPU),(offset_servo1
-    // + lista_angulos[i]));
-    //theta_calib = (lista_angulos[i] - t2) / t1;
-    servo2.position(seguranca_servos(lista_angulos[i] + 90.0));
-    wait(2);
-    sum_theta = 0.0;
-
-    for (int y = 0; y < 500; y++) {
-      estima_MPU();
-       //printf("%f %f %f\r\n", -Theta_MPU * 180.0 / pi, lista_angulos[i], theta_calib);
-      sum_theta += (-Theta_MPU * 180.0 / pi);
-      wait_ms(2);
-    }
-
-    Theta_MPU_MM = sum_theta / 500;
-    theta_data_calib[i] = Theta_MPU_MM + 90.0; // Já colocar +90.0?
-    printf("%f %f\r\n", Theta_MPU_MM + 90.0, lista_angulos[i] + 90.0);
-
-  }
-
-    // for (int y = 0; y < 500; y++) {
-    //   estima_MPU();
-    //   printf("%f\r\n", (-Theta_MPU * 180.0 / pi) + 90.0);
-    //   wait_ms(2);
-    // }
-
-  servo1.position(seguranca_servos((P1 * 90.0) + P2));
-  servo2.position(seguranca_servos((T1 * 90.0) + T2));
-  wait(1);
-
-//   for (int i = 0; i < 17; i++) {
-//     // printf("Theta_MPU= %f, Servo= %f \r\n",(90.0 + Theta_MPU),(offset_servo1
-//     // + lista_angulos[i]));
-//     servo1.position(seguranca_servos(lista_angulos[i] + 90.0));
-//     wait(2);
-//     sum_phi = 0.0;
-//     for (int y = 0; y < 500; y++) {
-//       estima_MPU();
-//        //printf("%f %f %f\r\n", Phi_MPU * 180.0 / pi, lista_angulos[i], phi_calib);
-//       sum_phi += (Phi_MPU * 180.0 / pi);
-//       wait_ms(2);
-//     }
-//     Phi_MPU_MM = sum_phi / 500;
-//     phi_data_calib[i] = Phi_MPU_MM + 90.0; // Já colocar +90.0?
-//     printf("%f %f\r\n", Phi_MPU_MM + 90.0, lista_angulos[i] + 90.0);
-//   }
   
   servo1.position(seguranca_servos((P1 * 90.0) + P2));
-  servo2.position(seguranca_servos(90.0));
+  servo2.position(seguranca_servos((T1 * 90.0) + T2));
   wait(1);
 
   printf("Calibração finalizada\r\n");
   printf("Resultados\r\n");
 
   printf("Angulos_REF= [");
-  for(int k = 0; k < 17; k++){
+  for(int k = 0; k < 13; k++){
     printf(", %f", lista_angulos[k]);
   }
   printf(" ];");
 
   printf("\r\n");
   printf("Angulos_Phi= [");
-  for(int k = 0; k < 17; k++){
+  for(int k = 0; k < 13; k++){
     printf(", %f", phi_data_calib[k]);
   }
   printf(" ];");
 
   printf("\r\n");
   printf("Angulos_Theta= [");
-  for(int k = 0; k < 17; k++){
+  for(int k = 0; k < 13; k++){
     printf(", %f", theta_data_calib[k]);
   }
    printf(" ];\r\n");
 }
+
 
 /* Converte os vetores de empuxo no vetor empuxo total para calcular a abertura
 da válvula e os ângulos desejados nos tamanhos de pulsos */
