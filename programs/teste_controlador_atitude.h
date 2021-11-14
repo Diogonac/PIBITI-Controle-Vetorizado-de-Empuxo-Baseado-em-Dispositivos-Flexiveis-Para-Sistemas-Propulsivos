@@ -2,7 +2,7 @@
 #include "imports.h"
 
 //============ Configura porta serial ===============
-Serial pc (SERIAL_TX1, SERIAL_RX1); //Comunicação com USB TX, RX
+Serial pc (SERIAL_TX1, SERIAL_RX1, 115200); //Comunicação com USB TX, RX
 
 // Imports
 Mixer mixer;

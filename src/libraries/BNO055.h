@@ -2,7 +2,7 @@
 #define BNO055_H
 
 #include "mbed.h"
-//
+
 #define BNOAddress (0x29 << 1)
 //Register definitions
 /* Page id register definition */
@@ -300,6 +300,7 @@ public:
     int temperature;
 
     int valor_erro;
+
 
 private:
 

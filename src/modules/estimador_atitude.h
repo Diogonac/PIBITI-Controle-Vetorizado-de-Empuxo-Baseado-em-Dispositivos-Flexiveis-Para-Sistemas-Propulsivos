@@ -20,7 +20,10 @@ public:
     bool verifica_imu;
 
     // Estima os ângulos de Euler (rad) e as velocidades angular (rad/s)
-    void estima();
+    void estima(void);
+
+    /* Get current linear acceleration */
+    void acc_lia(void); 
 
     // Aplica o filtro Kalman na variavel de interesse
     double kalman_gx(double variavel_raw, double ruido_cov, double estima_cov);
@@ -32,6 +35,9 @@ public:
 
     // Velocidades angular de interesse
     double P, Q, R;
+
+    /* Variables for current linear acceleration */
+    double lia_X;
 
     // Acelerações e velocidades angulares para o filtro
 //    double ax, ay, az, gx, gy;

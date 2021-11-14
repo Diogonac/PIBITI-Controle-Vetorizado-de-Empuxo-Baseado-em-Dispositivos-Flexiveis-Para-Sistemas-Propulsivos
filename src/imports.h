@@ -17,6 +17,8 @@
 #include "modules/controlador_atitude.h"
 #include "modules/estimador_atitude.h"
 #include "modules/inicializa_perifericos.h"
- #include "modules/estimador_atitude_MPU6050.h"
+#include "modules/estimador_atitude_MPU6050.h"
+#include "modules/Position_Estimator.h"
+
 
 #endif

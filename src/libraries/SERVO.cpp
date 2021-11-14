@@ -52,10 +52,10 @@ void Servo::largura_pulso( int largura){
 }
 
 void Servo::position(double degrees) {
-    //float offset = _range_max * (degrees / _degrees);
-    double offset = 11 * degrees + 550; // 
+    //double offset = _range_max * (degrees / _degrees);
+    double offset = 7.222* degrees + 550; // 
     
-    _pwm.pulsewidth_us(clamp(offset, _range_min, _range_max));
+    _pwm.pulsewidth_us(clamp(offset, _range_min, _range_max) + 5);
 }
 
 void Servo::calibrate(double range_max, double range_min, double degrees) {

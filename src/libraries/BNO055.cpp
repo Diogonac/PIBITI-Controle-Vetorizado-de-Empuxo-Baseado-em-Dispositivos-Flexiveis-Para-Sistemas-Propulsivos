@@ -10,6 +10,7 @@ BNO055::BNO055(PinName sda, PinName scl) : _i2c(sda,scl)
     rate_scale = 1.0f/16.0f;
     angle_scale = 1.0f/16.0f;
     temp_scale = 1;
+
 }
 
 void BNO055::reset()
@@ -213,6 +214,7 @@ void BNO055::get_lia(void)
     lia.y = double(lia.rawy)*accel_scale;
     lia.z = double(lia.rawz)*accel_scale;
 }
+
 
 void BNO055::get_grv(void)
 {

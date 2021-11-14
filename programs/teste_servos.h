@@ -29,8 +29,8 @@ int main()
 
     while(1) {
 
-        //varredura_servos_pulsos(600); //0.105
-        varredura_servos(50);
+        varredura_servos_pulsos(600); //0.105
+        //varredura_servos(10);
         //wait(5);
 
     }
@@ -57,7 +57,7 @@ void varredura_servos(float tempo)
 {
 
 //=================== Verificação dos servos ====================
-    for (pos = 70.0; pos <= 110.0; pos += 2.0) {
+    for (pos = 0.0; pos <= 270.0; pos += 0.1) {
         //Varre a abertura de 90º até 105º com um incremento de 1º
         servo1.position(pos); //Imprime o Ângulo no servo 1
         servo2.position(pos); //Imprime o Ângulo no servo 2
@@ -68,7 +68,7 @@ void varredura_servos(float tempo)
 
     //wait(5);
 
-    for (pos = 110.0; pos >= 70.0; pos -= 2.0) {
+    for (pos = 270.0; pos >= 0.0; pos -= 0.1) {
         //Varre a abertura de 105º até 75º com um incremento de 1º
         servo1.position(pos); //Imprime o Ângulo no servo 1
         servo2.position(pos); //Imprime o Ângulo no servo 2
@@ -88,10 +88,10 @@ void varredura_servos_pulsos(float tempo)
 {
 
 //=================== Verificação dos servos ====================
-    for (pulso = 550; pulso <= 2500; pulso += 50) {
+    for (pulso = 550; pulso <= 2500; pulso += 5) {
         //Varre a abertura de 90º até 105º com um incremento de 1º
-        servo1.position(pulso); //Imprime o Ângulo no servo 1
-        servo2.largura_pulso(pulso); //Imprime o Ângulo no servo 2
+        //servo1.position(pulso); //Imprime o Ângulo no servo 1
+        servo1.largura_pulso(pulso); //Imprime o Ângulo no servo 2
         wait_ms(tempo); //Aguarda o deslocamento
         pc.printf("Pulso atual %d\r\n", pulso); //Indica o ângulo atual dos servos
 
@@ -101,8 +101,8 @@ void varredura_servos_pulsos(float tempo)
 
     for (pulso = 2500; pulso >= 550; pulso -= 50) {
         //Varre a abertura de 105º até 75º com um incremento de 1º
-        servo1.position(pulso); //Imprime o Ângulo no servo 1
-        servo2.largura_pulso(pulso); //Imprime o Ângulo no servo 2
+        //servo1.position(pulso); //Imprime o Ângulo no servo 1
+        servo1.largura_pulso(pulso); //Imprime o Ângulo no servo 2
         wait_ms(tempo); //Aguarda o deslocamento
         pc.printf("Pulso atual %d\r\n", pulso); //Indica o ângulo atual dos servos
     }

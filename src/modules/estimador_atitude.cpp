@@ -110,7 +110,7 @@ void EstimadorAtitude::config_imu()
 }
 
 // Estima os ângulos de Euler (rad) e as velocidades angular (rad/s)
-void EstimadorAtitude::estima()
+void EstimadorAtitude::estima(void)
 {
 
     BNO055.get_angles();
@@ -128,71 +128,13 @@ void EstimadorAtitude::estima()
     R = BNO055.gyro.z - offset_gz; //kalman_gz(BNO055.gyro.z, ruido_cov_z, estima_cov_gz);
 
 
-//
-//    ax = kalman(ax, BNO055.accel.x, erro_cov_ax, ruido_cov_ax, estima_cov_ax);
-//    ay = kalman(ay, BNO055.accel.y, erro_cov_ay, ruido_cov_ay, estima_cov_ay);
-//    az = kalman(az, BNO055.accel.z, erro_cov_az, ruido_cov_az, estima_cov_az);
+}
 
-    //printf("Com_Filtro_P= %f, Sem_Filtro_P= %f, Com_Filtro_Q= %f, Sem_Filtro_Q= %f, Com_Filtro_AX= %f, Sem_Filtro_AX= %f, Com_Filtro_AY= %f, Sem_Filtro_AY= %f,Com_Filtro_AZ= %f, Sem_Filtro_AZ= %f\r\n", p, BNO055.gyro.x, q, BNO055.gyro.y, ax, BNO055.accel.x, ay, BNO055.accel.y, az, BNO055.accel.z);
+void EstimadorAtitude::acc_lia(void){
 
-    //printf("Com_Filtro_P= %f, Sem_Filtro_P= %f,Com_Filtro_Q= %f, Sem_Filtro_Q= %f\r\n", p, BNO055.gyro.x, q, BNO055.gyro.y);
+    BNO055.get_lia();
+
+    lia_X = BNO055.lia.x;
 
 }
 
-// Aplica o filtro Kalman na variavel de interesse
-//ouble EstimadorAtitude::kalman_gx(double variavel_raw, double ruido_cov, double estima_cov)
-//{
-//
-//    k_gx = erro_cov_gx * H / (H * erro_cov_gx * H + ruido_cov);
-//
-//    gx = gx + k_gx * (variavel_raw - H * gx);
-//
-//    erro_cov_gx = (1 - k_gx * H) * erro_cov_gx + estima_cov;
-//
-//    //printf("k_gx= %f\r\n", k_gx);
-//
-//    return gx;
-//}
-//
-//double EstimadorAtitude::kalman_gy(double variavel_raw, double ruido_cov, double estima_cov)
-//{
-//
-//    k_gy = erro_cov_gy * H / (H * erro_cov_gy * H + ruido_cov);
-//
-//    gy = gy + k_gy * (variavel_raw - H * gy);
-//
-//    erro_cov_gy = (1 - k_gy * H) * erro_cov_gy + estima_cov;
-//
-//    //printf("k_gy= %f\r\n", k_gy);
-//
-//    return gy;
-//}
-
-//double EstimadorAtitude::kalman_ax(double variavel_raw, double ruido_cov, double estima_cov)
-//{
-//
-//    k_gy = erro_cov_gy * H / (H * erro_cov_gy * H + ruido_cov);
-//
-//    gy = gy + k_gy * (variavel_raw - H * gy);
-//
-//    erro_cov_gy = (1 - k_gy * H) * erro_cov_gy + estima_cov;
-//
-//    printf("k_gy= %f\r\n", k_gy);
-//
-//    return gy;
-//}
-
-
-//
-//double EstimadorAtitude::kalman(double variavel_raw)
-//{
-//
-//    k = erro_cov_gx * H / (H * erro_cov_gx * H + ruido_cov_gx);
-//
-//    u_hat = u_hat + k * (variavel_raw - H * u_hat);
-//
-//    erro_cov_gx = (1 - k * H) * erro_cov_gx + estima_cov_gx;
-//
-//    printf("k= %f, u_hat= %f, erro_cov= %f\r\n", k, u_hat, erro_cov_gx);
-//    return u_hat;
-//}
