@@ -2,10 +2,10 @@
 #define parameters_h
 
 // Tempo de amostragem
-const double dt = 0.02; // 50 Hz
+const double dt = 0.001; // 50 Hz
 
 // LPF phi constants
-const float wc = 10.0;
+const float wc = 100.0;
 const float alpha = (wc * dt) / (1 + wc * dt);
 
 // Constantest físicas
@@ -28,10 +28,15 @@ const double t2 = 29.2;
 const double p1 = 0.6772;
 const double p2 = 27.64; 
 
-const double T1 = 1.296;
-const double T2 = -34.38; 
-const double P1 = 1.586;
-const double P2 = -50.18; 
+// const double T1 = 1.296;
+// const double T2 = -34.38; 
+// const double P1 = 1.586;
+// const double P2 = -50.18; 
+
+const double T1 = 1.292;
+const double T2 = -34.26; 
+const double P1 = 1.648;
+const double P2 = -55.6;
 
 const double T1_f = 0.9813;
 const double T2_f = 1.449; 
