@@ -64,14 +64,14 @@ void Mixer::config_servos(void) {
 
   //=================== Calibração dos servos =====================
   /* Define as configurações dos servos: pulsewidth_MÁX pulsewidth_MíN / Ângulo de varredura total */
-  servo1.calibrate(2500, 550, 180.0); 
-  servo2.calibrate(2500, 550, 180.0); 
+  servo1.calibrate(2500, 500, 120.0); 
+  servo2.calibrate(2500, 500, 120.0); 
 
   //=================== Verificação dos servos ====================
 
   // Correção dos ângulos para a posição de segurança
-  theta_calib = (offset_servo2 - t2) / t1; // Define a posição inicial do servo 2
-  phi_calib = (offset_servo1 - p2) / p1; // Define a posição inicial do servo 1
+  theta_calib = (T1 * offset_servo2) + T2; // Define a posição inicial do servo 2
+  phi_calib = (P1 * offset_servo1) + P2; // Define a posição inicial do servo 1
 
   // Aciona os servos
   servo1.position(seguranca_servos(phi_calib));
@@ -111,8 +111,8 @@ void Mixer::config_servos(void) {
   printf("Varredura completa\r\n"); 
 
   // Correção dos ângulos para a posição de segurança
-  theta_calib = (offset_servo2 - t2) / t1; // Define a posição inicial do servo 2
-  phi_calib = (offset_servo1 - p2) / p1; // Define a posição inicial do servo 1
+  theta_calib = (T1 * offset_servo2) + T2; // Define a posição inicial do servo 2
+  phi_calib = (P1 * offset_servo1) + P2; // Define a posição inicial do servo 1
 
   // Aciona os servos
   servo1.position(seguranca_servos(phi_calib));
@@ -129,8 +129,8 @@ void Mixer::estado_seguro(void) {
   LED_amarelo = 1;
 
   // Correção dos ângulos para a posição de segurança
-  theta_calib = (offset_servo2 - t2) / t1;
-  phi_calib = (offset_servo1 - p2) / p1;
+  theta_calib = (T1 * offset_servo2) + T2; // Define a posição inicial do servo 2
+  phi_calib = (P1 * offset_servo1) + P2; // Define a posição inicial do servo 1
 
   // Aciona os servos
   servo1.position(seguranca_servos(phi_calib));
@@ -149,8 +149,8 @@ void Mixer::actuate(double f_x, double f_y, double f_z) {
   mixer(f_x, f_y, f_z);
 
   // Converte os ângulos desejados do ponto central em grau)
-  desloca_phi = rint((((180.000f * phi_servo1) / pi)) * 1000.0) / 1000.0;
-  desloca_theta = rint((((180.000f * theta_servo2) / pi)) * 1000.0) / 1000.0;
+  desloca_phi = ((180.000f * phi_servo1) / pi);
+  desloca_theta = ((180.000f * theta_servo2) / pi);
 
   // Calcula o ângulo que o os servos devem se mover
   phi_total = (desloca_phi + offset_servo1);
@@ -204,9 +204,9 @@ void Mixer::actuate(double f_x, double f_y, double f_z) {
 
 void Mixer::verifica_calib_servo_MPU(void) {
 
-  printf("\r\n");
-  printf("Verificação iniciada");
-  printf("\r\n");
+//   printf("\r\n");
+//   printf("Verificação iniciada");
+//   printf("\r\n");
   //servo1.position(seguranca_servos(P1_f*((P1 * 90.0) + P2) + P2_f));
   //servo2.position(seguranca_servos((T1_f*(T1 * 90.0) + T2) + T2_f));
 
@@ -238,39 +238,37 @@ void Mixer::verifica_calib_servo_MPU(void) {
 
   }
 
-  servo1.position(seguranca_servos((P1 * 90.0) + P2));
-  servo2.position(seguranca_servos((T1 * 90.0) + T2));
   wait(1);
 
-    for (int i = 0; i < 13; i++) {
+//     for (int i = 0; i < 13; i++) {
 
-    //servo1.position(seguranca_servos(P1 * (lista_angulos[i] + 90.0) + P2));
-    //servo2.position(seguranca_servos((T1_f*(T1 * 90.0) + T2) + T2_f));
-    //servo1.position(seguranca_servos(P1_f*((P1 * (lista_angulos[i] + 90.0)) + P2) + P2_f));
-    servo2.position(seguranca_servos((T1 * 90.0) + T2));
-    servo1.position(seguranca_servos((P1 * (lista_angulos[i] + 90.0)) + P2));
-    wait(2);
-    sum_phi = 0.0;
+//     //servo1.position(seguranca_servos(P1 * (lista_angulos[i] + 90.0) + P2));
+//     //servo2.position(seguranca_servos((T1_f*(T1 * 90.0) + T2) + T2_f));
+//     //servo1.position(seguranca_servos(P1_f*((P1 * (lista_angulos[i] + 90.0)) + P2) + P2_f));
+//     servo2.position(seguranca_servos((T1 * 90.0) + T2));
+//     servo1.position(seguranca_servos((P1 * (lista_angulos[i] + 90.0)) + P2));
+//     wait(2);
+//     sum_phi = 0.0;
 
-    for (int y = 0; y < 500; y++) {
-      estima_MPU();
-      printf("%f %f %f\r\n", (Phi_MPU * 180.0 / pi) + 90.0, lista_angulos[i] + 90.0, P1 * (lista_angulos[i] + 90.0) + P2);
-      sum_phi += (Phi_MPU * 180.0 / pi);
-      wait_ms(2);
-    }
+//     for (int y = 0; y < 500; y++) {
+//       estima_MPU();
+//       printf("%f %f %f\r\n", (Phi_MPU * 180.0 / pi) + 90.0, lista_angulos[i] + 90.0, P1 * (lista_angulos[i] + 90.0) + P2);
+//       sum_phi += (Phi_MPU * 180.0 / pi);
+//       wait_ms(2);
+//     }
 
-    Phi_MPU_MM = sum_phi / 500;
+//     Phi_MPU_MM = sum_phi / 500;
 
-  }
+//   }
   
   //servo1.position(seguranca_servos(P1_f*((P1 * 90.0) + P2) + P2_f));
   //servo2.position(seguranca_servos((T1_f*(T1 * 90.0) + T2) + T2_f));
 
-  servo1.position(seguranca_servos((P1 * 90.0) + P2));
-  servo2.position(seguranca_servos((T1 * 90.0) + T2));
-  wait(1);
+//   servo1.position(seguranca_servos((P1 * 90.0) + P2));
+//   servo2.position(seguranca_servos((T1 * 90.0) + T2));
+//   wait(1);
 
-  printf("Verificação finalizada\r\n");
+//   printf("Verificação finalizada\r\n");
     
 }
 
@@ -304,7 +302,7 @@ void Mixer::calibra_servo_MPU(void) {
 
     Theta_MPU_MM = sum_theta / 500;
     theta_data_calib[i] = Theta_MPU_MM + 90.0; // Já colocar +90.0?
-    printf("%f %f\r\n", Theta_MPU_MM + 90.0, lista_angulos[i] + 90.0);
+    //printf("%f %f\r\n", Theta_MPU_MM + 90.0, lista_angulos[i] + 90.0);
 
   }
 
@@ -313,14 +311,14 @@ void Mixer::calibra_servo_MPU(void) {
 
       for (int y = 0; y < 500; y++) {
       estima_MPU();
-      printf("%f\r\n", (-Theta_MPU * 180.0 / pi) + 90.0);
+      //printf("%f\r\n", (-Theta_MPU * 180.0 / pi) + 90.0);
       wait_ms(2);
     }
 
   wait(1);
 
 
-//   for (int i = 0; i < 13; i++) {
+//   for (int i = 0; i < 11; i++) {
 //     // printf("Theta_MPU= %f, Servo= %f \r\n",(90.0 + Theta_MPU),(offset_servo1
 //     // + lista_angulos[i]));
 //     servo1.position(seguranca_servos(lista_angulos[i] + 90.0));
@@ -343,29 +341,29 @@ void Mixer::calibra_servo_MPU(void) {
 //       wait_ms(2);
 //     }
   
-  servo1.position(seguranca_servos(90.0));
-  servo2.position(seguranca_servos(90.0));
-  wait(1);
+//   servo1.position(seguranca_servos(90.0));
+//   servo2.position(seguranca_servos(90.0));
+//   wait(1);
 
   printf("Calibração finalizada\r\n");
   printf("Resultados\r\n");
 
   printf("Angulos_REF= [");
-  for(int k = 0; k < 13; k++){
+  for(int k = 0; k < 11; k++){
     printf(", %f", lista_angulos[k]);
   }
   printf(" ];");
 
   printf("\r\n");
   printf("Angulos_Phi= [");
-  for(int k = 0; k < 13; k++){
+  for(int k = 0; k < 11; k++){
     printf(", %f", phi_data_calib[k]);
   }
   printf(" ];");
 
   printf("\r\n");
   printf("Angulos_Theta= [");
-  for(int k = 0; k < 13; k++){
+  for(int k = 0; k < 11; k++){
     printf(", %f", theta_data_calib[k]);
   }
    printf(" ];\r\n");

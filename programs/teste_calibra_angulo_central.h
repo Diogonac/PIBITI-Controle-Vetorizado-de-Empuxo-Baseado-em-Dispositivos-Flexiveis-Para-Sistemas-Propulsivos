@@ -63,7 +63,7 @@ int main()
                 //mixer.estima_MPU();
                 //mixer.calibra_servo_MPU();
                 //mixer.calibra_servo_MPU_ajuste_fino();
-                  mixer.verifica_calib_servo_MPU();
+                mixer.verifica_calib_servo_MPU();
 
 
             

@@ -7,6 +7,7 @@ Serial pc (SERIAL_TX1, SERIAL_RX1); //Comunicação com USB TX, RX
 //================ Configura servos =================
 Servo servo1(SERVO1);
 Servo servo2(SERVO2);
+InterruptIn bt(PC_13);
 
 int count_varredura = 0; //Contador par indicar a quantidade de varreduras efetuadas
 double pos = 0; //Contador para armazenar o angulo atual dos servos
@@ -19,6 +20,7 @@ int incremento_pulso = 0;
 void configuracao_servos(void);
 void varredura_servos(float tempo);
 void varredura_servos_pulsos(float tempo);
+void toggle(void);
 
 int main()
 {
@@ -26,22 +28,31 @@ int main()
     pc.baud(115200); //Define a velocidade da porta USB
 
     configuracao_servos();
+    bt.fall(&toggle);
+    pulso = 1520;
 
     while(1) {
 
-        varredura_servos_pulsos(600); //0.105
-        //varredura_servos(10);
+        varredura_servos_pulsos(1); //0.1055
+        //varredura_servos(50);
         //wait(5);
+        //servo1.largura_pulso(pulso); //Imprime o Ângulo no servo 2
+        //servo2.largura_pulso(pulso); //Imprime o Ângulo no servo 2
+
+        //pc.printf("Pulso atual %d\r\n", pulso); //Indica o ângulo atual dos servos
 
     }
 }
+void toggle(){
 
+    pulso = pulso + 10;
+}
 void configuracao_servos()
 {
 
 //=================== Calibração dos servos =====================
-    servo1.calibrate(2500, 550, 180.0); //Define as configurações do servo 1: pulsewidth_MÁX / pulsewidth_MíN / Ângulo de varredura total
-    servo2.calibrate(2500, 550, 180.0); //Define as configurações do servo 2: pulsewidth_MÁX / pulsewidth_MíN / Ângulo de varredura total
+    servo1.calibrate(2500, 550, 120.0); //Define as configurações do servo 1: pulsewidth_MÁX / pulsewidth_MíN / Ângulo de varredura total
+    servo2.calibrate(2500, 550, 120.0); //Define as configurações do servo 2: pulsewidth_MÁX / pulsewidth_MíN / Ângulo de varredura total
 
 //=================== Verificação dos servos ====================
     servo1.position(90.0); //Define a posição inicial do servo 1
@@ -57,7 +68,7 @@ void varredura_servos(float tempo)
 {
 
 //=================== Verificação dos servos ====================
-    for (pos = 0.0; pos <= 270.0; pos += 0.1) {
+    for (pos = 75.0; pos <= 105.0; pos += 0.5) {
         //Varre a abertura de 90º até 105º com um incremento de 1º
         servo1.position(pos); //Imprime o Ângulo no servo 1
         servo2.position(pos); //Imprime o Ângulo no servo 2
@@ -68,7 +79,7 @@ void varredura_servos(float tempo)
 
     //wait(5);
 
-    for (pos = 270.0; pos >= 0.0; pos -= 0.1) {
+    for (pos = 105.0; pos >= 75.0; pos -= 0.5) {
         //Varre a abertura de 105º até 75º com um incremento de 1º
         servo1.position(pos); //Imprime o Ângulo no servo 1
         servo2.position(pos); //Imprime o Ângulo no servo 2
@@ -88,21 +99,21 @@ void varredura_servos_pulsos(float tempo)
 {
 
 //=================== Verificação dos servos ====================
-    for (pulso = 550; pulso <= 2500; pulso += 5) {
+    for (pulso = 1000; pulso <= 2520; pulso += 6) {
         //Varre a abertura de 90º até 105º com um incremento de 1º
-        //servo1.position(pulso); //Imprime o Ângulo no servo 1
-        servo1.largura_pulso(pulso); //Imprime o Ângulo no servo 2
+        servo1.largura_pulso(pulso); //Imprime o Ângulo no servo 1
+        servo2.largura_pulso(pulso); //Imprime o Ângulo no servo 2
         wait_ms(tempo); //Aguarda o deslocamento
         pc.printf("Pulso atual %d\r\n", pulso); //Indica o ângulo atual dos servos
 
     }
 
-    wait(5);
+    wait(1);
 
-    for (pulso = 2500; pulso >= 550; pulso -= 50) {
+    for (pulso = 2520; pulso >= 1000; pulso -= 6) {
         //Varre a abertura de 105º até 75º com um incremento de 1º
-        //servo1.position(pulso); //Imprime o Ângulo no servo 1
-        servo1.largura_pulso(pulso); //Imprime o Ângulo no servo 2
+        servo1.largura_pulso(pulso); //Imprime o Ângulo no servo 1
+        servo2.largura_pulso(pulso); //Imprime o Ângulo no servo 2
         wait_ms(tempo); //Aguarda o deslocamento
         pc.printf("Pulso atual %d\r\n", pulso); //Indica o ângulo atual dos servos
     }
