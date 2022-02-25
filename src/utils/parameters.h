@@ -2,15 +2,12 @@
 #define parameters_h
 
 // Tempo de amostragem
-const double dt = 0.001; // 50 Hz
+const double dt = 0.01; // 100 Hz
 
-// LPF phi constants
-const float wc = 100.0;
-const float alpha = (wc * dt) / (1 + wc * dt);
 
 // Constantest físicas
 const double pi = 3.14159265359f;
-const double g = 9.807f;       // m/s^2
+const double g = 9.807;       // m/s^2
 
 // Constantes do sistema mecânico
 const double m = 0.600f;    // kg
@@ -48,39 +45,11 @@ const double ce_max = 7.5;
 const double ce_min = -7.5;
 
 
-// Constantes dos servos
-//const double tempo_servos = 0.15;
-const double constante_velocidade = 5.0;
-const double consteante_phi = 1.0;
-const double consteante_theta = 1.0;
+// Servos
 const double offset_servo2 = 90.0; //94
 const double offset_servo1 = 90.0; //83
-
-
-// Filtro Kalman
-static const double ruido_cov_gx = abs(-0.00876); // Covariancia medida do ruido
-static double estima_cov_gx = 0.0005; // Covariancia esperada
-
-static const double ruido_cov_gy = abs(-0.00194); // Covariancia medida do ruido
-static double estima_cov_gy = 0.0001; // Covariancia esperada
-
-const double ruido_cov_gz = 0.010474; // Covariancia medida do ruido
-static double estima_cov_gz = 0.0001; // Covariancia esperada
-
-
-static const double ruido_cov_ax = abs(0.001275); // Covariancia medida do ruido
-static double estima_cov_ax = 0.0001; // Covariancia esperada
-
-static const double ruido_cov_ay = abs(-0.00088); // Covariancia medida do ruido
-static double estima_cov_ay = 0.0001; // Covariancia esperada
-
-static const double ruido_cov_az = abs(0.002108); // Covariancia medida do ruido
-static double estima_cov_az = 0.0001; // Covariancia esperada
-
-
-static const double H = 1.00; //measurement map scalar
-
-
-
+const double phi_safe = (P1 * offset_servo1) + P2;
+const double theta_safe = (T1 * offset_servo2) + T2;
+const double time_displacement = 4.0; // In ms
 
 #endif

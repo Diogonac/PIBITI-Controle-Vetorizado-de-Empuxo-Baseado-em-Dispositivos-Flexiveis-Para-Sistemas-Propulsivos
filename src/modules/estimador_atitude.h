@@ -20,15 +20,7 @@ public:
     bool verifica_imu;
 
     // Estima os ângulos de Euler (rad) e as velocidades angular (rad/s)
-    void estima(void);
-
-    /* Get current linear acceleration */
-    void acc_lia(void); 
-
-    // Aplica o filtro Kalman na variavel de interesse
-    double kalman_gx(double variavel_raw, double ruido_cov, double estima_cov);
-    
-    double kalman_gy(double variavel_raw, double ruido_cov, double estima_cov);
+    void estimate(void);
 
     // Ângulos de Euler de interesse
     double Phi, Theta, Psi;
@@ -36,18 +28,10 @@ public:
     // Velocidades angular de interesse
     double P, Q, R;
 
-    /* Variables for current linear acceleration */
-    double lia_X;
-
-    // Acelerações e velocidades angulares para o filtro
-//    double ax, ay, az, gx, gy;
-
 private:
 
     // Objeto da IMU
     BNO055 BNO055;
-    
-
     
     int status_BNO055; //Armazena o status do BNO055
     int status_sys_BNO055; //Armazena o status do sistema do BNO055
@@ -63,25 +47,6 @@ private:
     double offset_gx;
     double offset_gy;
     double offset_gz;
-    
-
-    double erro_cov_gx; // Erro inicial das covariancias (deve ser 0)
-    double erro_cov_gy; // Erro inicial das covariancias (deve ser 0)
-    double erro_cov_ax; // Erro inicial das covariancias (deve ser 0)
-    double erro_cov_ay; // Erro inicial das covariancias (deve ser 0)
-    double erro_cov_az; // Erro inicial das covariancias (deve ser 0)
-
-
-    double u_hat; // Valor inicial da variavel a ser filtrada
-
-    double k;
-
-    double k_gx; // Valor inical do ganho do filtro
-    double k_gy; // Valor inical do ganho do filtro
-
-    double k_ax; // Valor inical do ganho do filtro
-    double k_ay; // Valor inical do ganho do filtro
-    double k_az; // Valor inical do ganho do filtro
 
 };
 

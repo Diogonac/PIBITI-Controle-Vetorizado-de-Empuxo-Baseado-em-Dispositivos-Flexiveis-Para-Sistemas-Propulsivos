@@ -23,19 +23,14 @@ void ControladorAtitude::controle(double phi_r, double theta_r, double phi, doub
 
 }
 
-
 // Controlador siso
 double ControladorAtitude::controlador_siso(double angulo_r, double angulo, double v_angular_r, double v_angular, double kp, double kd)
 {
 
-     e = (angulo_r - angulo);
+    e = (angulo_r - angulo);
     ce = (v_angular_r - v_angular);
 
-    ganho_PID = kp * e + kd * ce;
-    variavel_SISO = ganho_PID;
-
-    // variavel_SISO = kd * (kp * e - v_angular);
-
+    variavel_SISO = kp * e + kd * ce;
 
     return variavel_SISO;
 

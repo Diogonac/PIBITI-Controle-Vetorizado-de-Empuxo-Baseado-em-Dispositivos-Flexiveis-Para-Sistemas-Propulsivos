@@ -22,7 +22,7 @@ public:
 private:
 
 // Variavel que armazena o empuxo
-double variavel_SISO, ganho_PID, ganho_FUZZY, ganho_total, e, ce, saida_fuzzy;
+double variavel_SISO, e, ce;
 
     // Controlador siso
     double controlador_siso(double angulo_r, double angulo, double v_angular_r, double v_angular, double kp, double kd);

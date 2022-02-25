@@ -46,27 +46,12 @@ void EstimadorAtitude::config_imu()
 //============= Unidade das variáveis do BNO055 ================
     BNO055.set_accel_units(MPERSPERS); // m/s2
     BNO055.set_anglerate_units(RAD_PER_SEC); // rad/s
-    BNO055.set_angle_units(RADIANS); // rad
+    BNO055.set_angle_units(RADIANS); // GRAUS
     BNO055.set_temp_units(CENTIGRADE); // °C
     BNO055.set_orientation(ANDROID); // Sentido de rotação ANDROID = Regra da mão direita
     BNO055.set_mapping(1); // Ajuste do eixo de coordenadas / orientação
 
     //=================== Calibração do BNO055 =====================
-//    BNO055.setmode(OPERATION_MODE_CONFIG); //Configura o modo padrão para iniciar a calibração
-//    wait_ms(25); //Aguarda o BNO055 trocar de modo de operação
-//    BNO055.write_calibration_data(); //Calibração dos sensores
-//    wait_ms(10);
-//    BNO055.get_calib();
-
-//    while(BNO055.calib == 0) {
-//
-//        BNO055.get_calib();
-//        pc.printf("Leitura de calibracao: %d \r\n", BNO055.calib); //Realiza um selftest no BNO055
-//
-//    }
-
-//    BNO055.write_calibration_data(); //Calibração dos sensores
-//    wait_ms(10);
     status_selftest = BNO055.getSystemStatus(BNO055_SELFTEST_RESULT_ADDR); //15 = todos os sensores então OK
     printf("SelfTest Status: %d \r\n", status_selftest); //Realiza um selftest no BNO055
     wait_ms(25);
@@ -110,7 +95,7 @@ void EstimadorAtitude::config_imu()
 }
 
 // Estima os ângulos de Euler (rad) e as velocidades angular (rad/s)
-void EstimadorAtitude::estima(void)
+void EstimadorAtitude::estimate(void)
 {
 
     BNO055.get_angles();
@@ -127,14 +112,4 @@ void EstimadorAtitude::estima(void)
     Q = BNO055.gyro.y - offset_gy; //kalman_gy(BNO055.gyro.y, ruido_cov_gy, estima_cov_gy);
     R = BNO055.gyro.z - offset_gz; //kalman_gz(BNO055.gyro.z, ruido_cov_z, estima_cov_gz);
 
-
 }
-
-void EstimadorAtitude::acc_lia(void){
-
-    BNO055.get_lia();
-
-    lia_X = BNO055.lia.x;
-
-}
-

@@ -1,4 +1,4 @@
-             #ifndef pin_names_h
+#ifndef pin_names_h
 #define pin_names_h
 
 #include "mbed.h"
@@ -12,15 +12,6 @@ const PinName SERVO2 = D4; // Antigo D2
 // Pinos de comumicação I2C
 const PinName IMU_SDA = D14; 
 const PinName IMU_SCL = D15;
-//
-const PinName MPU_SDA = D5; //I2C3
-const PinName MPU_SCL = D7; //I2C3
-
-// const PinName IMU_SDA = D0; 
-// const PinName IMU_SCL = D1;
-
-// const PinName MPU_SDA = D14; 
-// const PinName MPU_SCL = D15;
 
 
 // Pinos de comumicação UART

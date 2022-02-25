@@ -8,17 +8,15 @@
 
 // Bibliotecas
 #include "libraries/BNO055.h"    // IMU sensor
-#include "libraries/MPU6050.h"    // IMU validations
 #include "libraries/SERVO.h"    // Servo actuator
 #include <cmath>
 
 // Módulos
-#include "modules/mixer.h"
+#include "modules/actuators.h"
+#include "modules/calibration.h"
 #include "modules/controlador_atitude.h"
 #include "modules/estimador_atitude.h"
 #include "modules/inicializa_perifericos.h"
-#include "modules/estimador_atitude_MPU6050.h"
-#include "modules/Position_Estimator.h"
 
 
 #endif
