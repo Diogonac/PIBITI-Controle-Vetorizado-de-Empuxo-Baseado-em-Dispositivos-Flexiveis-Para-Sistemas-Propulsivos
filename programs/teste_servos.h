@@ -33,7 +33,9 @@ int main()
 
     while(1) {
 
-        varredura_servos_pulsos(1); //0.1055
+        //servo1.largura_pulso(555); //Imprime o Ângulo no servo 1
+        //servo2.largura_pulso(600); //Imprime o Ângulo no servo 2
+        varredura_servos_pulsos(50); //0.1055
         //varredura_servos(50);
         //wait(5);
         //servo1.largura_pulso(pulso); //Imprime o Ângulo no servo 2
@@ -51,8 +53,8 @@ void configuracao_servos()
 {
 
 //=================== Calibração dos servos =====================
-    servo1.calibrate(2500, 550, 120.0); //Define as configurações do servo 1: pulsewidth_MÁX / pulsewidth_MíN / Ângulo de varredura total
-    servo2.calibrate(2500, 550, 120.0); //Define as configurações do servo 2: pulsewidth_MÁX / pulsewidth_MíN / Ângulo de varredura total
+    servo1.calibrate(2500, 550, 180.0); //Define as configurações do servo 1: pulsewidth_MÁX / pulsewidth_MíN / Ângulo de varredura total
+    servo2.calibrate(2500, 550, 180.0); //Define as configurações do servo 2: pulsewidth_MÁX / pulsewidth_MíN / Ângulo de varredura total
 
 //=================== Verificação dos servos ====================
     servo1.position(90.0); //Define a posição inicial do servo 1
@@ -99,7 +101,7 @@ void varredura_servos_pulsos(float tempo)
 {
 
 //=================== Verificação dos servos ====================
-    for (pulso = 1000; pulso <= 2520; pulso += 6) {
+    for (pulso = 550; pulso <= 2500; pulso += 10) {
         //Varre a abertura de 90º até 105º com um incremento de 1º
         servo1.largura_pulso(pulso); //Imprime o Ângulo no servo 1
         servo2.largura_pulso(pulso); //Imprime o Ângulo no servo 2
@@ -110,7 +112,7 @@ void varredura_servos_pulsos(float tempo)
 
     wait(1);
 
-    for (pulso = 2520; pulso >= 1000; pulso -= 6) {
+    for (pulso = 2500; pulso >= 550; pulso -= 10) {
         //Varre a abertura de 105º até 75º com um incremento de 1º
         servo1.largura_pulso(pulso); //Imprime o Ângulo no servo 1
         servo2.largura_pulso(pulso); //Imprime o Ângulo no servo 2

@@ -4,9 +4,9 @@
 #include "mbed.h"
 
 // Pinos dos atuadores
-const PinName VALVULA = D6;
-const PinName SERVO1 = D2; // Antigo D4
-const PinName SERVO2 = D4; // Antigo D2
+const PinName VALVULA = D3;
+const PinName SERVO1 = D5; // Antigo D4
+const PinName SERVO2 = D6; // Antigo D2
 
 
 // Pinos de comumicação I2C

@@ -13,6 +13,11 @@ Actuators::Actuators() : valvula(VALVULA), LED_amarelo(AMARELO), servo1(SERVO1),
   theta = 0.0;
 
   pos = 0.0;
+  time = 0.0;
+
+  init_servos = false;
+
+  
 
 }
 
@@ -50,8 +55,8 @@ void Actuators::actuate_servos(double f_x, double f_y, double f_z) {
   calc_thruster(f_x, f_y, f_z);
 
   // Calcula o ângulo atual dos servos
-  phi = PHI(phi_servo1);
-  theta = THETA(theta_servo2);
+  phi = PHI(phi_servo1 + offset_servo1);
+  theta = THETA(theta_servo2 + offset_servo2);
 
   // Aciona os servos
   servo1.position(safe_angle(phi));
@@ -82,12 +87,14 @@ void Actuators::servo_test(double max_angle, double min_angle, double step_angle
     printf("Inicio da varredura\r\n"); // Indica que a varredura de 30º nos dois
                                      // servos foi iniciada
 
+    time = 100;//time_displacement*step_angle;
+
   for (pos = 90.0; pos <= max_angle; pos += step_angle) {
     // Varre a abertura de 90º até 105º com um incremento de 0.15º
     servo1.position(PHI(pos)); // Imprime o Ângulo no servo 1
     servo2.position(THETA(pos)); // Imprime o Ângulo no servo 2
     printf("Posição: %f \r\n", pos);
-    wait_ms(time_displacement*step_angle); // Aguarda o deslocamento
+    wait_ms(time); // Aguarda o deslocamento
   }
 
   for (pos = max_angle; pos >= min_angle; pos -= step_angle) {
@@ -95,19 +102,21 @@ void Actuators::servo_test(double max_angle, double min_angle, double step_angle
     servo1.position(PHI(pos)); // Imprime o Ângulo no servo 1
     servo2.position(THETA(pos)); // Imprime o Ângulo no servo 2
     printf("Posição: %f \r\n", pos);
-    wait_ms(time_displacement*step_angle); // Aguarda o deslocamento
+    wait_ms(time); // Aguarda o deslocamento
   }
 
-  for (pos = min_angle; pos <= max_angle; pos += step_angle) {
+  for (pos = min_angle; pos <= 90.0; pos += step_angle) {
     // Varre a abertura de 75º até 90º com um incremento de 0.15º
     servo1.position(PHI(pos)); // Imprime o Ângulo no servo 1
     servo2.position(THETA(pos)); // Imprime o Ângulo no servo 2
     printf("Posição: %f \r\n", pos);
-    wait_ms(time_displacement*step_angle); // Aguarda o deslocamento
+    wait_ms(time); // Aguarda o deslocamento
   }
 
   wait(2);
   printf("Varredura completa\r\n"); 
+
+  init_servos = true;
 
 }
 
@@ -130,10 +139,11 @@ double Actuators::actuate_valve(double abertura_valvula) {
 
 double Actuators::PHI(double phi_angle){
     
-    return (P1 * (phi_angle + offset_servo1)) + P2;
+    return (P1 * phi_angle) + P2;
 }
 
 double Actuators::THETA(double theta_angle){
     
-    return (T1 * (theta_angle + offset_servo2)) + T2;
+    return (T1 * theta_angle) + T2;
 }
+

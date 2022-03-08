@@ -37,10 +37,10 @@ int main()
     q_r = 0.0;
 
     // Configuração dos periféricos
-    act.servo_test(105.0, 75.0, 1.0);
+    act.servo_test(105.0, 75.0, 2.0);
     att_est.config_imu();
     
-    //inicializa.verifica(act.verifica_servos, estima_atitude.verifica_imu, act.verifica_MPU);
+    inicializa.verifica(act.init_servos, att_est.verifica_imu);
     
 
     //Definição da taxa de amostragem

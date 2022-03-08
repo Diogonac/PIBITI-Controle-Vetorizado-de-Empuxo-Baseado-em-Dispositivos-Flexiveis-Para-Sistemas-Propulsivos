@@ -12,8 +12,9 @@ static double clamp(double value, double min, double max) {
 }
 
 Servo::Servo(PinName pin) : _pwm(pin) {
-    calibrate();
-    write(0.5);
+    calibrate(2500, 550, 180.0);
+    //write(0.0);
+    largura_pulso(1500);
 }
 
 void Servo::write(double percent) {
@@ -30,7 +31,7 @@ void Servo::largura_pulso( int largura){
 
 void Servo::position(double degrees) {
     //double offset = _range_max * (degrees / _degrees);
-    double offset = 16.66667 * degrees + 500; // 
+    double offset = 10.8333 * degrees + 550; // 
     
     _pwm.pulsewidth_us(clamp(offset, _range_min, _range_max) + 5.0);
 }
@@ -39,7 +40,8 @@ void Servo::calibrate(double range_max, double range_min, double degrees) {
     _range_max = range_max;
     _range_min = range_min;
     _degrees = degrees;
-   _pwm.period_us(10000);
+   _pwm.period_ms(10);
+   
 }
 
 double Servo::read() {

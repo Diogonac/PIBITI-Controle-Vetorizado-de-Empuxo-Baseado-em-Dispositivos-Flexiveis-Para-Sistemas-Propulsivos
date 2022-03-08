@@ -49,14 +49,15 @@ void EstimadorAtitude::config_imu()
     BNO055.set_angle_units(RADIANS); // GRAUS
     BNO055.set_temp_units(CENTIGRADE); // °C
     BNO055.set_orientation(ANDROID); // Sentido de rotação ANDROID = Regra da mão direita
-    BNO055.set_mapping(1); // Ajuste do eixo de coordenadas / orientação
+    BNO055.set_mapping(4); // Ajuste do eixo de coordenadas / orientação P4 for calib and P1 for others
+
 
     //=================== Calibração do BNO055 =====================
     status_selftest = BNO055.getSystemStatus(BNO055_SELFTEST_RESULT_ADDR); //15 = todos os sensores então OK
     printf("SelfTest Status: %d \r\n", status_selftest); //Realiza um selftest no BNO055
     wait_ms(25);
     BNO055.setmode(OPERATION_MODE_IMUPLUS); //Configura o mode de fusão entre acelerômetro e giroscópio taxa de atualização máxima: 100Hz
-    wait_ms(25); //Aguarda o BNO055 trocar de modo de operação
+    wait_ms(25); //Aguarda o BNO055 trocar de modo de operação OPERATION_MODE_NDOF  OPERATION_MODE_IMUPLUS
 
 
     if(status_selftest == 15 && status_check_BNO055 == 1 && status_BNO055 == 0) {
@@ -102,9 +103,9 @@ void EstimadorAtitude::estimate(void)
 
     // Pitch e Roll estão trocados conforme a convensão utilizada
 
-    Phi = BNO055.euler.pitch - offset_phi; // Ângulo formado pela rotação de (x) (phi)
-    Theta = BNO055.euler.roll - offset_theta; // Ângulo formado pela rotação de (y) (theta)
-    Psi =  BNO055.euler.yaw - offset_psi; //(z) (psi)
+    Phi = BNO055.euler.pitch;// - offset_phi; // Ângulo formado pela rotação de (x) (phi)
+    Theta = BNO055.euler.roll;// - offset_theta; // Ângulo formado pela rotação de (y) (theta)
+    Psi =  BNO055.euler.yaw;// - offset_psi; //(z) (psi)
 
     BNO055.get_gyro();
 

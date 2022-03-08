@@ -31,6 +31,8 @@ public:
     double PHI(double phi_angle);
     double THETA(double theta_angle);
 
+    bool init_servos;
+
 private:
 
     // Valvula PWM output
@@ -54,7 +56,7 @@ private:
     double phi_servo1, theta_servo2, phi, theta, total_thruster;
 
     // Servos test positions 
-    double pos;
+    double pos, time;
 };
 
 #endif

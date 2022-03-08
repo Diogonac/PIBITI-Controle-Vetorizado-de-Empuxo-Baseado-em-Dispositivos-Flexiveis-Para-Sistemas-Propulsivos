@@ -4,6 +4,6 @@
 
 //#include "programs/teste_mixer.h"
 
-#include "programs/attitude_controller.h"
+//#include "programs/attitude_controller.h"
 
-//#include "programs/servos_calibration.h"
+#include "programs/servos_calibration.h"

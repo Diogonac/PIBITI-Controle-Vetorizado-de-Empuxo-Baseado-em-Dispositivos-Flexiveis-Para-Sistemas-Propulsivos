@@ -4,7 +4,6 @@
 #include "mbed.h"
 #include "imports.h"
 
-
 // Classe Actuators
 class Calibration
 
@@ -23,10 +22,17 @@ public:
     void phi_test_calib(void);
     void theta_test_calib(void);
 
+    // Inicializa a IMU
+    void config_calib_imu();
+
 
 
     // Set calibration true
     bool calibration;
+
+    // Armazena os dados dos ângulos calibrados
+    double phi_data_calib[11];
+    double theta_data_calib[11]; 
 
 
 private:
@@ -45,14 +51,38 @@ private:
     double sum_phi, sum_theta; // Somatória dos ângulos
     double estimated_phi, estimated_theta;
 
-    // Armazena os dados dos ângulos calibrados
-    double phi_data_calib[11];
-    double theta_data_calib[11]; 
-
     // Check angles calibration
     void check_calibration (bool calib_phi, bool calib_theta);
     bool calibration_phi;
     bool calibration_theta;
+
+
+    // Used to attitude estimator
+    // Estima os ângulos de Euler (rad) e as velocidades angular (rad/s)
+    void estimate(void);
+
+    void angle_calib(double angle);
+    double angle_calibrated;
+    
+    bool verifica_imu;
+
+    // Ângulos de Euler de interesse
+    double Phi, Theta, Psi;
+
+    // Velocidades angular de interesse
+    double P, Q, R;
+    // Objeto da IMU
+    BNO055 BNO055;
+
+    int status_BNO055; //Armazena o status do BNO055
+    int status_sys_BNO055; //Armazena o status do sistema do BNO055
+    bool status_check_BNO055; //Armazena o status do BNO055
+    int status_selftest; //Armazena o valor do teste
+    
+    // Variáveis para armazenar os offset das velocidades angulares
+    double offset_gx;
+    double offset_gy;
+    double offset_gz;
 
 
 };
