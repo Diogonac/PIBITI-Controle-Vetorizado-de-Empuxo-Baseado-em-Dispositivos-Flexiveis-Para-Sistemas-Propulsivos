@@ -1,7 +1,7 @@
 #include "estimador_atitude.h"
 
 // Classe do estimador de atitude
-EstimadorAtitude::EstimadorAtitude():BNO055(IMU_SDA, IMU_SCL)
+EstimadorAtitude::EstimadorAtitude():BNO055(SDA, SCL)
 {
     Phi = 0.0;
     Theta = 0.0;

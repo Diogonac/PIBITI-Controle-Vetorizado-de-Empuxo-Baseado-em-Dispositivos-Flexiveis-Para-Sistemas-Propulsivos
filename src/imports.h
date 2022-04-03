@@ -9,6 +9,7 @@
 // Bibliotecas
 #include "libraries/BNO055.h"    // IMU sensor
 #include "libraries/SERVO.h"    // Servo actuator
+#include "libraries/MCP4725.h"    // Servo actuator
 #include <cmath>
 
 // Módulos

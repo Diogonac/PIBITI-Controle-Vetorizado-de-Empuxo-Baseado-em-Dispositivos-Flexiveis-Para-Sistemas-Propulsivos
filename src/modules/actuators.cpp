@@ -2,7 +2,7 @@
 #include <cstdio>
 
 // Classe do construtor
-Actuators::Actuators() : valvula(VALVULA), LED_amarelo(AMARELO), servo1(SERVO1), servo2(SERVO2){
+Actuators::Actuators(): valve(SDA, SCL), LED_amarelo(AMARELO), servo1(SERVO1), servo2(SERVO2) {
 
   LED_amarelo = 0;
 
@@ -16,8 +16,18 @@ Actuators::Actuators() : valvula(VALVULA), LED_amarelo(AMARELO), servo1(SERVO1),
   time = 0.0;
 
   init_servos = false;
+  init_dac = false;
+}
 
-  
+void Actuators::config_dac() {
+
+  if (valve.open()) {
+    printf("Device detected!\n");
+    valve.wakeup();
+    init_dac = true;
+  } else {
+    printf("Device not detected!\n");
+  }
 
 }
 
@@ -42,7 +52,6 @@ void Actuators::safe_state(void) {
   servo2.position(phi_safe);
 
   wait(1);
-
 }
 
 /* Aciona a válvula para entregar o empuxo (N) total desejado (baseado nos
@@ -61,9 +70,22 @@ void Actuators::actuate_servos(double f_x, double f_y, double f_z) {
   // Aciona os servos
   servo1.position(safe_angle(phi));
   servo2.position(safe_angle(theta));
-
 }
 
+/* Aciona a válvula para entregar o empuxo (N) total desejado */
+void Actuators::actuate_valve(double f_x, double f_y, double f_z) {
+
+  calc_thruster(f_x, f_y, f_z);
+
+  // DC voltage on valve to achieve the amount of thrust
+//    for (float i = 0.0; i < 360.0; i += 0.1){
+//       valve.write(0.5 * (sinf(i * 3.14159265 / 180.0) + 1));
+//    }
+   valve.write(0.0);
+   wait(1);
+   valve.write(1.0);
+   wait(1);
+}
 
 /* Converte os vetores de empuxo no vetor empuxo total para calcular a abertura
 da válvula e os ângulos desejados nos tamanhos de pulsos */
@@ -77,21 +99,22 @@ void Actuators::calc_thruster(double f_x, double f_y, double f_z) {
   theta_servo2 = ((180.000f * atan2(f_x, f_z)) / pi);
 }
 
-void Actuators::servo_test(double max_angle, double min_angle, double step_angle){
+void Actuators::servo_test(double max_angle, double min_angle,
+                           double step_angle) {
 
-    safe_state();
-    wait(1);
-    LED_amarelo = 0;
+  safe_state();
+  wait(1);
+  LED_amarelo = 0;
 
-    printf("\r\n");                    // Pula uma linha no leitor
-    printf("Inicio da varredura\r\n"); // Indica que a varredura de 30º nos dois
+  printf("\r\n");                    // Pula uma linha no leitor
+  printf("Inicio da varredura\r\n"); // Indica que a varredura de 30º nos dois
                                      // servos foi iniciada
 
-    time = 100;//time_displacement*step_angle;
+  time = 100; // time_displacement*step_angle;
 
   for (pos = 90.0; pos <= max_angle; pos += step_angle) {
     // Varre a abertura de 90º até 105º com um incremento de 0.15º
-    servo1.position(PHI(pos)); // Imprime o Ângulo no servo 1
+    servo1.position(PHI(pos));   // Imprime o Ângulo no servo 1
     servo2.position(THETA(pos)); // Imprime o Ângulo no servo 2
     printf("Posição: %f \r\n", pos);
     wait_ms(time); // Aguarda o deslocamento
@@ -99,7 +122,7 @@ void Actuators::servo_test(double max_angle, double min_angle, double step_angle
 
   for (pos = max_angle; pos >= min_angle; pos -= step_angle) {
     // Varre a abertura de 105º até 75º com um incremento de 0.15º
-    servo1.position(PHI(pos)); // Imprime o Ângulo no servo 1
+    servo1.position(PHI(pos));   // Imprime o Ângulo no servo 1
     servo2.position(THETA(pos)); // Imprime o Ângulo no servo 2
     printf("Posição: %f \r\n", pos);
     wait_ms(time); // Aguarda o deslocamento
@@ -107,43 +130,19 @@ void Actuators::servo_test(double max_angle, double min_angle, double step_angle
 
   for (pos = min_angle; pos <= 90.0; pos += step_angle) {
     // Varre a abertura de 75º até 90º com um incremento de 0.15º
-    servo1.position(PHI(pos)); // Imprime o Ângulo no servo 1
+    servo1.position(PHI(pos));   // Imprime o Ângulo no servo 1
     servo2.position(THETA(pos)); // Imprime o Ângulo no servo 2
     printf("Posição: %f \r\n", pos);
     wait_ms(time); // Aguarda o deslocamento
   }
 
   wait(2);
-  printf("Varredura completa\r\n"); 
+  printf("Varredura completa\r\n");
 
   init_servos = true;
-
 }
 
 
+double Actuators::PHI(double phi_angle) { return (P1 * phi_angle) + P2; }
 
-
-
-
-
-
-
-
-
-
-// Converte o empuxo total em sinal para abertura da válvula
-double Actuators::actuate_valve(double abertura_valvula) {
-
-  return abertura_valvula;
-}
-
-double Actuators::PHI(double phi_angle){
-    
-    return (P1 * phi_angle) + P2;
-}
-
-double Actuators::THETA(double theta_angle){
-    
-    return (T1 * theta_angle) + T2;
-}
-
+double Actuators::THETA(double theta_angle) { return (T1 * theta_angle) + T2; }

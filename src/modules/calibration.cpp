@@ -2,7 +2,7 @@
 
 
 // Classe do construtor
-Calibration::Calibration() : servo1(SERVO1), servo2(SERVO2), BNO055(IMU_SDA, IMU_SCL){
+Calibration::Calibration() : servo1(SERVO1), servo2(SERVO2), BNO055(SDA, SCL){
 
   calibration = false;
   calibration_phi = false;

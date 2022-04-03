@@ -14,12 +14,16 @@ public:
     // Construtor da classe
     Actuators();
 
-    /* Aciona a válvula para entregar o empuxo (N) total desejado (baseado nos
-    vetores empuxo) e os servos (graus) */
-    void actuate_servos(double f_x, double f_y, double f_z);
 
-    // Converte o empuxo total em sinal para abertura da válvula
-    double actuate_valve(double abertura_valvula);
+
+    /* Aciona a válvula para entregar o empuxo (N) total desejado */
+    void actuate_valve(double f_x, double f_y, double f_z);
+
+    /* DAC initialization */
+    void config_dac();
+
+    // Aciona os servos para controlar a atitude do veiculo
+    void actuate_servos(double f_x, double f_y, double f_z);
     
     // Desloca o ponto central para 0º quando a condição limite for atingida e desliga a propulsão
     void safe_state(void);
@@ -31,12 +35,13 @@ public:
     double PHI(double phi_angle);
     double THETA(double theta_angle);
 
-    bool init_servos;
+    // Initialization flags
+    bool init_servos, init_dac;
 
 private:
 
-    // Valvula PWM output
-    PwmOut valvula;
+    // DAC valve output
+    MCP4725 valve;
 
     // LED Amarelo, indicador de saída de loop
     DigitalOut LED_amarelo;
@@ -48,6 +53,7 @@ private:
     /* Converte os vetores de empuxo no vetor empuxo total para calcular a abertura
     da válvula e os ângulos desejados nos tamanhos de pulsos */
     void calc_thruster(double f_x, double f_y, double f_z);
+
 
     // Garante que nenhum valor fora do intervalo [75 - 105] será impresso nos servos
     double safe_angle(double angulo);
