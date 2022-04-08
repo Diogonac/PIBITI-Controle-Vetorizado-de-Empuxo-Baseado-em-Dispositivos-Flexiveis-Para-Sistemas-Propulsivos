@@ -22,12 +22,12 @@ int main(){
     // while (calib.calibration != true) {
        while (true) {
 
-        calib.phi_test_calib();
+        //calib.phi_test_calib();
 
-        // calib.calibra_servo_phi();
-        // wait(1);
-        // calib.calibra_servo_theta();
-        // wait(1);
+         calib.calibra_servo_phi();
+         wait(1);
+         calib.calibra_servo_theta();
+         wait(1);
 
     }
 

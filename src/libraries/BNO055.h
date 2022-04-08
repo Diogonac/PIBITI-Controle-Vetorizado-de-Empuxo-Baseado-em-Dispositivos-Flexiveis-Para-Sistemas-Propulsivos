@@ -3,7 +3,7 @@
 
 #include "mbed.h"
 
-#define BNOAddress (0x29 << 1)
+#define BNOAddress (0x28 << 1)
 //Register definitions
 /* Page id register definition */
 #define BNO055_PAGE_ID_ADDR          0x07

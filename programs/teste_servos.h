@@ -103,8 +103,8 @@ void varredura_servos_pulsos(float tempo)
 //=================== Verificação dos servos ====================
     for (pulso = 550; pulso <= 2500; pulso += 10) {
         //Varre a abertura de 90º até 105º com um incremento de 1º
-        servo1.largura_pulso(pulso); //Imprime o Ângulo no servo 1
-        servo2.largura_pulso(pulso); //Imprime o Ângulo no servo 2
+        servo1.pulse_width(pulso); //Imprime o Ângulo no servo 1
+        servo2.pulse_width(pulso); //Imprime o Ângulo no servo 2
         wait_ms(tempo); //Aguarda o deslocamento
         pc.printf("Pulso atual %d\r\n", pulso); //Indica o ângulo atual dos servos
 
@@ -114,8 +114,8 @@ void varredura_servos_pulsos(float tempo)
 
     for (pulso = 2500; pulso >= 550; pulso -= 10) {
         //Varre a abertura de 105º até 75º com um incremento de 1º
-        servo1.largura_pulso(pulso); //Imprime o Ângulo no servo 1
-        servo2.largura_pulso(pulso); //Imprime o Ângulo no servo 2
+        servo1.pulse_width(pulso); //Imprime o Ângulo no servo 1
+        servo2.pulse_width(pulso); //Imprime o Ângulo no servo 2
         wait_ms(tempo); //Aguarda o deslocamento
         pc.printf("Pulso atual %d\r\n", pulso); //Indica o ângulo atual dos servos
     }

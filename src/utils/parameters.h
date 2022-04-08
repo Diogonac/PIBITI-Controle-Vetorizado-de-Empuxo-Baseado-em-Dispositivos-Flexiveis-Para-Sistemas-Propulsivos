@@ -1,8 +1,9 @@
 #ifndef parameters_h
 #define parameters_h
 
-// Tempo de amostragem
-const double dt = 0.01; // 100 Hz
+// Iterruption time
+const float dt = 0.01;
+const float dt_range = 0.05;
 
 
 // Constantest físicas
@@ -51,5 +52,11 @@ const double offset_servo1 = 90.0; //83
 const double phi_safe = (P1 * offset_servo1) + P2;
 const double theta_safe = (T1 * offset_servo2) + T2;
 const double time_displacement = 4.0; // In ms
+
+// Vertical estimator constants
+const float wc = 10; //aprox. 500Hz antes estava em 8
+const float zeta = sqrt(2)/2;
+const float l1 = wc*wc;
+const float l2 = 2 * zeta * wc; 
 
 #endif

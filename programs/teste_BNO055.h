@@ -20,7 +20,7 @@ int main()
 
     pc.baud(115200); //Define a velocidade da porta USB
     
-    att_est.config_imu();
+    att_est.init();
 
     //Definição da taxa de amostragem
     amostragem.attach(&callback, dt);

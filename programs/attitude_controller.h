@@ -38,7 +38,7 @@ int main()
 
     // Configuração dos periféricos
     act.servo_test(105.0, 75.0, 2.0);
-    att_est.config_imu();
+    att_est.init();
     
     inicializa.verifica(act.init_servos, att_est.verifica_imu);
     

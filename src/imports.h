@@ -10,6 +10,7 @@
 #include "libraries/BNO055.h"    // IMU sensor
 #include "libraries/SERVO.h"    // Servo actuator
 #include "libraries/MCP4725.h"    // Servo actuator
+#include "libraries/VL53L0x.h"    // Vertical range sensor
 #include <cmath>
 
 // Módulos
@@ -17,6 +18,7 @@
 #include "modules/calibration.h"
 #include "modules/controlador_atitude.h"
 #include "modules/estimador_atitude.h"
+#include "modules/vertical_estimator.h"
 #include "modules/inicializa_perifericos.h"
 
 

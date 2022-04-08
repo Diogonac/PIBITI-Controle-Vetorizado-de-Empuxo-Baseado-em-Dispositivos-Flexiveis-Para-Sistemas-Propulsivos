@@ -27,7 +27,7 @@ EstimadorAtitude::EstimadorAtitude():BNO055(SDA, SCL)
 
 
 // Inicializa a IMU
-void EstimadorAtitude::config_imu()
+void EstimadorAtitude::init()
 {
 
     //============= Configurações iniciais no BNO055 ================

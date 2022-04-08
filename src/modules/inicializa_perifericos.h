@@ -29,6 +29,8 @@ private:
     // LED Amarelo, indicador de saída de loop
     DigitalOut LED_verde;
     DigitalOut LED_vermelho;
+    DigitalOut LED_amarelo;
+
     
     PwmOut buzzer;
 

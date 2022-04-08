@@ -82,9 +82,9 @@ void Actuators::actuate_valve(double f_x, double f_y, double f_z) {
 //       valve.write(0.5 * (sinf(i * 3.14159265 / 180.0) + 1));
 //    }
    valve.write(0.0);
-   wait(1);
+   wait_ms(5);
    valve.write(1.0);
-   wait(1);
+   wait_ms(5);
 }
 
 /* Converte os vetores de empuxo no vetor empuxo total para calcular a abertura

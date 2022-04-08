@@ -15,7 +15,7 @@ public:
     EstimadorAtitude();
 
     // Inicializa a IMU
-    void config_imu();
+    void init();
     
     bool verifica_imu;
 
