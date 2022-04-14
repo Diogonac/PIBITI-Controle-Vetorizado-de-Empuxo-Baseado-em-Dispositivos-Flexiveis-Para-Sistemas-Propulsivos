@@ -25,6 +25,11 @@ public:
     // Inicializa a IMU
     void config_calib_imu();
 
+    /* DAC initialization */
+    void config_dac();
+
+    void calib_dac();
+
 
 
     // Set calibration true
@@ -34,12 +39,18 @@ public:
     double phi_data_calib[11];
     double theta_data_calib[11]; 
 
+    double voltageValve, DAC_out;
+
+    bool verifica_imu, init_dac;
 
 private:
 
     // Servos PWM outputs
     Servo servo1;
     Servo servo2;
+
+    // DAC valve output
+    MCP4725 valve;
 
     double lista_angulos_1[6] = {0.0, 2.0, 4.0, 6.0, 8.0, 10.0};
     double lista_angulos_2[6] = {0.0, -2.0, -4.0, -6.0, -8.0, -10.0};
@@ -50,6 +61,9 @@ private:
     double mean_phi, mean_theta; // Média dos ângulos
     double sum_phi, sum_theta; // Somatória dos ângulos
     double estimated_phi, estimated_theta;
+
+    double DAC[20] = {0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0};
+
 
     // Check angles calibration
     void check_calibration (bool calib_phi, bool calib_theta);
@@ -64,8 +78,6 @@ private:
     void angle_calib(double angle);
     double angle_calibrated;
     
-    bool verifica_imu;
-
     // Ângulos de Euler de interesse
     double Phi, Theta, Psi;
 

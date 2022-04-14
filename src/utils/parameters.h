@@ -1,5 +1,6 @@
 #ifndef parameters_h
 #define parameters_h
+#include <cmath>
 
 // Iterruption time
 const float dt = 0.01;
@@ -54,9 +55,18 @@ const double theta_safe = (T1 * offset_servo2) + T2;
 const double time_displacement = 4.0; // In ms
 
 // Vertical estimator constants
-const float wc = 10; //aprox. 500Hz antes estava em 8
-const float zeta = sqrt(2)/2;
-const float l1 = wc*wc;
-const float l2 = 2 * zeta * wc; 
+const double wc = 10; //aprox. 500Hz antes estava em 8
+const double zeta = sqrt(2)/2;
+const double l1 = wc*wc;
+const double l2 = 2 * zeta * wc; 
+
+// Valve curve fit constants
+const double p1 = -0.004041;
+const double p2 = 0.03335;
+const double p3 = -0.1218;
+const double p4 = 0.9867;
+const double p5 = -0.6387;
+const double p6 = 4.466;
+
 
 #endif

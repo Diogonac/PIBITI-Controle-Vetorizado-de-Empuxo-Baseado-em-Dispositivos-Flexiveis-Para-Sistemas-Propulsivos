@@ -127,7 +127,7 @@ public:
      *
      * @param value The new output voltage as a percentage (0.0 to 1.0 * VDD).
      */
-    void write(float value);
+    void write(double value);
  
     /** Set the output voltage of the MCP4725 from a 16-bit range
      *

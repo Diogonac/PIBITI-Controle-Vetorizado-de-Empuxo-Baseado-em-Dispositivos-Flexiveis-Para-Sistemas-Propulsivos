@@ -37,6 +37,8 @@ public:
 
     // Initialization flags
     bool init_servos, init_dac;
+    double voltageValve;
+
 
 private:
 
@@ -63,6 +65,7 @@ private:
 
     // Servos test positions 
     double pos, time;
+
 };
 
 #endif

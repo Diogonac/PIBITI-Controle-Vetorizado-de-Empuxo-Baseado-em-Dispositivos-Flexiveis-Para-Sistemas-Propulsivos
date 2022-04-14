@@ -79,7 +79,7 @@ float MCP4725::read()
     return m_DacValue / 4095.0;
 }
  
-void MCP4725::write(float value)
+void MCP4725::write(double value)
 {
     //Range limit value
     if (value < 0.0)

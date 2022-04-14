@@ -2,7 +2,8 @@
 #include <cstdio>
 
 // Classe do construtor
-Actuators::Actuators(): valve(SDA, SCL), LED_amarelo(AMARELO), servo1(SERVO1), servo2(SERVO2) {
+Actuators::Actuators()
+    : valve(SDA, SCL), LED_amarelo(AMARELO), servo1(SERVO1), servo2(SERVO2) {
 
   LED_amarelo = 0;
 
@@ -14,6 +15,8 @@ Actuators::Actuators(): valve(SDA, SCL), LED_amarelo(AMARELO), servo1(SERVO1), s
 
   pos = 0.0;
   time = 0.0;
+
+  voltageValve = 1.0;
 
   init_servos = false;
   init_dac = false;
@@ -28,7 +31,6 @@ void Actuators::config_dac() {
   } else {
     printf("Device not detected!\n");
   }
-
 }
 
 double Actuators::safe_angle(double angulo) {
@@ -78,13 +80,18 @@ void Actuators::actuate_valve(double f_x, double f_y, double f_z) {
   calc_thruster(f_x, f_y, f_z);
 
   // DC voltage on valve to achieve the amount of thrust
-//    for (float i = 0.0; i < 360.0; i += 0.1){
-//       valve.write(0.5 * (sinf(i * 3.14159265 / 180.0) + 1));
-//    }
-   valve.write(0.0);
-   wait_ms(5);
-   valve.write(1.0);
-   wait_ms(5);
+  //    for (float i = 0.0; i < 360.0; i += 0.1){
+  //       valve.write(0.5 * (sinf(i * 3.14159265 / 180.0) + 1));
+  //    }
+
+  if (total_thruster <= 6.105) {
+    voltageValve = p1 * pow(total_thruster, 3) + p2 * pow(total_thruster, 2) + p3 * total_thruster + p4;
+  } else {
+    voltageValve = p5 * total_thruster + p6;
+  }
+
+  valve.write(voltageValve);
+  // valve.write(1.0);
 }
 
 /* Converte os vetores de empuxo no vetor empuxo total para calcular a abertura
@@ -141,7 +148,6 @@ void Actuators::servo_test(double max_angle, double min_angle,
 
   init_servos = true;
 }
-
 
 double Actuators::PHI(double phi_angle) { return (P1 * phi_angle) + P2; }
 

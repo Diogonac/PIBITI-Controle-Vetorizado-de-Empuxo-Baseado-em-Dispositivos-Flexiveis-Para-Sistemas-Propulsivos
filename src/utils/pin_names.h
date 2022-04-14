@@ -7,11 +7,9 @@
 const PinName SERVO1 = D5; 
 const PinName SERVO2 = D6; 
 
-
 // I2C Comunications Pins
 const PinName SDA = D14; // I2C1
 const PinName SCL = D15; // I2C1
-
 
 // UART Comunications Pins
 const PinName SERIAL_TX1 = D1; 

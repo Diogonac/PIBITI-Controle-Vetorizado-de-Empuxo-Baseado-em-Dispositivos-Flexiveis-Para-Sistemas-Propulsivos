@@ -4,18 +4,19 @@
 //============ Configura porta serial ===============
 Serial pc(SERIAL_TX1, SERIAL_RX1); // Comunicação com USB TX, RX
 
-Actuators act;
+Calibration calib;
+
 
 int main() {
 
   pc.baud(115200); // Define a velocidade da porta USB
 
-  act.config_dac();
-  wait(1);
+  calib.config_dac();
+  wait(10);
 
-  while (act.init_dac == true) {
+  while (calib.init_dac == true) {
 
-   act.actuate_valve(0, 0, 0);
-
+    calib.calib_dac();
+    wait(5);
+   }
   }
-}
