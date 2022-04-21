@@ -91,7 +91,7 @@ void Actuators::actuate_valve(double f_x, double f_y, double f_z) {
   }
 
   valve.write(voltageValve);
-  // valve.write(1.0);
+   //valve.write(0.0);
 }
 
 /* Converte os vetores de empuxo no vetor empuxo total para calcular a abertura

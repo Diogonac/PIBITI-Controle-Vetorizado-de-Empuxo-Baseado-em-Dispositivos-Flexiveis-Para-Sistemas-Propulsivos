@@ -9,7 +9,6 @@ VerticalEstimator::VerticalEstimator() : range(SDA, SCL)
 z = 0.0;
 w = 0.0;
 
-
 }
 
 // Initialize class
@@ -22,20 +21,19 @@ range.init();
 }
 
 // Predict vertical position and velocity from model
-void VerticalEstimator :: predict(float f_t)
+void VerticalEstimator :: predict(double f_z)
 {
  z = z + w * dt;
  
- if(z > 0.05)
- {
- w = w + ((f_t/m)-g) * dt;
- }
- 
+//  if(z > 0.05)
+//  {
+//  w = w + ((f_z/m)-g) * dt;
+//  }
 
 }
 
 // Correct vertical position and velocity with measurement
-void VerticalEstimator :: correct(float phi , float theta)
+void VerticalEstimator :: correct(double phi , double theta)
 {
 
 range.read();
@@ -43,10 +41,10 @@ range.read();
 if(range.d < 2.0)
 {
     //float z_m = cos(phi) * cos(theta) * range.d;
-    float z_m = range.d;
+    double z_m = range.d;
 
     w = w + l1 * dt_range * (z_m - z);
-    z = z_m;//+ l2 * dt_range * (z_m - z);
+    z = z + l2 * dt_range * (z_m - z);
 }
 
 }

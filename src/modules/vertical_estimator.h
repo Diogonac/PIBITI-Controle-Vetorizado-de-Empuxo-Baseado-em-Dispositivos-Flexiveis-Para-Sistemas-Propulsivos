@@ -15,13 +15,13 @@ public:
   void init();
 
   // Predict vertical position and velocity from model
-  void predict(float f_t);
+  void predict(double f_z);
 
   // Correct vertical position and velocity with measurement
-  void correct(float phi , float theta);
+  void correct(double phi , double theta);
 
   // Vertical position (m) and velocity (m/s) estimations
-  float z, w;
+  double z, w;
 
 private:
 

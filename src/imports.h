@@ -16,10 +16,14 @@
 // Módulos
 #include "modules/actuators.h"
 #include "modules/calibration.h"
-#include "modules/controlador_atitude.h"
+#include "modules/initialization.h"
+
 #include "modules/estimador_atitude.h"
+#include "modules/controlador_atitude.h"
+
 #include "modules/vertical_estimator.h"
-#include "modules/inicializa_perifericos.h"
+#include "modules/vertical_controller.h"
+
 
 
 #endif

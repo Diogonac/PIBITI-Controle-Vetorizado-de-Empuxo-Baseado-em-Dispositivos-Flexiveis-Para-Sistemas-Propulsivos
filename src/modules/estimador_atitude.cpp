@@ -46,7 +46,7 @@ void EstimadorAtitude::init()
 //============= Unidade das variáveis do BNO055 ================
     BNO055.set_accel_units(MPERSPERS); // m/s2
     BNO055.set_anglerate_units(RAD_PER_SEC); // rad/s
-    BNO055.set_angle_units(RADIANS); // GRAUS
+    BNO055.set_angle_units(RADIANS); // Radiano
     BNO055.set_temp_units(CENTIGRADE); // °C
     BNO055.set_orientation(ANDROID); // Sentido de rotação ANDROID = Regra da mão direita
     BNO055.set_mapping(4); // Ajuste do eixo de coordenadas / orientação P4 for calib and P1 for others
