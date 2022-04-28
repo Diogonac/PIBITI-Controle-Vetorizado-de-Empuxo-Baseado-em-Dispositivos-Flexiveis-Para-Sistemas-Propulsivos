@@ -11,7 +11,7 @@ const double pi = 3.14159265359f;
 const double g = 9.807;       // m/s^2
 
 // Constantes do sistema mecânico
-const double m = 0.4493;    // kg
+const double m = 0.5;    // kg
 const double I_xx = 0.001221f; // kg.m^2
 const double I_yy = 0.001103f; // kg.m^2
 const double I_zz = 29.0e-6; // kg.m^2
@@ -54,31 +54,38 @@ const double l1 = wc*wc;
 const double l2 = 2 * zeta * wc; 
 
 // Vertical controller gains
-const float Ts_vert = 1.5;
-const float OS_vert = 0.1;
+const float Ts_vert = 1.0;//0.8;
+const float OS_vert = 2.0;//1.0;
 const float zeta_vert = -log(OS_vert/100)/sqrt(pow(pi, 2) + pow((log(OS_vert/100)), 2));
 const float wn_vert = 4 / (zeta_vert * Ts_vert);
-const float kd_vert = 2 * zeta_vert * wn_vert + 1;
-const float kp_vert = pow(wn_vert, 2);
+const float kd_vert = 4.0;//2.6667;//2 * zeta_vert * wn_vert;
+const float kp_vert =  10.8127;//5.8487; //pow(wn_vert, 2);
 
 // Valve curve fit constants
-const double p1 = -0.004041;
-const double p2 = 0.03335;
-const double p3 = -0.1218;
-const double p4 = 0.9867;
-const double p5 = -0.6387;
-const double p6 = 4.466;
+const double coef1 = -0.004041;
+const double coef2 = 0.03335;
+const double coef3 = -0.1218;
+const double coef4 = 0.9867;
+const double coef5 = -0.6387;
+const double coef6 = 4.466;
 
 // Feed-Foward constants
-const double f_stiction = 2.;
-const double f_coulomb = f_stiction/1.25;
-const double f_max = 7.0;
-const double K1 = 0.001;
-const double K2 = 0.05;
-const double K3 = 0.1;
+const double f_coulomb = 1.65;// 1.5
+const double viscous = 0.6;  // 0.8
 
-// const double K2 = 0.05;
-// const double K3 = 0.1;
+// o modelo tem que admitir uma faixa de velocidade baixa
+// devo filtrar melhor o sinal do sinal 
+
+
+// const double f_stiction = 1.2;
+// const double f_coulomb = f_stiction/1.01;
+// const double f_max = 7.0;
+// const double K1 = 0.001;
+// const double K2 = 0.1;
+// const double K3 = 0.2;
+
+// const double K2 = 5.0;
+// const double K3 = 5.0;
 
 
 #endif

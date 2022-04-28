@@ -15,7 +15,7 @@ public:
 current vertical position (m) and velocity (m/s) */
  void control(double z_r , double z, double w);
 
-void feed_foward(double ufb, double w, double f_max, double K1, double K2, double K3, double f_stiction, double f_coulomb, double z_r , double z);
+void feed_foward(double ufb, double w, double f_max, double K1, double K2, double K3, double f_stiction, double f_coulomb, double z_r , double z, double f_z);
 
 // Total thrust force (N)
 double f_z, uff, uout;

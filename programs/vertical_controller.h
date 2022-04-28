@@ -25,14 +25,15 @@ double z_r;
 // Callback functions
 void callback() { flag = true; }
 void callback_range() { flag_range = true; }
+
 void input_ref(double Z1, double Z2){
-    if(input_wave.read() <= 5){
+    if(input_wave.read() <= 2.5){
     z_r = Z1;
     }
-    if(input_wave.read() > 5){
+    if(input_wave.read() > 2.5){
         z_r = Z2; 
     }
-    if(input_wave.read() >= 10){
+    if(input_wave.read() >= 5){
         input_wave.reset();
   }
 }
@@ -53,10 +54,11 @@ int main() {
   // Initialize interrupts
   tic.attach(&callback, dt);
   tic_range.attach(&callback_range, dt_range);
-  input_wave.start();
+  
 
   // Arm the sistem to initialization 
   init.arm();
+  input_wave.start();
 
   //while (abs(att_est.Phi) <= pi / 4.0 && abs(att_est.Theta) <= pi / 4.0 && abs(att_est.P) <= 4.0 * pi && abs(att_est.Q) <= 4.0 * pi && abs(att_est.R) <= 4.0 * pi) {
     while (init.valve_flag == 1){
@@ -70,13 +72,17 @@ int main() {
         ver_est.correct(0.0, 0.0);
 
       }
-      input_ref(0.35, 0.1);
+      input_ref(0.4, 0.2);
       ver_cont.control(z_r, ver_est.z, ver_est.w);
-      ver_cont.feed_foward(ver_cont.f_z, ver_est.w, f_max, K1, K2, K3, f_stiction, f_coulomb, z_r, ver_est.z);
+    //   ver_cont.feed_foward(ver_cont.f_z, ver_est.w, f_max, K1, K2, K3, f_stiction, f_coulomb, z_r, ver_est.z);
+        ver_cont.feed_foward(ver_cont.f_z, ver_est.w, 0, 0, 0, 0, 0, f_coulomb, z_r, ver_est.z);
+
       //att_cont.control(phi_r, theta_r, psi_r, att_est.phi, att_est.theta, att_est.psi, att_est.p, att_est.q, att_est.r);
       act.actuate_valve(0.0, 0.0, ver_cont.uout);
-    //    pc.printf("%f %f\n", ver_est.z, z_r);
-      pc.printf("%f %f %f %f %f\n", ver_cont.uff, ver_cont.f_z, ver_cont.uout, ver_est.w, z_r);
+    //   act.actuate_valve(0.0, 0.0, m*g);
+    //   pc.printf("F_stiction = %f\r\n", f_stiction);
+       pc.printf("%f %f\n", ver_est.z, z_r);
+    //   pc.printf("%f %f %f %f %f %f\n", ver_cont.uff, ver_cont.f_z, ver_cont.uout, ver_est.w, z_r, ver_est.z);
 
 
     }

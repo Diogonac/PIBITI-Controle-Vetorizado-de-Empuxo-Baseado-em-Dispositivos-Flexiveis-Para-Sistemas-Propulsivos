@@ -29,12 +29,13 @@ return kp * (pos_r - pos) + kd * (0 - vel);
 
 }
 
-void VerticalController :: feed_foward(double ufb, double w, double f_max, double K1, double K2, double K3, double f_stiction, double f_coulomb, double z_r , double z){
+void VerticalController :: feed_foward(double ufb, double w, double f_max, double K1, double K2, double K3, double f_stiction, double f_coulomb, double z_r , double z, double f_z){
 
-    control(z_r, z, w);
-
-    uff = f_stiction * (tanh(f_z/K1)-(f_z/f_max)) * (1 / cosh(w/K2)) + f_coulomb * tanh(w/K3);
-
+    uff = (w/abs(w)) * (viscous * abs(w) + f_coulomb); 
+    /* A determinação deste sinal está provocando muito ruido quando 
+    o sistema esta com velocidades muito baixas; Tentar habilitar a predição da
+    velocidade */
+    // uff = f_stiction * (tanh(f_z/K1)-(f_z/f_max)) * (1 / cosh(w/K2)) + f_coulomb * tanh(w/K3);
     uout = uff + f_z;
 
 }

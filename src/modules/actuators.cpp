@@ -85,9 +85,9 @@ void Actuators::actuate_valve(double f_x, double f_y, double f_z) {
   //    }
 
   if (total_thruster <= 6.105) {
-    voltageValve = p1 * pow(total_thruster, 3) + p2 * pow(total_thruster, 2) + p3 * total_thruster + p4;
-  } else {
-    voltageValve = p5 * total_thruster + p6;
+    voltageValve = coef1 * pow(total_thruster, 3) + coef2 * pow(total_thruster, 2) + coef3 * total_thruster + coef4;
+  } else{
+    voltageValve = coef5 * total_thruster + coef6;
   }
 
   valve.write(voltageValve);
