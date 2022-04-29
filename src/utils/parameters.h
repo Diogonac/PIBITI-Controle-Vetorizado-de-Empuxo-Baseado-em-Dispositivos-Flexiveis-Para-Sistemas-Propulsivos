@@ -48,7 +48,7 @@ const double theta_safe = (T1 * offset_servo2) + T2;
 const double time_displacement = 4.0; // In ms
 
 // Vertical estimator constants
-const double wc = 8; //aprox. 500Hz antes estava em 8
+const double wc = 10; //aprox. 500Hz antes estava em 8
 const double zeta = sqrt(2)/2;
 const double l1 = wc*wc;
 const double l2 = 2 * zeta * wc; 
@@ -70,8 +70,9 @@ const double coef5 = -0.6387;
 const double coef6 = 4.466;
 
 // Feed-Foward constants
-const double f_coulomb = 1.65;// 1.5
-const double viscous = 0.6;  // 0.8
+const double F_coulomb = 1.2;// 1.0
+const double viscous = 1.0;  // 0.8
+const double K1 = 0.07;
 
 // o modelo tem que admitir uma faixa de velocidade baixa
 // devo filtrar melhor o sinal do sinal 

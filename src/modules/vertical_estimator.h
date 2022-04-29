@@ -21,7 +21,7 @@ public:
   void correct(double phi , double theta);
 
   // Vertical position (m) and velocity (m/s) estimations
-  double z, w;
+  double z, w, w_verify, delta_z, z_m;
 
 private:
 

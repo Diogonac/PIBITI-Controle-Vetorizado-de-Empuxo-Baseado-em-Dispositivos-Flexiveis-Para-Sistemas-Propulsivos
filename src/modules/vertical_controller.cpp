@@ -29,13 +29,33 @@ return kp * (pos_r - pos) + kd * (0 - vel);
 
 }
 
-void VerticalController :: feed_foward(double ufb, double w, double f_max, double K1, double K2, double K3, double f_stiction, double f_coulomb, double z_r , double z, double f_z){
+void VerticalController :: feed_foward(double ufb, double w, double z_r , double z){
 
-    uff = (w/abs(w)) * (viscous * abs(w) + f_coulomb); 
+    // Tentativa 1
+    //uff = (w/abs(w)) * (viscous * abs(w) + f_coulomb); 
+
+    // Tentativa 2
+    // if(abs(w) > 0.1){
+    //     f_coulomb = f_coulomb*0.5; 
+    // }
+    // uff = (w/abs(w)) * (viscous * abs(w) + f_coulomb); 
+    
+    // Tentativa 3
+    // uff = viscous * tanh(w/K1) + F_coulomb * tanh(w/K1); 
+
+
+    // Tentativa 4
+    uff = viscous*tanh(w/K1) + F_coulomb*(1/cosh(w/K1))*tanh(w/K1);
+
+    // Tentativa 5
+    // uff = (w/abs(w)) * viscous * abs(w) + F_coulomb*(1/cosh(w/K1))*tanh(w/K1);
+
     /* A determinação deste sinal está provocando muito ruido quando 
-    o sistema esta com velocidades muito baixas; Tentar habilitar a predição da
-    velocidade */
+    o sistema esta com velocidades muito baixas; 
+    Tentar habilitar a predição da
+    velocidade 
+    Fazer o cálculo do sinal com menos casas decimais*/
     // uff = f_stiction * (tanh(f_z/K1)-(f_z/f_max)) * (1 / cosh(w/K2)) + f_coulomb * tanh(w/K3);
-    uout = uff + f_z;
+    uout = uff + ufb;
 
 }
