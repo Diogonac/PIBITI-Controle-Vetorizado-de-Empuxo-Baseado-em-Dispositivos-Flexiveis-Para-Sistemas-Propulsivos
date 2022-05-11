@@ -36,8 +36,8 @@ int main() {
       ver_est.predict(0.0);
       if (flag_range) {
         flag_range = false;
-        //ver_est.correct(att_est.Phi, att_est.Theta);
-        ver_est.correct(0,0);
+        ver_est.correct(att_est.Phi, att_est.Theta);
+        //ver_est.correct(0,0);
 
         pc.printf("z [m]:%6.2f | w [m/s]:%6.2f | Phi[°0]:%.2f | Theta[°0]:%.2f \n", ver_est.z, ver_est.w, att_est.Phi, att_est.Theta);
       }

@@ -58,7 +58,8 @@ private:
 
 
     // Garante que nenhum valor fora do intervalo [75 - 105] será impresso nos servos
-    double safe_angle(double angulo);
+    double safe_angle_phi(double angulo);
+    double safe_angle_theta(double angulo);
 
     // Ângulos dos servos | phi --> roll(x) / theta --> pitch(y)
     double phi_servo1, theta_servo2, phi, theta, total_thruster;

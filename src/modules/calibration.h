@@ -30,7 +30,9 @@ public:
 
     void calib_dac();
 
-
+    // Used to attitude estimator
+    // Estima os ângulos de Euler (rad) e as velocidades angular (rad/s)
+    void estimate(void);
 
     // Set calibration true
     bool calibration;
@@ -42,6 +44,9 @@ public:
     double voltageValve, DAC_out;
 
     bool verifica_imu, init_dac;
+
+    // Ângulos de Euler de interesse
+    double Phi, Theta, Psi;
 
 private:
 
@@ -55,6 +60,7 @@ private:
     double lista_angulos_1[6] = {0.0, 2.0, 4.0, 6.0, 8.0, 10.0};
     double lista_angulos_2[6] = {0.0, -2.0, -4.0, -6.0, -8.0, -10.0};
     double lista_angulos[12] = {0.0, 2.0, 4.0, 6.0, 8.0, 10.0, 0.0, -2.0, -4.0, -6.0, -8.0, -10.0};
+    double angle_calib_table[11] = {-10.0, -8.0, -6.0, -4.0, -2.0, 0.0, 2.0, 4.0, 6.0, 8.0, 10.0};
 
 
     // Variáveis para calcular a média dos valores dos ângulos na calibração dos servos
@@ -71,15 +77,12 @@ private:
     bool calibration_theta;
 
 
-    // Used to attitude estimator
-    // Estima os ângulos de Euler (rad) e as velocidades angular (rad/s)
-    void estimate(void);
 
-    void angle_calib(double angle);
+
+    void angle_calib(double angle, double c1, double c2);
     double angle_calibrated;
     
-    // Ângulos de Euler de interesse
-    double Phi, Theta, Psi;
+
 
     // Velocidades angular de interesse
     double P, Q, R;

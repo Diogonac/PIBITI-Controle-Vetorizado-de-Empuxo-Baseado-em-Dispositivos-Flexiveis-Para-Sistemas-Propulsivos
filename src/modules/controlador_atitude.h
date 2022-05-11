@@ -2,7 +2,7 @@
 #define controlador_atitude_h
 
 #include "mbed.h"
-#include "src/utils/parameters.h"
+#include "imports.h"
 
 // Classe do controlador de atitude
 class ControladorAtitude
@@ -15,7 +15,7 @@ public:
 
     /* Controle das forças de empuxo (N) dado meu ângulo de referência (rad), ângulo
     atual (rad) e velocidade angular (rad/s) | p -> phi_ponto | q -> theta_ponto */
-    void controle(double phi_r, double theta_r, double phi, double theta, double p, double q, double p_r, double q_r);
+    void control(double phi_r, double theta_r, double phi, double theta, double p, double q, double p_r, double q_r);
 
     double f_x, f_y;
 

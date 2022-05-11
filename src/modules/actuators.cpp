@@ -2,8 +2,7 @@
 #include <cstdio>
 
 // Classe do construtor
-Actuators::Actuators()
-    : valve(SDA, SCL), LED_amarelo(AMARELO), servo1(SERVO1), servo2(SERVO2) {
+Actuators::Actuators(): valve(SDA, SCL), LED_amarelo(AMARELO), servo1(SERVO1), servo2(SERVO2) {
 
   LED_amarelo = 0;
 
@@ -33,17 +32,6 @@ void Actuators::config_dac() {
   }
 }
 
-double Actuators::safe_angle(double angulo) {
-
-  if (angulo > 100.0 & angulo < 70.0) {
-
-    angulo = 90.0;
-  } else {
-    angulo = angulo;
-  }
-  return angulo;
-}
-
 void Actuators::safe_state(void) {
 
   // Contição dos avisos sonoros e luminosos
@@ -69,20 +57,27 @@ void Actuators::actuate_servos(double f_x, double f_y, double f_z) {
   phi = PHI(phi_servo1 + offset_servo1);
   theta = THETA(theta_servo2 + offset_servo2);
 
+    if (phi > 102.2750 || phi < 66.2450) {
+
+    phi = PHI(90.0);
+  }
+
+  if (theta > 127.300 || theta < 74.980) {
+
+    theta = THETA(90.0);
+  }
+
+  //printf("PHI= %f | THETA= %f | Ftotal= %f\r\n", phi, theta, total_thruster);
+
   // Aciona os servos
-  servo1.position(safe_angle(phi));
-  servo2.position(safe_angle(theta));
+  servo1.position(phi);
+  servo2.position(theta);
 }
 
 /* Aciona a válvula para entregar o empuxo (N) total desejado */
 void Actuators::actuate_valve(double f_x, double f_y, double f_z) {
 
   calc_thruster(f_x, f_y, f_z);
-
-  // DC voltage on valve to achieve the amount of thrust
-  //    for (float i = 0.0; i < 360.0; i += 0.1){
-  //       valve.write(0.5 * (sinf(i * 3.14159265 / 180.0) + 1));
-  //    }
 
   if (total_thruster <= 6.105) {
     voltageValve = coef1 * pow(total_thruster, 3) + coef2 * pow(total_thruster, 2) + coef3 * total_thruster + coef4;
@@ -91,7 +86,6 @@ void Actuators::actuate_valve(double f_x, double f_y, double f_z) {
   }
 
   valve.write(voltageValve);
-   //valve.write(0.0);
 }
 
 /* Converte os vetores de empuxo no vetor empuxo total para calcular a abertura

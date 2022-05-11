@@ -12,12 +12,12 @@ ControladorAtitude::ControladorAtitude()
 
 /* Controle das forças de empuxo (N) dado meu ângulo de referência (rad), ângulo
 atual (rad) e velocidade angular (rad/s) | p -> phi_ponto | q -> theta_ponto */
-void ControladorAtitude::controle(double phi_r, double theta_r, double phi, double theta, double p, double q, double p_r, double q_r)
+void ControladorAtitude::control(double phi_r, double theta_r, double phi, double theta, double p, double q, double p_r, double q_r)
 {
 
-    f_x = controlador_siso(theta_r, theta, q_r, q, KP, KD) * ((-1*I_yy)/l);
+    f_x = controlador_siso(theta_r, theta, q_r, q, K1_att, K2_att) * ((-1*I_yy)/l); // Verificar esse sinal 
 
-    f_y = controlador_siso(phi_r, phi, p_r, p, KP, KD) * (I_xx/l);
+    f_y = controlador_siso(phi_r, phi, p_r, p, K1_att, K2_att) * (I_xx/l);
 
     //printf("%f %f\r\n", f_x, f_y);
 
@@ -27,11 +27,10 @@ void ControladorAtitude::controle(double phi_r, double theta_r, double phi, doub
 double ControladorAtitude::controlador_siso(double angulo_r, double angulo, double v_angular_r, double v_angular, double kp, double kd)
 {
 
-    e = (angulo_r - angulo);
-    ce = (v_angular_r - v_angular);
+    float vel_e = v_angular_r - v_angular;
+    float pos_e = angulo_r - angulo;
+    // pos_e_int += pos_e*dt;
 
-    variavel_SISO = kp * e + kd * ce;
-
-    return variavel_SISO;
+    return kp * pos_e + kd * vel_e;
 
 }

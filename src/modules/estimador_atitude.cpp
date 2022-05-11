@@ -49,7 +49,7 @@ void EstimadorAtitude::init()
     BNO055.set_angle_units(RADIANS); // Radiano
     BNO055.set_temp_units(CENTIGRADE); // °C
     BNO055.set_orientation(ANDROID); // Sentido de rotação ANDROID = Regra da mão direita
-    BNO055.set_mapping(4); // Ajuste do eixo de coordenadas / orientação P4 for calib and P1 for others
+    BNO055.set_mapping(1); // Ajuste do eixo de coordenadas / orientação P4 for calib and P1 for others
 
 
     //=================== Calibração do BNO055 =====================

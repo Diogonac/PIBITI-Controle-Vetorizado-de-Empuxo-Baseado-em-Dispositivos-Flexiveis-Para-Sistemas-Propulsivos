@@ -15,16 +15,17 @@ public:
 current vertical position (m) and velocity (m/s) */
  void control(double z_r , double z, double w);
 
-void feed_foward(double ufb, double w, double z_r , double z);
 
 // Total thrust force (N)
-double f_z, uff, uout;
+double f_z;
 
 private:
 
 /* Control aceleration given reference position (m) and current position (m)
 and velocity (m/s) with given controller gains */
 double control_siso(double pos_r , double pos , double vel , double kp , double kd);
+
+float pos_e_int;
   
 };
 

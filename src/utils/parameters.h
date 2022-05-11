@@ -8,29 +8,24 @@ const float dt_range = 0.05;
 
 // Constantest físicas
 const double pi = 3.14159265359f;
-const double g = 9.807;       // m/s^2
+const double g = 9.8065;       // m/s^2
 
 // Constantes do sistema mecânico
-const double m = 0.5;    // kg
-const double I_xx = 0.001221f; // kg.m^2
-const double I_yy = 0.001103f; // kg.m^2
-const double I_zz = 29.0e-6; // kg.m^2
-const double l = 0.0425f;    // m
+const double m = 0.50282;    // kg
+const double I_xx = 0.006080156; // kg.m^2
+const double I_yy = 0.006948864; // kg.m^2
+const double I_zz = 0.012574241; // kg.m^2
+const double l = 0.0393;    // m
 
 // Constantes das curvas de calibração dos ângulos
-const double T1 = 1;//0.78;//0.7871;
-const double T2 = 0;//21.09;//19.31; 
-const double P1 = 1.317;//1.026;
-const double P2 = -28.73;//2.457 ;
-
-const double T1_f = 0.9813;
-const double T2_f = 1.449; 
-const double P1_f = 0.9998;
-const double P2_f = -0.03386; 
+const double T1 = 1.744;//1.55;
+const double T2 = -55.82;//-39.48;
+const double P1 = 1.201;//1.233;
+const double P2 = -23.83;//-18.58;
 
 // Constantes dos controladores
-const double KP = 300.0;//215.0;//488.0;//250.0;//537.50f;
-const double KD = 35.0;//22.5;//45.0;//27.0;//32.0f;
+const double K1_att = 33.7895;
+const double K2_att = 10.0;
 // const double KP = 10.966045224442436;
 // const double KD = 26.666666666666668;
 
@@ -41,14 +36,14 @@ const double ce_max = 7.5;
 const double ce_min = -7.5;
 
 // Servos
-const double offset_servo2 = 90.0; //94
-const double offset_servo1 = 90.0; //83
+const double offset_servo1 = 90.0;//93.0558;//95.1885;
+const double offset_servo2 = 90.0;//96.6845;//90.0;//94.8701;
 const double phi_safe = (P1 * offset_servo1) + P2;
 const double theta_safe = (T1 * offset_servo2) + T2;
 const double time_displacement = 4.0; // In ms
 
 // Vertical estimator constants
-const double wc = 10; //aprox. 500Hz antes estava em 8
+const double wc = 8; //aprox. 500Hz antes estava em 8
 const double zeta = sqrt(2)/2;
 const double l1 = wc*wc;
 const double l2 = 2 * zeta * wc; 
@@ -70,9 +65,9 @@ const double coef5 = -0.6387;
 const double coef6 = 4.466;
 
 // Feed-Foward constants
-const double F_coulomb = 1.2;// 1.0
-const double viscous = 1.0;  // 0.8
-const double K1 = 0.07;
+const double F_coulomb = 1.2;// 1.2
+const double viscous = 1.0;  // 1.0
+const double K1 = 0.05;//0.07;
 
 // o modelo tem que admitir uma faixa de velocidade baixa
 // devo filtrar melhor o sinal do sinal 

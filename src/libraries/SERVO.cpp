@@ -13,7 +13,7 @@ static double clamp(double value, double min, double max) {
 
 Servo::Servo(PinName pin) : _pwm(pin) {
     calibrate(2500, 550, 180.0);
-    pulse_width(1500); // Initial position
+    //pulse_width(1500); // Initial position
 }
 
 void Servo::pulse_width( int width){
