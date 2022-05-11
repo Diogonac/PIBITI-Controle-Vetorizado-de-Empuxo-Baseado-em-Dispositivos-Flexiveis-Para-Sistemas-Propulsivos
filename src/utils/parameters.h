@@ -49,12 +49,12 @@ const double l1 = wc*wc;
 const double l2 = 2 * zeta * wc; 
 
 // Vertical controller gains
-const float Ts_vert = 1.0;//0.8;
-const float OS_vert = 2.0;//1.0;
+const float Ts_vert = 1.0;
+const float OS_vert = 2.0;
 const float zeta_vert = -log(OS_vert/100)/sqrt(pow(pi, 2) + pow((log(OS_vert/100)), 2));
 const float wn_vert = 4 / (zeta_vert * Ts_vert);
-const float kd_vert = 4.0;//2.6667;//2 * zeta_vert * wn_vert;
 const float kp_vert =  10.8127;//5.8487; //pow(wn_vert, 2);
+const float kd_vert = 4.0;//2.6667;//2 * zeta_vert * wn_vert;
 
 // Valve curve fit constants
 const double coef1 = -0.004041;
@@ -63,25 +63,5 @@ const double coef3 = -0.1218;
 const double coef4 = 0.9867;
 const double coef5 = -0.6387;
 const double coef6 = 4.466;
-
-// Feed-Foward constants
-const double F_coulomb = 1.2;// 1.2
-const double viscous = 1.0;  // 1.0
-const double K1 = 0.05;//0.07;
-
-// o modelo tem que admitir uma faixa de velocidade baixa
-// devo filtrar melhor o sinal do sinal 
-
-
-// const double f_stiction = 1.2;
-// const double f_coulomb = f_stiction/1.01;
-// const double f_max = 7.0;
-// const double K1 = 0.001;
-// const double K2 = 0.1;
-// const double K3 = 0.2;
-
-// const double K2 = 5.0;
-// const double K3 = 5.0;
-
 
 #endif

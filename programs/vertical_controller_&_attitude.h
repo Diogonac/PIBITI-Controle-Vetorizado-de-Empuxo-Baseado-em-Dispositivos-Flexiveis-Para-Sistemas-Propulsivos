@@ -8,8 +8,8 @@ Serial pc(SERIAL_TX1, SERIAL_RX1, 115200); // Comunicação com USB TX, RX
 // Controller ans Estimator objects
 Actuators act;
 Initialization init;
-EstimadorAtitude att_est;
-ControladorAtitude att_cont;
+AttitudeEstimator att_est;
+AttitudeController att_cont;
 VerticalEstimator ver_est;
 VerticalController ver_cont;
 
@@ -83,8 +83,9 @@ int main() {
       act.actuate_servos(att_cont.f_x, att_cont.f_y, ver_cont.f_z);
       act.actuate_valve(att_cont.f_x, att_cont.f_y, ver_cont.f_z);
     
-      pc.printf("%f %f %f %f %f %f %f\n", ver_cont.f_z, att_cont.f_y, att_cont.f_x, att_est.Phi, att_est.Theta, ver_est.z, z_r);
+      //pc.printf("%f %f %f %f %f %f %f\n", ver_cont.f_z, att_cont.f_y, att_cont.f_x, att_est.Phi, att_est.Theta, ver_est.z, z_r);
 
+        pc.printf("wx= %f, wy= %f\r\n", att_est.P, att_est.Q);
     }
   }
 }
