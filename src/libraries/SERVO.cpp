@@ -32,6 +32,6 @@ void Servo::calibrate(double range_max, double range_min, double degrees) {
     _range_max = range_max;
     _range_min = range_min;
     _degrees = degrees;
-   _pwm.period_ms(10);
+   _pwm.period(0.01);
    
 }

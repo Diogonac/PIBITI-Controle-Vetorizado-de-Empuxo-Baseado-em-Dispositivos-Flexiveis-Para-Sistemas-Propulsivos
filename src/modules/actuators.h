@@ -38,6 +38,9 @@ public:
     // Initialization flags
     bool init_servos, init_dac;
     double voltageValve;
+    
+    // Ângulos dos servos | phi --> roll(x) / theta --> pitch(y)
+    double phi_servo1, theta_servo2, phi, theta, total_thruster;
 
 
 private:
@@ -51,6 +54,7 @@ private:
     // Servos PWM outputs
     Servo servo1;
     Servo servo2;
+    
 
     /* Converte os vetores de empuxo no vetor empuxo total para calcular a abertura
     da válvula e os ângulos desejados nos tamanhos de pulsos */
@@ -60,9 +64,6 @@ private:
     // Garante que nenhum valor fora do intervalo [75 - 105] será impresso nos servos
     double safe_angle_phi(double angulo);
     double safe_angle_theta(double angulo);
-
-    // Ângulos dos servos | phi --> roll(x) / theta --> pitch(y)
-    double phi_servo1, theta_servo2, phi, theta, total_thruster;
 
     // Servos test positions 
     double pos, time;

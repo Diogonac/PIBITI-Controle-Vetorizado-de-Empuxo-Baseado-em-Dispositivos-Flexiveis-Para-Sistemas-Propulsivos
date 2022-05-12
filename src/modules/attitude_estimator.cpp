@@ -56,7 +56,7 @@ void AttitudeEstimator::init()
     status_selftest = BNO055.getSystemStatus(BNO055_SELFTEST_RESULT_ADDR); //15 = todos os sensores então OK
     printf("SelfTest Status: %d \r\n", status_selftest); //Realiza um selftest no BNO055
     wait_ms(25);
-    BNO055.setmode(OPERATION_MODE_IMUPLUS); //Configura o mode de fusão entre acelerômetro e giroscópio taxa de atualização máxima: 100Hz
+    BNO055.setmode(OPERATION_MODE_NDOF); //Configura o mode de fusão entre acelerômetro e giroscópio taxa de atualização máxima: 100Hz
     wait_ms(25); //Aguarda o BNO055 trocar de modo de operação OPERATION_MODE_NDOF  OPERATION_MODE_IMUPLUS
 
 
@@ -109,8 +109,8 @@ void AttitudeEstimator::estimate(void)
 
     // Verificar os sentidos dessas rotações!!!!
     // Provavelmente devo adicionar um - em P e Q
-    P = BNO055.gyro.x - offset_gx; 
-    Q = BNO055.gyro.y - offset_gy; 
-    R = BNO055.gyro.z - offset_gz; 
+    P = BNO055.gyro.x;
+    Q = BNO055.gyro.y;;
+    R = BNO055.gyro.z;
 
 }

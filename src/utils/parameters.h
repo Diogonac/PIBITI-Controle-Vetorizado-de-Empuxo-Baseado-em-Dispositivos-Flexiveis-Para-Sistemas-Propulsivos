@@ -23,11 +23,13 @@ const double T2 = -55.82;//-39.48;
 const double P1 = 1.201;//1.233;
 const double P2 = -23.83;//-18.58;
 
-// Constantes dos controladores
-const double K1_att = 33.7895;
-const double K2_att = 10.0;
-// const double KP = 10.966045224442436;
-// const double KD = 26.666666666666668;
+// Attitude controller gains
+const float Ts_att = 3.0;
+const float OS_att = 0.5;
+const float zeta_att = -log(OS_att/100)/sqrt(pow(pi, 2) + pow((log(OS_att/100)), 2));
+const float wn_att = 4 / (zeta_att * Ts_att);
+const float kp_att = pow(wn_att, 2);
+const float kd_att = 2 * zeta_att * wn_att;
 
 const double e_max = 15.0;
 const double e_min = -15.0;
@@ -49,12 +51,12 @@ const double l1 = wc*wc;
 const double l2 = 2 * zeta * wc; 
 
 // Vertical controller gains
-const float Ts_vert = 1.0;
-const float OS_vert = 2.0;
+const float Ts_vert = 5.0;
+const float OS_vert = 1.0;
 const float zeta_vert = -log(OS_vert/100)/sqrt(pow(pi, 2) + pow((log(OS_vert/100)), 2));
 const float wn_vert = 4 / (zeta_vert * Ts_vert);
-const float kp_vert =  10.8127;//5.8487; //pow(wn_vert, 2);
-const float kd_vert = 4.0;//2.6667;//2 * zeta_vert * wn_vert;
+const float kp_vert = pow(wn_vert, 2);
+const float kd_vert = 2 * zeta_vert * wn_vert;
 
 // Valve curve fit constants
 const double coef1 = -0.004041;

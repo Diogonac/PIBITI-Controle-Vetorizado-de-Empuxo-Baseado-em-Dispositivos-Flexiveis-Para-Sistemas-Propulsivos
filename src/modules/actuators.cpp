@@ -19,6 +19,9 @@ Actuators::Actuators(): valve(SDA, SCL), LED_amarelo(AMARELO), servo1(SERVO1), s
 
   init_servos = false;
   init_dac = false;
+
+  servo1.calibrate(2500, 550, 180.0);
+  servo2.calibrate(2500, 550, 180.0);
 }
 
 void Actuators::config_dac() {
@@ -57,15 +60,24 @@ void Actuators::actuate_servos(double f_x, double f_y, double f_z) {
   phi = PHI(phi_servo1 + offset_servo1);
   theta = THETA(theta_servo2 + offset_servo2);
 
-    if (phi > 102.2750 || phi < 66.2450) {
-
-    phi = PHI(90.0);
+// Security lock angle for PHI
+  if (phi > 96.2700){
+      phi = 96.2700;
   }
 
-  if (theta > 127.300 || theta < 74.980) {
-
-    theta = THETA(90.0);
+  if (phi < 72.2500){
+      phi = 72.2500;
   }
+
+// Security lock angle for THETA
+  if (theta > 118.5800){
+      theta = 118.5800;
+  }
+
+  if (theta < 83.7000){
+      theta = 83.7000;
+  }
+
 
   //printf("PHI= %f | THETA= %f | Ftotal= %f\r\n", phi, theta, total_thruster);
 
@@ -98,10 +110,10 @@ void Actuators::calc_thruster(double f_x, double f_y, double f_z) {
   // Calcula os ângulos | phi --> roll(x) / theta --> pitch(y)
   phi_servo1 = ((180.000f * atan2(-f_y, f_z)) / pi);
   theta_servo2 = ((180.000f * atan2(f_x, f_z)) / pi);
+//   printf("phi_servo= %f, theta_servo= %f \r\n", phi_servo1, theta_servo2);
 }
 
-void Actuators::servo_test(double max_angle, double min_angle,
-                           double step_angle) {
+void Actuators::servo_test(double max_angle, double min_angle,double step_angle) {
 
   safe_state();
   wait(1);

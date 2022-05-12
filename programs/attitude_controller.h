@@ -1,19 +1,18 @@
-#include "mbed.h"
 #include "imports.h"
+#include "mbed.h"
+
 
 //============ Configura porta serial ===============
-Serial pc (SERIAL_TX1, SERIAL_RX1, 115200); //Comunicação com USB TX, RX
+Serial pc(SERIAL_TX1, SERIAL_RX1, 115200); // Comunicação com USB TX, RX
 
 // Imports
 Actuators act;
-ControladorAtitude att_cont;
-EstimadorAtitude att_est;
+AttitudeController att_cont;
+AttitudeEstimator att_est;
 Initialization init;
 
 // Ticker para taxa de amostragem
 Ticker amostragem;
-
-Timer tempo;
 
 // Flag de segurança
 bool flag;
@@ -21,71 +20,59 @@ bool flag;
 // Variáveis de referencia
 double phi_r, theta_r, p_r, q_r;
 
-
 void callback(void);
 
-int main()
-{
-    tempo.start();
-    
-    pc.baud(115200); //Define a velocidade da porta USB
+int main() {
 
-    // Defino o valor das veriáveis de referência
-    phi_r = 0.0;
-    theta_r = 0.0;
-    p_r = 0.0;
-    q_r = 0.0;
+  pc.baud(115200); // Define a velocidade da porta USB
 
-    // Configuração dos periféricos
-    act.servo_test(105.0, 75.0, 1.0);
-    att_est.init();
-    
-    // init.verify(act.init_servos, att_est.verifica_imu);
-    
+  // Defino o valor das veriáveis de referência
+  phi_r = 0.0;
+  theta_r = 0.0;
+  p_r = 0.0;
+  q_r = 0.0;
 
-    //Definição da taxa de amostragem
-    amostragem.attach(&callback, dt);
+  // Configuração dos periféricos
+  act.servo_test(105.0, 75.0, 1.0);
+  att_est.init();
 
-    // while(init.sistema_verificado) {
+  // Definição da taxa de amostragem
+  amostragem.attach(&callback, dt);
 
-        att_est.estimate();
+  // Arm the sistem to initialization
+  init.arm();
 
-        //p --> wx | q -- > wy | r --> wz
-        while(true){//abs(att_est.Phi) <= pi /12.0 && abs(att_est.Theta) <= pi /12.0 && abs(att_est.P) <= pi/4 && abs (att_est.Q) <= pi/4 && abs(att_est.R) <= pi/4) {
+  while (abs(att_est.Phi) <= pi / 3.0 && abs(att_est.Theta) <= pi / 3.0 &&
+         abs(att_est.P) <= 5.0 * pi && abs(att_est.Q) <= 5.0 * pi &&
+         abs(att_est.R) <= 5.0 * pi && init.valve_flag == 1) {
 
-            if(flag) {
-                
-                flag = false;
+    if (flag) {
 
-                att_est.estimate();
+      flag = false;
 
-                //pc.printf("%f %f\r\n", estima_atitude.P, estima_atitude.Q);
+      att_est.estimate();
 
-                //pc.printf("YAW= %f, ROLL= %f, PITCH= %f, GIROX= %f, GIROY= %f \r\n", BNO055.euler.yaw, BNO055.euler.roll, BNO055.euler.pitch, BNO055.gyro.x, BNO055.gyro.y);
-               //pc.printf("P_ref= %f %f %f,%f,%f,%f,%d\r\n", estima_atitude.Phi, estima_atitude.Theta, estima_atitude.Psi, estima_atitude.P, estima_atitude.Q, estima_atitude.R, tempo.read_ms());
+      att_cont.control(phi_r, theta_r, att_est.Phi, att_est.Theta, att_est.P, att_est.Q, p_r, q_r);
 
-               att_cont.control(phi_r, theta_r, att_est.Phi, att_est.Theta, att_est.P, att_est.Q, p_r, q_r);
+      act.actuate_servos(att_cont.f_x, att_cont.f_y, m * g * 0.3);
+      act.actuate_valve(att_cont.f_x, att_cont.f_y, m * g * 0.3);
 
-                act.actuate_servos(att_cont.f_x, att_cont.f_y, m * g);
-                // pc.printf("THETA= %f, PHI= %f, FX= %f, FY= %f\r\n", att_est.Theta*180.0/pi, att_est.Phi*180.0/pi, att_cont.f_x, att_cont.f_y);
-
-            }
-            
-            tempo.reset();
-
-        }
-
-        act.safe_state();
-        init.arm();
-        att_est.estimate();
-        wait_ms(10);
-        pc.printf("Fora do while principal \r\n");
-        pc.printf("PITCH= %f, ROLL= %f, P= %f, q= %f, r= %f\r\n", att_est.Theta, att_est.Phi, att_est.P, att_est.Q, att_est.R);
+    //   pc.printf("Wx= %f, Wy= %f\r\n", att_est.P, att_est.Q);
+      pc.printf("Ftot=%f, FY=%f, FX=%f, PHI=%f, THETA=%f, phi_s= %f, theta_s= %f\r\n", act.total_thruster, att_cont.f_y, att_cont.f_x, att_est.Phi*180/pi, att_est.Theta*180/pi, act.phi_servo1, act.theta_servo2);
+     
+     
     }
+
+  }
+
+  act.safe_state();
+  init.arm();
+  att_est.estimate();
+  wait_ms(10);
+  pc.printf("Fora do while principal \r\n");
+  pc.printf("PITCH= %f, ROLL= %f, P= %f, q= %f, r= %f\r\n", att_est.Theta,
+            att_est.Phi, att_est.P, att_est.Q, att_est.R);
+}
 // }
 
-void callback()
-{
-    flag = true;
-
-}
+void callback() { flag = true; }

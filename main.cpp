@@ -6,7 +6,7 @@
 
 //#include "programs/valve_calibration.h"
 
-// #include "programs/attitude_controller.h"
+#include "programs/attitude_controller.h"
 
 // #include "programs/servos_calibration.h"
 
@@ -18,6 +18,6 @@
 
 // #include "programs/vertical_controller.h"
 
-#include "programs/vertical_controller_&_attitude.h"
+// #include "programs/vertical_controller_&_attitude.h"
 
 
