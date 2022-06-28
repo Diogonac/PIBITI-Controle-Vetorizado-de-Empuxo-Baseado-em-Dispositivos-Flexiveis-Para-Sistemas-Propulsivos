@@ -8,6 +8,8 @@
 
 #include "programs/attitude_controller.h"
 
+// #include "programs/attitude_controller_pendulum_mode.h"
+
 // #include "programs/servos_calibration.h"
 
 // #include "programs/teste_vertical_position.h"

@@ -5,7 +5,7 @@
 Serial pc (SERIAL_TX1, SERIAL_RX1, 115200); //Comunicação com USB TX, RX
 
 // Imports
-EstimadorAtitude att_est;
+AttitudeEstimator att_est;
 
 // Ticker para taxa de amostragem
 Ticker amostragem;

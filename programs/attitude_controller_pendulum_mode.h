@@ -7,7 +7,7 @@ Serial pc(SERIAL_TX1, SERIAL_RX1, 115200); // Comunicação com USB TX, RX
 
 // Imports
 Actuators act;
-AttitudeController att_cont;
+AttitudeControllerPendulum att_cont;
 AttitudeEstimator att_est;
 Initialization init;
 
@@ -54,25 +54,24 @@ int main() {
 
       att_cont.control(phi_r, theta_r, att_est.Phi, att_est.Theta, att_est.P, att_est.Q, p_r, q_r);
 
-      act.actuate_servos(att_cont.f_x, att_cont.f_y, m * g * 1.0);
-      act.actuate_valve(att_cont.f_x, att_cont.f_y, m * g * 1.0);
+      act.actuate_servos(att_cont.f_x, att_cont.f_y, m*g * 1.0);
+      act.actuate_valve(att_cont.f_x, att_cont.f_y , m*g * 1.0);
 
 
     //   pc.printf("Wx= %f, Wy= %f\r\n", att_est.P, att_est.Q);
       pc.printf("Ftot=%f, FY=%f, FX=%f, PHI=%f, THETA=%f, phi_s= %f, theta_s= %f\r\n", act.total_thruster, att_cont.f_y, att_cont.f_x, att_est.Phi*180/pi, att_est.Theta*180/pi, act.phi_servo1, act.theta_servo2);
      
-     
     }
 
   }
 
-  act.safe_state();
-  init.arm();
-  att_est.estimate();
-  wait_ms(10);
-  pc.printf("Fora do while principal \r\n");
-  pc.printf("PITCH= %f, ROLL= %f, P= %f, q= %f, r= %f\r\n", att_est.Theta,
-            att_est.Phi, att_est.P, att_est.Q, att_est.R);
+//   act.safe_state();
+//   init.arm();
+//   att_est.estimate();
+//   wait_ms(10);
+//   pc.printf("Fora do while principal \r\n");
+//   pc.printf("PITCH= %f, ROLL= %f, P= %f, q= %f, r= %f\r\n", att_est.Theta,
+//             att_est.Phi, att_est.P, att_est.Q, att_est.R);
 }
 // }
 

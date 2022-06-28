@@ -100,15 +100,12 @@ void AttitudeEstimator::estimate(void)
 {
 
     BNO055.get_angles();
+    BNO055.get_gyro();
 
     Phi = -BNO055.euler.pitch;
     Theta = -BNO055.euler.roll;
     Psi =  BNO055.euler.yaw;
 
-    BNO055.get_gyro();
-
-    // Verificar os sentidos dessas rotações!!!!
-    // Provavelmente devo adicionar um - em P e Q
     P = BNO055.gyro.x;
     Q = BNO055.gyro.y;;
     R = BNO055.gyro.z;
