@@ -19,8 +19,7 @@ public:
     void calibra_servo_theta(void);
 
     // Calibration test
-    void phi_test_calib(void);
-    void theta_test_calib(void);
+    void test_calib(void);
 
     // Inicializa a IMU
     void config_calib_imu();
@@ -93,12 +92,6 @@ private:
     int status_sys_BNO055; //Armazena o status do sistema do BNO055
     bool status_check_BNO055; //Armazena o status do BNO055
     int status_selftest; //Armazena o valor do teste
-    
-    // Variáveis para armazenar os offset das velocidades angulares
-    double offset_gx;
-    double offset_gy;
-    double offset_gz;
-
 
 };
 

@@ -25,11 +25,6 @@ Calibration::Calibration()
   P = 0.0;
   Q = 0.0;
   R = 0.0;
-
-  // Condições iniciais dos offset das velocidades angulares
-  offset_gx = 0.0;
-  offset_gy = 0.0;
-  offset_gz = 0.0;
 }
 
 void Calibration::config_dac() {
@@ -44,7 +39,7 @@ void Calibration::config_dac() {
 }
 
 void Calibration::calib_dac() {
-  for (int i = 19; i >=0; i--) {
+  for (int i = 19; i >= 0; i--) {
     valve.write(DAC[i]);
     printf("DAC: %f [V]\r\n", DAC[i]);
     wait(20);
@@ -74,7 +69,7 @@ void Calibration::calibra_servo_phi(void) {
   estimate();
   wait(1);
 
-  for (int i = 0; i < 12; i++) {
+  for (int i = 0; i < 11; i++) {
     servo1.position(angle_calib_table[i] + offset_servo1);
     servo2.position(offset_servo2);
     wait(2);
@@ -86,13 +81,12 @@ void Calibration::calibra_servo_phi(void) {
       sum_phi += estimated_phi;
       wait_ms(2);
 
-      // printf("%f %f\r\n", estimated_phi, lista_angulos_1[i] + offset_servo1);
     }
 
     mean_phi = sum_phi / 500;
     phi_data_calib[i] = mean_phi + offset_servo1;
-    printf("%f %f\r\n", mean_phi + offset_servo1,
-           angle_calib_table[i] + offset_servo1);
+    // printf("%f %f\r\n", mean_phi + offset_servo1,
+    //        angle_calib_table[i] + offset_servo1);
     wait(2);
   }
 
@@ -100,14 +94,14 @@ void Calibration::calibra_servo_phi(void) {
   printf("Resultados\r\n");
 
   printf("Angulos_REF= [");
-  for (int k = 0; k < 12; k++) {
+  for (int k = 0; k < 11; k++) {
     printf(", %f", angle_calib_table[k]);
   }
   printf(" ];");
 
   printf("\r\n");
   printf("Angulos_Phi= [");
-  for (int k = 0; k < 12; k++) {
+  for (int k = 0; k < 11; k++) {
     printf(", %f", phi_data_calib[k]);
   }
   printf(" ];");
@@ -126,7 +120,7 @@ void Calibration::calibra_servo_theta(void) {
   estimate();
   wait(1);
 
-  for (int i = 0; i < 12; i++) {
+  for (int i = 0; i < 11; i++) {
     servo1.position(offset_servo1);
     servo2.position(angle_calib_table[i] + offset_servo2);
     wait(2);
@@ -138,30 +132,27 @@ void Calibration::calibra_servo_theta(void) {
       sum_theta += estimated_theta;
       wait_ms(2);
 
-      // printf("%f %f\r\n", estimated_theta, lista_angulos_1[i] +
-      // offset_servo2);
     }
 
     mean_theta = sum_theta / 500;
     theta_data_calib[i] = mean_theta + offset_servo2;
-    printf("%f %f\r\n", mean_theta + offset_servo2,
-           angle_calib_table[i] + offset_servo2);
+    // printf("%f %f\r\n", mean_theta + offset_servo2,
+    //        angle_calib_table[i] + offset_servo2);
     wait(2);
   }
-
 
   printf("Calibração servo 1 ângulo theta finalizada\r\n");
   printf("Resultados\r\n");
 
   printf("Angulos_REF= [");
-  for (int k = 0; k < 12; k++) {
+  for (int k = 0; k < 11; k++) {
     printf(", %f", angle_calib_table[k]);
   }
   printf(" ];");
 
   printf("\r\n");
   printf("Angulos_Theta= [");
-  for (int k = 0; k < 12; k++) {
+  for (int k = 0; k < 11; k++) {
     printf(", %f", theta_data_calib[k]);
   }
   printf(" ];");
@@ -174,10 +165,10 @@ void Calibration::angle_calib(double angle, double c1, double c2) {
   angle_calibrated = (c1 * angle) + c2;
 }
 
-void Calibration::phi_test_calib(void) {
+void Calibration::test_calib(void) {
 
   printf("\r\n");
-  printf("Verificação da calibração servo 1 ângulo phi iniciada");
+  printf("Verificação da calibração iniciada");
   printf("\r\n");
   angle_calib(offset_servo1, P1, P1);
   servo1.position(angle_calibrated);
@@ -201,13 +192,13 @@ void Calibration::phi_test_calib(void) {
       sum_phi += estimated_phi;
       wait_ms(2);
 
-    //   printf("%f %f\r\n", estimated_phi + offset_servo1, angle_calib_table[i] + offset_servo1);
+        printf("PHI=%f, REF=%f\r\n", estimated_phi + offset_servo1, angle_calib_table[i] + offset_servo1);
     }
 
     mean_phi = sum_phi / 500;
     phi_data_calib[i] = mean_phi + offset_servo1;
     angle_calib(angle_calib_table[i] + offset_servo1, P1, P2);
-    printf("%f %f\r\n", mean_phi + offset_servo1,angle_calib_table[i] + offset_servo1);
+    // printf("%f %f\r\n", mean_phi + offset_servo1, angle_calib_table[i] + offset_servo1);
     wait(2);
   }
 
@@ -231,13 +222,13 @@ void Calibration::phi_test_calib(void) {
       sum_theta += estimated_theta;
       wait_ms(2);
 
-    //   printf("%f %f\r\n", estimated_theta + offset_servo2, angle_calib_table[i] + offset_servo2);
+        printf("THETA=%f, REF=%f\r\n", estimated_theta + offset_servo2, angle_calib_table[i] + offset_servo2);
     }
 
     mean_theta = sum_theta / 500;
     theta_data_calib[i] = mean_theta + offset_servo2;
     angle_calib(angle_calib_table[i] + offset_servo2, T1, T2);
-    printf("%f %f\r\n", mean_theta + offset_servo2, angle_calib_table[i] + offset_servo1);
+    // printf("%f %f\r\n", mean_theta + offset_servo2, angle_calib_table[i] + offset_servo1);
     wait(2);
   }
 
@@ -247,7 +238,7 @@ void Calibration::phi_test_calib(void) {
   servo2.position(angle_calibrated);
   wait(1);
 
-  printf("Verificação da calibração servo 1 ângulo phi finalizada\r\n");
+  printf("Verificação da calibração finalizada\r\n");
 }
 
 // Estima os ângulos de Euler (rad) e as velocidades angular (rad/s)
@@ -257,20 +248,15 @@ void Calibration::estimate(void) {
 
   // Pitch e Roll estão trocados conforme a convensão utilizada
 
-  Phi = -BNO055.euler
-            .pitch; // - offset_phi; // Ângulo formado pela rotação de (x) (phi)
-  Theta = -BNO055.euler.roll; // - offset_theta; // Ângulo formado pela rotação
-                             // de (y) (theta)
-  Psi = BNO055.euler.yaw; // - offset_psi; //(z) (psi)
+  Phi = -BNO055.euler.pitch; 
+  Theta = -BNO055.euler.roll;
+  Psi = BNO055.euler.yaw;
 
   BNO055.get_gyro();
 
-  P = BNO055.gyro.x -
-      offset_gx; // kalman_gx(BNO055.gyro.x, ruido_cov_gx, estima_cov_gx);
-  Q = BNO055.gyro.y -
-      offset_gy; // kalman_gy(BNO055.gyro.y, ruido_cov_gy, estima_cov_gy);
-  R = BNO055.gyro.z -
-      offset_gz; // kalman_gz(BNO055.gyro.z, ruido_cov_z, estima_cov_gz);
+  P = BNO055.gyro.x;
+  Q = BNO055.gyro.y;
+  R = BNO055.gyro.z;
 }
 
 // Inicializa a IMU
@@ -300,8 +286,9 @@ void Calibration::config_calib_imu() {
   BNO055.set_anglerate_units(RAD_PER_SEC); // rad/s
   BNO055.set_angle_units(RADIANS);         // GRAUS
   BNO055.set_temp_units(CENTIGRADE);       // °C
-  BNO055.set_orientation(ANDROID);          // Sentido de rotação ANDROID = Regra da mão direita
-  BNO055.set_mapping(2); // Ajuste do eixo de coordenadas / orientação P4 for
+  BNO055.set_orientation(
+      ANDROID);          // Sentido de rotação ANDROID = Regra da mão direita
+  BNO055.set_mapping(1); // Ajuste do eixo de coordenadas / orientação P4 for
                          // calib and P1 for others
 
   //=================== Calibração do BNO055 =====================

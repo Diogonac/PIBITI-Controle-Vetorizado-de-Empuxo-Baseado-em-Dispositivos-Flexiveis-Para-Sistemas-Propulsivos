@@ -11,25 +11,20 @@ const double pi = 3.14159265359f;
 const double g = 9.8065;       // m/s^2
 
 // Constantes do sistema mecânico
-const double m = 0.5016;    // kg
-const double I_xx = 0.00608;//0.009771399; // kg.m^2
-const double I_yy = 0.00695;//0.010640883; // kg.m^2
-const double I_zz = 0.01257;//0.013999547; // kg.m^2
-const double l = 0.04083;//0.061850913;    // m
+const double m = 0.5;           // kg
+const double I_xx = 0.00732;    // kg.m^2
+const double I_yy = 0.00679;    // kg.m^2
+const double I_zz = 0.01346;    // kg.m^2
+const double l = 0.02779;       // m
 
-// Constantes das curvas de calibração dos ângulos
-const double T1 = 1.744;//1.55;
-const double T2 = -55.82;//-39.48;
-const double P1 = 1.201;//1.233;
-const double P2 = -23.83;//-18.58;
 
 // Attitude controller gains
-const float Ts_att = 0.6;
+const float Ts_att = 1.0;
 const float OS_att = 0.5;
 const float zeta_att = -log(OS_att/100)/sqrt(pow(pi, 2) + pow((log(OS_att/100)), 2));
 const float wn_att = 4 / (zeta_att * Ts_att);
-const float K1_att_theta = pow(wn_att, 2);
-const float K2_att_theta = 2 * zeta_att * wn_att;
+const float K1 = pow(wn_att, 2);
+const float K2 = 2 * zeta_att * wn_att;
 // const double K1_att_phi = -K1_att_theta;
 // const double K2_att_phi = -K2_att_theta;
 
@@ -40,11 +35,14 @@ const double ce_max = 7.5;
 const double ce_min = -7.5;
 
 // Servos
-const double offset_servo1 = 90.0;//93.0558;//95.1885;
-const double offset_servo2 = 90.0;//96.6845;//90.0;//94.8701;
+const double offset_servo1 = 90.0;
+const double offset_servo2 = 90.0;
+const double T1 = 1.511;
+const double T2 = -44.01;
+const double P1 = 1.286;
+const double P2 = -34.34;
 const double phi_safe = (P1 * offset_servo1) + P2;
 const double theta_safe = (T1 * offset_servo2) + T2;
-const double time_displacement = 4.0; // In ms
 
 // Vertical estimator constants
 const double wc = 8; //aprox. 500Hz antes estava em 8

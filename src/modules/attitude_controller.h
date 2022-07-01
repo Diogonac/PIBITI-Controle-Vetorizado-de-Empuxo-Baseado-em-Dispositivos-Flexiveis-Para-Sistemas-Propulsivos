@@ -26,7 +26,7 @@ double variavel_SISO, e, ce;
 
     // Controlador siso
     double controlador_siso(double angulo_r, double angulo, double v_angular, double kp, double kd);
-    double teste;
+    double pos_erro, pos_e_int;
 };
 
 #endif

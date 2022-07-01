@@ -54,8 +54,8 @@ int main() {
 
       att_cont.control(phi_r, theta_r, att_est.Phi, att_est.Theta, att_est.P, att_est.Q, p_r, q_r);
 
-      act.actuate_servos(att_cont.f_x, att_cont.f_y, m * g * 1.0);
-      act.actuate_valve(att_cont.f_x, att_cont.f_y, m * g * 1.0);
+      act.actuate_servos(att_cont.f_x, att_cont.f_y, m * g * 0.5);
+      act.actuate_valve(att_cont.f_x, att_cont.f_y, m * g * 0.5);
 
 
     //   pc.printf("Wx= %f, Wy= %f\r\n", att_est.P, att_est.Q);
@@ -74,6 +74,5 @@ int main() {
   pc.printf("PITCH= %f, ROLL= %f, P= %f, q= %f, r= %f\r\n", att_est.Theta,
             att_est.Phi, att_est.P, att_est.Q, att_est.R);
 }
-// }
 
 void callback() { flag = true; }

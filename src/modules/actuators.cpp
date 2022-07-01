@@ -61,21 +61,21 @@ void Actuators::actuate_servos(double f_x, double f_y, double f_z) {
   theta = THETA(theta_servo2 + offset_servo2);
 
 // Security lock angle for PHI
-  if (phi > 96.2700){
-      phi = 96.2700;
+  if (phi > 100.690){
+      phi = 100.690;
   }
 
-  if (phi < 72.2500){
-      phi = 72.2500;
+  if (phi < 62.110){
+      phi = 62.110;
   }
 
 // Security lock angle for THETA
-  if (theta > 118.5800){
-      theta = 118.5800;
+  if (theta > 114.645){
+      theta = 114.645;
   }
 
-  if (theta < 83.7000){
-      theta = 83.7000;
+  if (theta < 69.315){
+      theta = 69.315;
   }
 
 
