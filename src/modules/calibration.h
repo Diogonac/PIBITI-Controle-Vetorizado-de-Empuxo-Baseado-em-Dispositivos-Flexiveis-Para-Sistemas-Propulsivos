@@ -17,6 +17,7 @@ public:
     // Desloca o servo e mede o ângulo do ponto central
     void calibra_servo_phi(void);
     void calibra_servo_theta(void);
+    void servo_input_waves(double angle_ref, double KP);
 
     // Calibration test
     void test_calib(void);
@@ -46,6 +47,8 @@ public:
 
     // Ângulos de Euler de interesse
     double Phi, Theta, Psi;
+
+    double erro_theta, erro_phi;
 
 private:
 
@@ -78,7 +81,7 @@ private:
 
 
 
-    void angle_calib(double angle, double c1, double c2);
+    double angle_calib(double angle, double c1, double c2);
     double angle_calibrated;
     
 

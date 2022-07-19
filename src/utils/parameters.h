@@ -5,6 +5,8 @@
 // Iterruption time
 const float dt = 0.01;
 const float dt_range = 0.05;
+const float dt_wave = 10.0;
+
 
 // Constantest físicas
 const double pi = 3.14159265359f;
@@ -19,30 +21,28 @@ const double l = 0.02779;       // m
 
 
 // Attitude controller gains
-const float Ts_att = 1.0;
+const float Ts_att = 2.0;
 const float OS_att = 0.5;
 const float zeta_att = -log(OS_att/100)/sqrt(pow(pi, 2) + pow((log(OS_att/100)), 2));
 const float wn_att = 4 / (zeta_att * Ts_att);
-const float K1 = pow(wn_att, 2);
-const float K2 = 2 * zeta_att * wn_att;
-// const double K1_att_phi = -K1_att_theta;
-// const double K2_att_phi = -K2_att_theta;
-
-const double e_max = 15.0;
-const double e_min = -15.0;
-
-const double ce_max = 7.5;
-const double ce_min = -7.5;
+// const float K1 = pow(wn_att, 2);
+// const float K2 = 2 * zeta_att * wn_att;
+const double K_theta[3] = {2.0736, 1.5915, 0.4389};
+const double wn =  30/(2*pi);
 
 // Servos
 const double offset_servo1 = 90.0;
 const double offset_servo2 = 90.0;
-const double T1 = 1.511;
-const double T2 = -44.01;
-const double P1 = 1.286;
-const double P2 = -34.34;
-const double phi_safe = (P1 * offset_servo1) + P2;
-const double theta_safe = (T1 * offset_servo2) + T2;
+const double T1 = 1.514; 
+const double T2 = 2.846;
+const double P1 = 1.26; 
+const double P2 = 0.9991;
+const double phi_safe = (P1 * 0) + P2;
+const double theta_safe = (T1 * 0) + T2;
+const double phi_max = 106.119;
+const double phi_min = 75.879;
+const double theta_max = 111.014;
+const double theta_min = 74.678;
 
 // Vertical estimator constants
 const double wc = 8; //aprox. 500Hz antes estava em 8

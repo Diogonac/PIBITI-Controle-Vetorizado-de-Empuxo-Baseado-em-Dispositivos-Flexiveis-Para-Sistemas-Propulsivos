@@ -31,10 +31,6 @@ public:
     // Teste the full servos fredoom
     void servo_test(double max_angle, double min_angle, double step_angle);
 
-    // Convert the desired angle to clibrated desired angle
-    double PHI(double phi_angle);
-    double THETA(double theta_angle);
-
     // Initialization flags
     bool init_servos, init_dac;
     double voltageValve;
@@ -61,9 +57,12 @@ private:
     void calc_thruster(double f_x, double f_y, double f_z);
 
 
-    // Garante que nenhum valor fora do intervalo [75 - 105] será impresso nos servos
-    double safe_angle_phi(double angulo);
-    double safe_angle_theta(double angulo);
+    // Hold the angle position value if they were exceeded
+    double clamp_angle(double angle, double maxAngle, double minAngle);
+
+    // Convert the desired angle to clibrated desired angle
+    double calibAngle(double angle, double angCoef, double linCoef);
+
 
     // Servos test positions 
     double pos, time;

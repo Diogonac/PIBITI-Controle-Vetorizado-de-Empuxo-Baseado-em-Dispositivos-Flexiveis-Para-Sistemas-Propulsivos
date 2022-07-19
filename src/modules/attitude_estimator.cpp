@@ -10,6 +10,10 @@ AttitudeEstimator::AttitudeEstimator() : BNO055(SDA, SCL) {
   Q = 0.0;
   R = 0.0;
 
+  p = 0.0;
+  q = 0.0;
+  r = 0.0;
+
   // Condições iniciais dos offset dos ângulos de euler
   offset_phi = 0.0;
   offset_theta = 0.0;
@@ -51,8 +55,7 @@ void AttitudeEstimator::init() {
   BNO055.set_anglerate_units(RAD_PER_SEC); // rad/s
   BNO055.set_angle_units(RADIANS);         // Radiano
   BNO055.set_temp_units(CENTIGRADE);       // °C
-  BNO055.set_orientation(
-      ANDROID);          // Sentido de rotação ANDROID = Regra da mão direita
+  BNO055.set_orientation(ANDROID);          // Sentido de rotação ANDROID = Regra da mão direita
   BNO055.set_mapping(1); // Ajuste do eixo de coordenadas / orientação P4 for
                          // calib and P1 for others
 
@@ -113,8 +116,13 @@ void AttitudeEstimator::estimate(void) {
   Theta = -BNO055.euler.roll;
   Psi = BNO055.euler.yaw;
 
-  P = BNO055.gyro.x;
-  Q = BNO055.gyro.y;
-  ;
-  R = BNO055.gyro.z;
+  p = BNO055.gyro.x;
+  q = BNO055.gyro.y;
+  r = BNO055.gyro.z;
+
+  P = (1 / (1 + dt * wn)) * (p * dt * wn + P);
+  Q = (1 / (1 + dt * wn)) * (q * dt * wn + Q);
+  R = (1 / (1 + dt * wn)) * (r * dt * wn + R);
+
+
 }

@@ -1,4 +1,5 @@
 #include "calibration.h"
+#include <cstdio>
 
 // Classe do construtor
 Calibration::Calibration()
@@ -25,6 +26,8 @@ Calibration::Calibration()
   P = 0.0;
   Q = 0.0;
   R = 0.0;
+
+  erro_theta = 0.0;
 }
 
 void Calibration::config_dac() {
@@ -80,7 +83,6 @@ void Calibration::calibra_servo_phi(void) {
       estimated_phi = (Phi * 180.0 / pi);
       sum_phi += estimated_phi;
       wait_ms(2);
-
     }
 
     mean_phi = sum_phi / 500;
@@ -109,8 +111,25 @@ void Calibration::calibra_servo_phi(void) {
   calibration_phi = true;
 }
 
-void Calibration::calibra_servo_theta(void) {
+void Calibration::servo_input_waves(double angle_ref, double KP) {
 
+  // servo2.position(erro_theta*KP + offset_servo2);
+
+  estimate();
+  erro_theta = (angle_calib(angle_ref, T1, T2) + offset_servo2) - ((Theta * 180.0 / pi) + offset_servo2);
+  erro_phi = angle_calib(angle_ref + offset_servo1, P1, P2) - ((Phi * 180.0 / pi) + offset_servo1);
+
+//   servo1.position(angle_calib(offset_servo1, P1, P2));
+//   servo2.position(erro_theta * KP + offset_servo2);
+
+    servo1.position(angle_calib(offset_servo1, P1, P2));
+    servo2.position(angle_calib(angle_ref, T1, T2) + offset_servo2);
+
+  printf("%f %f\r\n", angle_ref, Theta * 180.0 / pi);
+    // printf("%f\r\n", erro_theta * KP + offset_servo2 + tanh(erro_theta/15)*10);
+}
+
+void Calibration::calibra_servo_theta(void) {
   printf("\r\n");
   printf("Calibração servo 2 ângulo theta iniciada");
   printf("\r\n");
@@ -131,7 +150,6 @@ void Calibration::calibra_servo_theta(void) {
       estimated_theta = (Theta * 180.0 / pi);
       sum_theta += estimated_theta;
       wait_ms(2);
-
     }
 
     mean_theta = sum_theta / 500;
@@ -160,9 +178,11 @@ void Calibration::calibra_servo_theta(void) {
   calibration_theta = true;
 }
 
-void Calibration::angle_calib(double angle, double c1, double c2) {
+double Calibration::angle_calib(double angle, double c1, double c2) {
 
   angle_calibrated = (c1 * angle) + c2;
+
+  return angle_calibrated;
 }
 
 void Calibration::test_calib(void) {
@@ -170,19 +190,16 @@ void Calibration::test_calib(void) {
   printf("\r\n");
   printf("Verificação da calibração iniciada");
   printf("\r\n");
-  angle_calib(offset_servo1, P1, P1);
-  servo1.position(angle_calibrated);
-  angle_calib(offset_servo2, T1, T2);
-  servo2.position(angle_calibrated);
+  servo1.position(angle_calib(0, P1, P1) + offset_servo1);
+  servo2.position(angle_calib(0, T1, T2) + offset_servo2);
   wait(1);
   estimate();
   wait(1);
 
   for (int i = 0; i < 11; i++) {
-    angle_calib(angle_calib_table[i] + offset_servo1, P1, P2);
-    servo1.position(angle_calibrated);
-    angle_calib(offset_servo2, T1, T2);
-    servo2.position(angle_calibrated);
+
+    servo1.position(angle_calib(angle_calib_table[i], P1, P2) + offset_servo1);
+    servo2.position(angle_calib(0, T1, T2) + offset_servo2);
     wait(2);
     sum_phi = 0.0;
 
@@ -192,27 +209,25 @@ void Calibration::test_calib(void) {
       sum_phi += estimated_phi;
       wait_ms(2);
 
-        printf("PHI=%f, REF=%f\r\n", estimated_phi + offset_servo1, angle_calib_table[i] + offset_servo1);
+      printf("PHI=%f, REF=%f\r\n", estimated_phi + offset_servo1,
+             angle_calib_table[i] + offset_servo1);
     }
 
     mean_phi = sum_phi / 500;
     phi_data_calib[i] = mean_phi + offset_servo1;
-    angle_calib(angle_calib_table[i] + offset_servo1, P1, P2);
-    // printf("%f %f\r\n", mean_phi + offset_servo1, angle_calib_table[i] + offset_servo1);
+    // printf("%f %f\r\n", mean_phi + offset_servo1, angle_calib_table[i] +
+    // offset_servo1);
     wait(2);
   }
 
-  angle_calib(offset_servo1, P1, P2);
-  servo1.position(angle_calibrated);
-  angle_calib(offset_servo2, T1, T2);
-  servo2.position(angle_calibrated);
+  servo1.position(angle_calib(0, P1, P2) + offset_servo1);
+  servo2.position(angle_calib(0, T1, T2) + offset_servo2);
   wait(1);
 
   for (int i = 0; i < 11; i++) {
-    angle_calib(offset_servo2, P1, P2);
-    servo1.position(angle_calibrated);
-    angle_calib(angle_calib_table[i] + offset_servo2, T1, T2);
-    servo2.position(angle_calibrated);
+
+    servo1.position(angle_calib(0, P1, P2) + offset_servo1);
+    servo2.position(angle_calib(angle_calib_table[i], T1, T2) + offset_servo2);
     wait(2);
     sum_theta = 0.0;
 
@@ -222,20 +237,19 @@ void Calibration::test_calib(void) {
       sum_theta += estimated_theta;
       wait_ms(2);
 
-        printf("THETA=%f, REF=%f\r\n", estimated_theta + offset_servo2, angle_calib_table[i] + offset_servo2);
+      printf("THETA=%f, REF=%f\r\n", estimated_theta + offset_servo2,
+             angle_calib_table[i] + offset_servo2);
     }
 
     mean_theta = sum_theta / 500;
     theta_data_calib[i] = mean_theta + offset_servo2;
-    angle_calib(angle_calib_table[i] + offset_servo2, T1, T2);
-    // printf("%f %f\r\n", mean_theta + offset_servo2, angle_calib_table[i] + offset_servo1);
+    // printf("%f %f\r\n", mean_theta + offset_servo2, angle_calib_table[i] +
+    // offset_servo1);
     wait(2);
   }
 
-  angle_calib(offset_servo1, P1, P2);
-  servo1.position(angle_calibrated);
-  angle_calib(offset_servo2, T1, T2);
-  servo2.position(angle_calibrated);
+  servo1.position(angle_calib(0, P1, P2) + offset_servo1);
+  servo2.position(angle_calib(0, T1, T2) + offset_servo2);
   wait(1);
 
   printf("Verificação da calibração finalizada\r\n");
@@ -248,7 +262,7 @@ void Calibration::estimate(void) {
 
   // Pitch e Roll estão trocados conforme a convensão utilizada
 
-  Phi = -BNO055.euler.pitch; 
+  Phi = -BNO055.euler.pitch;
   Theta = -BNO055.euler.roll;
   Psi = BNO055.euler.yaw;
 

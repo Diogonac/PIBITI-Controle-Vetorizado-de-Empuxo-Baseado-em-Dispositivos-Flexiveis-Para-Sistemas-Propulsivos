@@ -24,7 +24,7 @@ void Servo::pulse_width( int width){
 
 void Servo::position(double degrees) {
 
-    double offset = 10.8333 * degrees + 550; // Curve fit
+  double offset = 10.8333 * degrees + 550; // Curve fit
     _pwm.pulsewidth_us(clamp(offset, _range_min, _range_max) + 5.0);
 }
 

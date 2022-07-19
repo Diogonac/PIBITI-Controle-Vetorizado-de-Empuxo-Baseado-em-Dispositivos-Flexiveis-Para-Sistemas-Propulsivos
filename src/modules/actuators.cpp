@@ -41,8 +41,8 @@ void Actuators::safe_state(void) {
   LED_amarelo = 1;
 
   // Aciona os servos
-  servo1.position(phi_safe);
-  servo2.position(phi_safe);
+  servo1.position(phi_safe + offset_servo1);
+  servo2.position(theta_safe + offset_servo2);
 
   wait(1);
 }
@@ -57,29 +57,8 @@ void Actuators::actuate_servos(double f_x, double f_y, double f_z) {
   calc_thruster(f_x, f_y, f_z);
 
   // Calcula o ângulo atual dos servos
-  phi = PHI(phi_servo1 + offset_servo1);
-  theta = THETA(theta_servo2 + offset_servo2);
-
-// Security lock angle for PHI
-  if (phi > 100.690){
-      phi = 100.690;
-  }
-
-  if (phi < 62.110){
-      phi = 62.110;
-  }
-
-// Security lock angle for THETA
-  if (theta > 114.645){
-      theta = 114.645;
-  }
-
-  if (theta < 69.315){
-      theta = 69.315;
-  }
-
-
-  //printf("PHI= %f | THETA= %f | Ftotal= %f\r\n", phi, theta, total_thruster);
+  phi = clamp_angle(calibAngle(phi_servo1, P1, P2), phi_max, phi_min);
+  theta = clamp_angle(calibAngle(theta_servo2, T1, T2), theta_max, theta_min);
 
   // Aciona os servos
   servo1.position(phi);
@@ -95,6 +74,10 @@ void Actuators::actuate_valve(double f_x, double f_y, double f_z) {
     voltageValve = coef1 * pow(total_thruster, 3) + coef2 * pow(total_thruster, 2) + coef3 * total_thruster + coef4;
   } else{
     voltageValve = coef5 * total_thruster + coef6;
+  }
+
+  if (voltageValve > 1.0) {
+    voltageValve = 1.0;
   }
 
   valve.write(voltageValve);
@@ -125,26 +108,26 @@ void Actuators::servo_test(double max_angle, double min_angle,double step_angle)
 
   time = 100; // time_displacement*step_angle;
 
-  for (pos = 90.0; pos <= max_angle; pos += step_angle) {
+  for (pos = 0.0; pos <= max_angle; pos += step_angle) {
     // Varre a abertura de 90º até 105º com um incremento de 0.15º
-    servo1.position(PHI(pos));   // Imprime o Ângulo no servo 1
-    servo2.position(THETA(pos)); // Imprime o Ângulo no servo 2
+    servo1.position(calibAngle(pos, P1, P2));   // Imprime o Ângulo no servo 1
+    servo2.position(calibAngle(pos, T1, T2)); // Imprime o Ângulo no servo 2
     printf("Posição: %f \r\n", pos);
     wait_ms(time); // Aguarda o deslocamento
   }
 
   for (pos = max_angle; pos >= min_angle; pos -= step_angle) {
     // Varre a abertura de 105º até 75º com um incremento de 0.15º
-    servo1.position(PHI(pos));   // Imprime o Ângulo no servo 1
-    servo2.position(THETA(pos)); // Imprime o Ângulo no servo 2
+    servo1.position(calibAngle(pos, P1, P2));   // Imprime o Ângulo no servo 1
+    servo2.position(calibAngle(pos, T1, T2)); // Imprime o Ângulo no servo 2
     printf("Posição: %f \r\n", pos);
     wait_ms(time); // Aguarda o deslocamento
   }
 
-  for (pos = min_angle; pos <= 90.0; pos += step_angle) {
+  for (pos = min_angle; pos <= 0.0; pos += step_angle) {
     // Varre a abertura de 75º até 90º com um incremento de 0.15º
-    servo1.position(PHI(pos));   // Imprime o Ângulo no servo 1
-    servo2.position(THETA(pos)); // Imprime o Ângulo no servo 2
+    servo1.position(calibAngle(pos, P1, P2));   // Imprime o Ângulo no servo 1
+    servo2.position(calibAngle(pos, T1, T2)); // Imprime o Ângulo no servo 2
     printf("Posição: %f \r\n", pos);
     wait_ms(time); // Aguarda o deslocamento
   }
@@ -155,6 +138,19 @@ void Actuators::servo_test(double max_angle, double min_angle,double step_angle)
   init_servos = true;
 }
 
-double Actuators::PHI(double phi_angle) { return (P1 * phi_angle) + P2; }
+double Actuators::calibAngle(double angle, double angCoef, double linCoef) {
+  return (angle * angCoef) + linCoef + 90.0;
+}
 
-double Actuators::THETA(double theta_angle) { return (T1 * theta_angle) + T2; }
+double Actuators::clamp_angle(double angle, double maxAngle, double minAngle) {
+  
+    if (angle >= maxAngle){
+      angle = maxAngle;
+  }
+
+  if (angle <= minAngle){
+      angle = minAngle;
+  }
+
+    return angle;
+}

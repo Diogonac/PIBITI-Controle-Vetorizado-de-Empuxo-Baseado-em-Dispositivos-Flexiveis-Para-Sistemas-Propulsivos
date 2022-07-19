@@ -26,7 +26,7 @@ public:
     double Phi, Theta, Psi;
 
     // Velocidades angular de interesse
-    double P, Q, R;
+    double P, Q, R, p, q, r;
 
 private:
 
