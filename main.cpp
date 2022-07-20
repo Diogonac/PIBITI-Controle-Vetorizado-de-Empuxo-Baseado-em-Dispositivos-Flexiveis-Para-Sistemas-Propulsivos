@@ -6,7 +6,7 @@
 
 //#include "programs/valve_calibration.h"
 
-#include "programs/attitude_controller.h"
+#include "programs/attitude_controller_2.h"
 
 // #include "programs/system_identification.h"
 

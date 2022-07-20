@@ -7,27 +7,19 @@ AttitudeController::AttitudeController()
 
     f_x = 0.0;
     f_y = 0.0;
-
-    x_ref_gain = 0.0;
-    
-    pos_erro = 0.0;
-    vel_erro = 0.0;
-    pos_erro_past = 0.0;
-    vel_erro_past = 0.0;
     u_control = 0.0;
-
-    proportional = 0.0;
-    derivative = 0.0;
-    integrator = 0.0;
-    integrator_past = 0.0;
+    x_ref_gain = 0.0;
+    xr_erro[0] = 0.0;
+    xr_erro[1] = 0.0;
+    xr_erro[2] = 0.0;
 
     // printf("K1= %f, K2= %f\r\n", K1, K2);
 }
 
-void AttitudeController::control(double u_phi_r, double u_theta_r, double phi_r[3], double theta_r[3], double phi_hat[3], double theta_hat[3], double K_phi[3], double K_theta[3]){
+void AttitudeController::control(double u_phi_r, double u_theta_r, double phi_r[3], double theta_r[3], double phi_hat[3], double theta_hat[3]){
 
-  f_x = controller(u_theta_r, theta_r, theta_hat, K_theta);
-  f_y = controller(u_phi_r, phi_r, phi_hat, K_phi);
+  f_x = saturation(controller(u_theta_r, theta_r, theta_hat, K_theta));
+  f_y = saturation(controller(u_phi_r, phi_r, phi_hat, K_theta));
 
 }
 
@@ -44,6 +36,20 @@ double AttitudeController::controller(double u_r, double angle_r[3], double angl
   return u_control;
     
 }
+
+double AttitudeController::saturation(double u_signal) {
+
+  if (u_signal > Fsat) {
+    u_signal = Fsat;
+  }
+
+  if (u_signal < -Fsat) {
+    u_signal = -Fsat;
+  }
+
+  return u_signal;
+}
+
 
 
 
