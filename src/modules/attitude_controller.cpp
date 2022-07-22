@@ -1,5 +1,6 @@
 #include "mbed.h"
 #include "attitude_controller.h"
+#include <cstdio>
 
 // Classe do construtor
 AttitudeController::AttitudeController()
@@ -9,9 +10,9 @@ AttitudeController::AttitudeController()
     f_y = 0.0;
     u_control = 0.0;
     x_ref_gain = 0.0;
-    xr_erro[0] = 0.0;
-    xr_erro[1] = 0.0;
-    xr_erro[2] = 0.0;
+    for (int i = 0; i < 3; i++) {
+      xr_erro[i] = 0.0;
+    }
 
     // printf("K1= %f, K2= %f\r\n", K1, K2);
 }
@@ -32,8 +33,9 @@ double AttitudeController::controller(double u_r, double angle_r[3], double angl
   x_ref_gain = K[0]*xr_erro[0] + K[1]*xr_erro[1] + K[2]*xr_erro[2];
 
   u_control = x_ref_gain + u_r;
-
-  return u_control;
+//   printf("%f %f %f \r\n", (180.0 * xr_erro[0] / pi), (180.0 * xr_erro[1] / pi), (180.0 * xr_erro[2] / pi));  
+//   printf("%f %f\r\n", x_ref_gain, u_r);
+  return -u_control;
     
 }
 

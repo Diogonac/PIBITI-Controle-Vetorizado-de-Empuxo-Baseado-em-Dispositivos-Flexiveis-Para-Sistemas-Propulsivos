@@ -5,7 +5,8 @@
 Serial pc (SERIAL_TX1, SERIAL_RX1, 115200); //Comunicação com USB TX, RX
 
 // Imports
-AttitudeEstimator att_est;
+AttitudeObserver obs;
+Initialization init;
 
 // Ticker para taxa de amostragem
 Ticker amostragem;
@@ -20,20 +21,23 @@ int main()
 
     pc.baud(115200); //Define a velocidade da porta USB
     
-    att_est.init();
+    obs.initIMU();
 
     //Definição da taxa de amostragem
     amostragem.attach(&callback, dt);
 
+    // Arm the sistem to initialization
+    init.arm();
+    
     while(1){
             if(flag) {
                 
                 flag = false;
 
-                att_est.estimate();
+                obs.readIMU();
 
-                    printf("Phi= %f, Theta= %f, Psi= %f ", (180.0*att_est.Phi/pi), (180.0*att_est.Theta/pi), (180.0*att_est.Psi/pi));
-                    printf("GX= %f, GY= %f, GZ= %f \r\n", att_est.P, att_est.Q, att_est.R);
+                pc.printf("Phi= %f, Theta= %f, Psi= %f ", (180.0*obs.Phi/pi), (180.0*obs.Theta/pi), (180.0*obs.Psi/pi));
+                pc.printf("GX= %f, GY= %f, GZ= %f \r\n", obs.P, obs.Q, obs.R);
 
             }
 

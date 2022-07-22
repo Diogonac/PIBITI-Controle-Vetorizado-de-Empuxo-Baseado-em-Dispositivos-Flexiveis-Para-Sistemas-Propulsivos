@@ -22,6 +22,8 @@
 // #include "modules/attitude_estimator.h"
 #include "modules/attitude_observer.h"
 #include "modules/attitude_controller.h"
+#include "modules/direct_one.h"
+
 
 #include "modules/vertical_estimator.h"
 #include "modules/vertical_controller.h"

@@ -20,7 +20,7 @@ Ticker amostragem;
 bool flag1, flag2;
 
 // Variáveis de referencia
-double phi_r, theta_r;
+double phi_ref, theta_ref;
 
 // Auxiliar functions
 void wave_input(void);
@@ -32,8 +32,8 @@ int main() {
   pc.baud(115200); // Define a velocidade da porta USB
 
   // Defino o valor das veriáveis de referência
-  phi_r = 0.0;
-  theta_r = 0.0;
+  phi_ref = 0.0;
+  theta_ref = 0.0;
 
   flag1 = false;
   flag2 = false;
@@ -53,27 +53,36 @@ int main() {
   while (true) {
     if (flag1) {
 
-      flag1 = true;
+      flag1 = false;
 
       // Input references
-      ref_gen.ref_generator(theta_r, phi_r);
+      ref_gen.ref_generator(theta_ref, phi_ref);
 
       // Control and OBS step
+      obs.readIMU();
+      obs.estimate(att_cont.f_x, obs.Theta, obs.Q, obs.Phi, obs.P);
       att_cont.control(ref_gen.u_ref_phi[0], ref_gen.u_ref_theta[0], ref_gen.x_ref_phi, ref_gen.x_ref_theta, obs.estimated, obs.estimated);
-      obs.estimate(att_cont.u_control);
+      
 
       // Actuate signals
       act.actuate_servos(att_cont.f_x, att_cont.f_y, m * g * 0.5);
       act.actuate_valve(att_cont.f_x, att_cont.f_y, m * g * 0.5);
 
-      flag1 = false;
+      // Print my states
+    //   pc.printf("%f %f %f\n\r", (180.0 * obs.estimated[0]  / pi), (180.0 * obs.estimated[1] / pi), (180.0 * obs.estimated[2] / pi));
+         pc.printf("%f %f %f %f\n\r", att_cont.f_x, obs.estimated[0], obs.estimated[1], obs.estimated[2]);
+    //   pc.printf("FX= %f, THETA= %f\n\r", att_cont.f_x, (180.0 * obs.estimated[1] / pi));
+    //   pc.printf("%f %f %f %f %f\n\r", (180.0 * obs.Theta / pi), (180.0 * obs.estimated[0] / pi), (180.0 * obs.Q / pi), (180.0 * obs.estimated[1] / pi), (180.0 * obs.estimated[2] / pi));
+    //   pc.printf("Q= %f, Q_hat= %f\n\r", (180.0 * obs.Q / pi), (180.0 * obs.estimated[1] / pi));
+    //   pc.printf("%f %f\n\r", act.theta, (180.0 * obs.estimated_log[0] / pi));
+        //  pc.printf("%f %f\n\r", (180.0 * obs.Q / pi), (180.0 * obs.q / pi));
+        //  pc.printf("%f\n\r", obs.Q);
+      
+
+      wave_input();
     }
 
-    wave_input();
-
-    pc.printf("%f %f | %f %f | %f\r\n", (obs.Theta * 180.0 / pi), (obs.estimated[0] * 180.0 / pi), (obs.Q * 180.0 / pi), (obs.estimated[1] * 180.0 / pi), (obs.estimated[2] * 180.0 / pi));
-    // pc.printf("%f %f\r\n", att_cont.f_x, att_est.Theta * 180 / pi);
-    // pc.printf("%f %f\r\n", att_est.Q, att_est.q);
+    
   }
 }
 
@@ -83,11 +92,11 @@ void callback_ref() { flag2 = !flag2; }
 
 void wave_input() {
   if (flag2 == true) {
-    theta_r = (pi * 10) / 180;
-    phi_r = 0.0;
+    theta_ref = 0.0;//(pi * 10) / 180;
+    phi_ref = 0.0;
   }
   if (flag2 == false) {
-    theta_r = 0; //-(pi * 10)/180;
-    phi_r = 0.0;
+    theta_ref = 0.0;//-(pi * 10)/180;
+    phi_ref = 0.0;
   }
 }

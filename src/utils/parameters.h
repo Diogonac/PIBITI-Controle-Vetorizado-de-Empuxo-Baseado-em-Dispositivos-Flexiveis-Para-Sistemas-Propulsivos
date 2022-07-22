@@ -22,6 +22,11 @@ const double Fmax = 7.0;                        // N
 const double AngleSat = 12.0 * pi / 180.0;      // Rad
 const double Fsat = Fmax * sin(AngleSat);       // N
 
+// IMU pre-filter
+const double wA = 0.3203;
+const double wB = 0.3203;
+const double wC = 0.3594;
+
 
 // Attitude controller gains
 // const float Ts_att = 2.0;
