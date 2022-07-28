@@ -1,15 +1,15 @@
-#ifndef vertical_estimator_h
-#define vertical_estimator_h
+#ifndef vertical_observer_h
+#define vertical_observer_h
 
 #include "mbed.h"
 #include "imports.h"
 
-// Vertical estimator Class
-class VerticalEstimator {
+// Vertical observer Class
+class VerticalObserver {
 
 public:
   // Class contructor
-  VerticalEstimator();
+  VerticalObserver();
 
   // Initialize class
   void init();
@@ -26,7 +26,7 @@ public:
 private:
 
   // Range sensor object
-  VL53L0X range;
+  VL53L1X range;
   
 };
 

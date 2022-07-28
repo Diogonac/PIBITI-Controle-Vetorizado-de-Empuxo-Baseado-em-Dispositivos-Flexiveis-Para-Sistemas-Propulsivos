@@ -15,13 +15,13 @@ public:
   // Main functions
   void initIMU();
   void readIMU(void);
-  void estimate(double u, double theta_in, double Q_in, double phi_in, double P_in);
+  void estimate(double u_x, double u_y, double theta_in, double Q_in, double phi_in, double P_in);
 
   // Auxiliar variables
   bool verifica_imu;
   double Phi, Theta, Psi;
   double P, Q, R, q;
-  double estimated[3];
+  double estimated_theta[3], estimated_phi[3];
 
 
 
@@ -38,6 +38,18 @@ private:
   DirectOne d_theta2theta_hat;
   DirectOne d_theta2d_theta_hat;
   DirectOne d_theta2dd_theta_hat;
+
+  DirectOne F2phi_hat;
+  DirectOne F2d_phi_hat;
+  DirectOne F2dd_phi_hat;
+
+  DirectOne theta2phi_hat;
+  DirectOne theta2d_phi_hat;
+  DirectOne theta2dd_phi_hat;
+
+  DirectOne d_theta2phi_hat;
+  DirectOne d_theta2d_phi_hat;
+  DirectOne d_theta2dd_phi_hat;
 
   BNO055 BNO055;
 

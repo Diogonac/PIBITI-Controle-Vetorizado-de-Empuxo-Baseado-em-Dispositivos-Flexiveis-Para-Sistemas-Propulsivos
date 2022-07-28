@@ -2,7 +2,9 @@
 
 // #include "programs/teste_BNO055.h"
 
-// #include "programs/test_VL53L0x.h"
+// #include "programs/test_VL53L1x.h"
+
+// #include "programs/test_PWM3901.h"
 
 //#include "programs/valve_calibration.h"
 

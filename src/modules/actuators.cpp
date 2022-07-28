@@ -2,9 +2,9 @@
 #include <cstdio>
 
 // Classe do construtor
-Actuators::Actuators(): valve(SDA, SCL), LED_amarelo(AMARELO), servo1(SERVO1), servo2(SERVO2) {
+Actuators::Actuators(): valve(SDA, SCL), LED_vermelho(VERMELHO), servo1(SERVO1), servo2(SERVO2) {
 
-  LED_amarelo = 0;
+  LED_vermelho = 0;
 
   phi_servo1 = 0.0;
   theta_servo2 = 0.0;
@@ -38,7 +38,7 @@ void Actuators::config_dac() {
 void Actuators::safe_state(void) {
 
   // Contição dos avisos sonoros e luminosos
-  LED_amarelo = 1;
+  LED_vermelho = 1;
 
   // Aciona os servos
   servo1.position(phi_safe + offset_servo1);
@@ -51,7 +51,7 @@ void Actuators::safe_state(void) {
 vetores empuxo) e os servos (graus) */
 void Actuators::actuate_servos(double f_x, double f_y, double f_z) {
   // Contição dos avisos sonoros e luminosos
-  LED_amarelo = 0;
+  LED_vermelho = 0;
 
   // Calcula os ângulos desejados do ponto central
   calc_thruster(f_x, f_y, f_z);
@@ -100,7 +100,7 @@ void Actuators::servo_test(double max_angle, double min_angle,double step_angle)
 
   safe_state();
   wait(1);
-  LED_amarelo = 0;
+  LED_vermelho = 0;
 
   printf("\r\n");                    // Pula uma linha no leitor
   printf("Inicio da varredura\r\n"); // Indica que a varredura de 30º nos dois

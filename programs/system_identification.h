@@ -7,7 +7,7 @@ Serial pc(SERIAL_TX1, SERIAL_RX1, 115200); // Comunicação com USB TX, RX
 // Imports
 Actuators act;
 AttitudeController att_cont;
-AttitudeEstimator att_est;
+AttitudeObserver obs;
 Initialization init;
 
 // Ticker para taxa de amostragem
@@ -41,7 +41,7 @@ int main() {
 
   // Configuração dos periféricos
   act.servo_test(10.0, -10.0, 2.0);
-  att_est.init();
+  obs.initIMU();
 
   // Definição da taxa de amostragem
   amostragem.attach(&callback, dt);
@@ -55,22 +55,21 @@ int main() {
     if (flag1) {
 
       flag1 = false;
-      att_est.estimate();
-      att_cont.control(phi_r, theta_r, att_est.Phi, att_est.Theta, att_est.P, att_est.Q, p_r, q_r);
-      act.actuate_servos(fx_ref, fy_ref, m * g * 0.1);
-      act.actuate_valve(fx_ref, fy_ref, m * g * 0.1);
+      obs.readIMU();
+      act.actuate_servos(fx_ref, fy_ref, m * g * 0.2);
+      act.actuate_valve(fx_ref, fy_ref, m * g * 0.2);
 
       if (flag2 == true) {
 
-        fx_ref = 0.5; //(pi * 10)/180;
-        fy_ref = 0.5;
+        fx_ref = 1.0; //(pi * 10)/180;
+        fy_ref = 1.0;
       }
       if (flag2 == false) {
-        fx_ref = -0.5;
-        fy_ref = -0.5;
+        fx_ref = -1.0;
+        fy_ref = -1.0;
       }
       // pc.printf("%f %f\r\n", theta_r, att_est.Theta * 180 / pi);
-      pc.printf("%f %f\r\n", fy_ref, att_est.Theta * 180 / pi);
+      pc.printf("%f %f\r\n", fy_ref, obs.Theta);
     }
   }
 }

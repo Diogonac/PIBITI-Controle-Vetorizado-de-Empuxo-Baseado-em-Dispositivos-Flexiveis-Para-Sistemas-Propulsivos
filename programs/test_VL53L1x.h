@@ -3,11 +3,11 @@
 
 
 //============ Configura porta serial ===============
-Serial pc(SERIAL_TX1, SERIAL_RX1, 115200); // Comunicação com USB TX, RX
+Serial bt(SERIAL_TX1, SERIAL_RX1, 9600); // Comunicação com USB TX, RX
 
 // Imports
-EstimadorAtitude att_est;
-VerticalEstimator ver_est;
+AttitudeObserver att_obs;
+VerticalObserver ver_est;
 
 // Define ticker
 Ticker tic, tic_range;
@@ -22,7 +22,7 @@ void callback_range() { flag_range = true; }
 // Main program
 int main() {
   // Initialize estimator objects
-  att_est.init();
+  att_obs.initIMU();
   ver_est.init();
 
   // Initialize interrupts
@@ -32,14 +32,14 @@ int main() {
   while (true) {
     if (flag) {
       flag = false;
-      att_est.estimate();
+      att_obs.readIMU();
       ver_est.predict(0.0);
       if (flag_range) {
         flag_range = false;
-        ver_est.correct(att_est.Phi, att_est.Theta);
+        ver_est.correct(att_obs.Phi, att_obs.Theta);
         //ver_est.correct(0,0);
 
-        pc.printf("z [m]:%6.2f | w [m/s]:%6.2f | Phi[°0]:%.2f | Theta[°0]:%.2f \n", ver_est.z, ver_est.w, att_est.Phi, att_est.Theta);
+        bt.printf("z [m]:%6.2f | w [m/s]:%6.2f | Phi[°0]:%.2f | Theta[°0]:%.2f \n", ver_est.z, ver_est.w, att_obs.Phi, att_obs.Theta);
       }
     }
   }

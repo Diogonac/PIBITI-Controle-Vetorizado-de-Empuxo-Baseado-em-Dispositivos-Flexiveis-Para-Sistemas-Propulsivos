@@ -1,12 +1,11 @@
 #include "initialization.h"
 
 // Classe do construtor
-Initialization::Initialization():LED_verde(VERDE), LED_vermelho(VERMELHO), LED_amarelo(AMARELO),buzzer(BUZZER)
+Initialization::Initialization():LED_verde(VERDE), LED_vermelho(VERMELHO),buzzer(BUZZER)
 {
 
     LED_verde = 0;
     LED_vermelho = 0;
-    LED_amarelo = 0;
 
     sistema_verificado = 0;
     valve_flag = 0;
@@ -45,28 +44,21 @@ void Initialization::arm(void){
         buzzer.write(0.0);
         LED_verde = 0;
         LED_vermelho = 1;
-        LED_amarelo = 0;
         wait_ms(500);
         buzzer.write(0.7);
         LED_verde = 0;
         LED_vermelho = 1;
-        LED_amarelo = 1;
         wait_ms(500);
         buzzer.write(0.0);
         LED_verde = 1;
         LED_vermelho = 1;
-        LED_amarelo = 1;
         wait_ms(500);
         buzzer.write(0.7);
         LED_verde = 1;
         LED_vermelho = 0;
-        LED_amarelo = 0;
         wait_ms(500);
         buzzer.write(0.0);
 
         valve_flag = 1;
-
-
-        
     
     }

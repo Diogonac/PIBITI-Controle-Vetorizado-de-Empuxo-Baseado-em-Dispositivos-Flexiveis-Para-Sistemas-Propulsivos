@@ -45,7 +45,7 @@ private:
     MCP4725 valve;
 
     // LED Amarelo, indicador de saída de loop
-    DigitalOut LED_amarelo;
+    DigitalOut LED_vermelho;
 
     // Servos PWM outputs
     Servo servo1;
