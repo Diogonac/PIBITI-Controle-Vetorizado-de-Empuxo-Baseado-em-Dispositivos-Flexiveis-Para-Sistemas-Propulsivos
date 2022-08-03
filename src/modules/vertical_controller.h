@@ -13,20 +13,24 @@ public:
 
 /* Control total thrust force (N) given reference vertical position (m) and
 current vertical position (m) and velocity (m/s) */
- void control(double z_r , double z, double w);
+ void control(double u_r, double z_r[2], double z_hat[2]);
 
 
 // Total thrust force (N)
-double f_z;
+ double f_z;
+ double K_vert[2] = {5.406318853886616,4.000000000000000};
 
 private:
 
-/* Control aceleration given reference position (m) and current position (m)
-and velocity (m/s) with given controller gains */
-double control_siso(double pos_r , double pos , double vel , double kp , double kd);
+    // MIMO Controller
+    double controller(double u_r, double z_r[2], double z_hat[2], double K[2]);
 
-float pos_e_int;
-  
+    // Saturation prevent
+    double saturation(double u_signal);
+
+    double ref_gain, u_control;
+    double erro[2];
+
 };
 
 #endif

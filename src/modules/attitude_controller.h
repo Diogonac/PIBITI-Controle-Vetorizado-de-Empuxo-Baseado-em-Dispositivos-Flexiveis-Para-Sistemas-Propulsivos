@@ -19,11 +19,12 @@ public:
 
     // Auxiliar variables
     double f_x, f_y;
-    double x_ref_gain, u_control;
-    double xr_erro[3];
+
 
     // Controller gains
-    double K_theta[3] = {-0.019197938977378,0.999171875401519,0.116692792111049}; // Ts = 1.0s OS = 0.5%;; Bom 
+    double K_theta[3] = {6.1374614350561387254856526851654, 157.74609133969096319560776464641, 10.96}; // Ts = 1.0s OS = 0.5%;; Bom 
+
+double erro_1;
 
 private:
 
@@ -33,6 +34,8 @@ private:
     // Saturation prevent
     double saturation(double u_signal);
 
+    double ref_gain, u_control;
+    double erro[3];
 };
 
 #endif

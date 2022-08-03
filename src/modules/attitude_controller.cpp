@@ -9,7 +9,7 @@ AttitudeController::AttitudeController()
     f_x = 0.0;
     f_y = 0.0;
     u_control = 0.0;
-    x_ref_gain = 0.0;
+    ref_gain = 0.0;
 
     // printf("K1= %f, K2= %f\r\n", K1, K2);
 }
@@ -23,15 +23,17 @@ void AttitudeController::control(double u_phi_r, double u_theta_r, double phi_r[
 
 double AttitudeController::controller(double u_r, double angle_r[3], double angle_hat[3], double K[3]){
 
-  xr_erro[0] = angle_r[0] - angle_hat[0];
-  xr_erro[1] = angle_r[1] - angle_hat[1];
-  xr_erro[2] = angle_r[2] - angle_hat[2];
+  erro[0] = angle_r[0] - angle_hat[0];
+  erro[1] = angle_r[1] - angle_hat[1];
+  erro[2] = angle_r[2] - angle_hat[2];
 
-  x_ref_gain = K[0]*xr_erro[0] + K[1]*xr_erro[1] + K[2]*xr_erro[2];
+   erro_1 = erro_1 + erro[0];
 
-  u_control = x_ref_gain + u_r;// - 1.0;
+  ref_gain = K[0]*erro[0] + K[1]*erro[1] + K[2]*erro[2] + erro_1*10.0;
+
+  u_control = ref_gain + u_r;// - 1.0;
 //   printf("%f %f %f \r\n", (180.0 * xr_erro[0] / pi), (180.0 * xr_erro[1] / pi), (180.0 * xr_erro[2] / pi));  
-//   printf("%f %f\r\n", x_ref_gain, u_r);
+//   printf("%f\r\n", erro_1);
   return u_control;
     
 }

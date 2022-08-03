@@ -8,7 +8,11 @@
 
 //#include "programs/valve_calibration.h"
 
-#include "programs/attitude_controller_2.h"
+#include "programs/attitude_controller.h"
+
+// #include "programs/vertical_controller.h"
+
+// #include "programs/horizontal_controller.h"
 
 // #include "programs/system_identification.h"
 

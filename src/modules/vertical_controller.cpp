@@ -8,28 +8,29 @@ VerticalController::VerticalController()
 // Initial conditions
 f_z = 0.0;
 
-pos_e_int = 0;
-
-
 }
 
 // Control thrust force (N) given vertical position (m) and velocity (m/s)
-void VerticalController :: control(double z_r , double z, double w)
+void VerticalController :: control(double u_r, double z_r[2], double z_hat[2])
 {
 
-f_z = m * (g + control_siso(z_r, z, w, kp_vert, kd_vert));
+f_z = m * (g + controller(u_r, z_r, z_hat, K_vert));
 
 }
 
 /* Control aceleration given reference position (m) and current position (m) and
 velocity (m/s) with given controller gains */
-double VerticalController :: control_siso(double pos_r , double pos , double vel , double kp, double kd)
+double VerticalController :: controller(double u_r, double z_r[2], double z_hat[2], double K[2])
 {
 
-    float vel_e = 0 - vel;
-    float pos_e = pos_r - pos;
-    // pos_e_int += pos_e*dt;
+  erro[0] = z_r[0] - z_hat[0];
+  erro[1] = z_r[1] - z_hat[1];
 
-    return kp * pos_e + kd * vel_e;
+  ref_gain = K[0]*erro[0] + K[1]*erro[1];
+
+  u_control = ref_gain + u_r;
+//   printf("%f %f %f \r\n", (180.0 * xr_erro[0] / pi), (180.0 * xr_erro[1] / pi), (180.0 * xr_erro[2] / pi));  
+//   printf("%f %f\r\n", x_ref_gain, u_r);
+  return u_control;
 
 }

@@ -81,6 +81,9 @@ void Actuators::actuate_valve(double f_x, double f_y, double f_z) {
   }
 
   valve.write(voltageValve);
+    //   valve.write(0.0);
+
+
 }
 
 /* Converte os vetores de empuxo no vetor empuxo total para calcular a abertura
@@ -91,7 +94,7 @@ void Actuators::calc_thruster(double f_x, double f_y, double f_z) {
   total_thruster = sqrt((f_x * f_x) + (f_y * f_y) + (f_z * f_z));
 
   // Calcula os ângulos | phi --> roll(x) / theta --> pitch(y)
-  phi_servo1 = ((180.000f * atan2(-f_y, f_z)) / pi);
+  phi_servo1 = ((180.000f * atan2(f_y, f_z)) / pi); // Precisa do sinal de - em fy??? Ou só na identificação que não?
   theta_servo2 = ((180.000f * atan2(f_x, f_z)) / pi);
 //   printf("phi_servo= %f, theta_servo= %f \r\n", phi_servo1, theta_servo2);
 }

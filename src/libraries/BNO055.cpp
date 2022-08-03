@@ -7,8 +7,8 @@ BNO055::BNO055(PinName sda, PinName scl) : _i2c(sda,scl)
     _i2c.frequency(100000);
     address = BNOAddress;
     accel_scale = 0.001f;
-    rate_scale = 1.0f/16.0f;
-    angle_scale = 1.0f/16.0f;
+    rate_scale = 1.0f/900.0f;
+    angle_scale = 1.0f/900.0f;
     temp_scale = 1;
 
 }

@@ -14,14 +14,13 @@ public:
     // Construtor da classe
     Reference();
 
-    void ref_generator(double input_signal1, double input_signal2);
+    void ref_angle(double input_signal1, double input_signal2);
+    void ref_vertical(double input_signal1);
+
 
     // Auxiliar variables
-    double x_ref_theta[3];
-    double u_ref_theta[1];
-
-    double x_ref_phi[3];
-    double u_ref_phi[1];
+    double ref_theta[3], ref_phi[3], ref_z[3];
+    double u_ref_theta, u_ref_phi, u_ref_z;
     
 
 private:

@@ -2,12 +2,12 @@
 #include "mbed.h"
 
 //============ Configura porta serial ===============
-Serial pc(SERIAL_TX1, SERIAL_RX1, 115200); // Comunicação com USB TX, RX
+Serial bt(SERIAL_TX1, SERIAL_RX1, 9600); // Comunicação com USB TX, RX
 
 // Imports
 Actuators act;
 AttitudeController att_cont;
-AttitudeObserver obs;
+AttitudeEstimator obs;
 Initialization init;
 
 // Ticker para taxa de amostragem
@@ -24,9 +24,6 @@ void callback(void);
 void wave_input(void);
 
 int main() {
-
-  pc.baud(115200); // Define a velocidade da porta USB
-
   // Defino o valor das veriáveis de referência
   phi_r = 0.0;
   theta_r = 0.0;
@@ -41,7 +38,7 @@ int main() {
 
   // Configuração dos periféricos
   act.servo_test(10.0, -10.0, 2.0);
-  obs.initIMU();
+  obs.init();
 
   // Definição da taxa de amostragem
   amostragem.attach(&callback, dt);
@@ -55,9 +52,9 @@ int main() {
     if (flag1) {
 
       flag1 = false;
-      obs.readIMU();
-      act.actuate_servos(fx_ref, fy_ref, m * g * 0.2);
-      act.actuate_valve(fx_ref, fy_ref, m * g * 0.2);
+      obs.read();
+      act.actuate_servos(fx_ref, fy_ref, m * g * 1.0);
+      act.actuate_valve(fx_ref, fy_ref, m * g * 1.0);
 
       if (flag2 == true) {
 
@@ -68,8 +65,8 @@ int main() {
         fx_ref = -1.0;
         fy_ref = -1.0;
       }
-      // pc.printf("%f %f\r\n", theta_r, att_est.Theta * 180 / pi);
-      pc.printf("%f %f\r\n", fy_ref, obs.Theta);
+    //   bt.printf("%f %f\r\n", act.voltageValve, obs.Theta * 180 / pi);
+      bt.printf("%f %f %f\r\n", fx_ref, obs.Theta, obs.Q);
     }
   }
 }

@@ -1,20 +1,20 @@
-#ifndef attitude_observer_h
-#define attitude_observer_h
+#ifndef attitude_estimator_h
+#define attitude_estimator_h
 
 #include "mbed.h"
 #include "imports.h"
 #include "direct_one.h"
-// Class observer
-class AttitudeObserver
+// Class 
+class AttitudeEstimator
 
 {
 public:
   // Classe do construtor
-  AttitudeObserver();
+  AttitudeEstimator();
 
   // Main functions
-  void initIMU();
-  void readIMU(void);
+  void init();
+  void read(void);
   void estimate(double u_x, double u_y, double theta_in, double Q_in, double phi_in, double P_in);
 
   // Auxiliar variables
@@ -35,9 +35,9 @@ private:
   DirectOne theta2d_theta_hat;
   DirectOne theta2dd_theta_hat;
 
-  DirectOne d_theta2theta_hat;
-  DirectOne d_theta2d_theta_hat;
-  DirectOne d_theta2dd_theta_hat;
+//   DirectOne d_theta2theta_hat;
+//   DirectOne d_theta2d_theta_hat;
+//   DirectOne d_theta2dd_theta_hat;
 
   DirectOne F2phi_hat;
   DirectOne F2d_phi_hat;
@@ -47,9 +47,9 @@ private:
   DirectOne theta2d_phi_hat;
   DirectOne theta2dd_phi_hat;
 
-  DirectOne d_theta2phi_hat;
-  DirectOne d_theta2d_phi_hat;
-  DirectOne d_theta2dd_phi_hat;
+//   DirectOne d_theta2phi_hat;
+//   DirectOne d_theta2d_phi_hat;
+//   DirectOne d_theta2dd_phi_hat;
 
   BNO055 BNO055;
 
