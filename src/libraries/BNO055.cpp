@@ -137,6 +137,13 @@ void BNO055::config_BW(char adr, char bandwidth) // char range, char bandwidth
     setpage(1);
     wait_ms(5);
     writechar(adr,bandwidth);
+}
+
+void BNO055::config_range(char adr, char myRange) // char range, char bandwidth
+{
+    setpage(1);
+    wait_ms(5);
+    writechar(adr,myRange);
     
     }
 

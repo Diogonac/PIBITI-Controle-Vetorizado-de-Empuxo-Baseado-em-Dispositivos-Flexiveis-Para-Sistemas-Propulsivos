@@ -5,7 +5,7 @@
 // Iterruption time
 const float dt = 0.01;
 const float dt_range = 0.05;
-const float dt_wave = 10.0;
+const float dt_wave = 15.0;
 
 
 // Math constants
@@ -13,7 +13,7 @@ const double pi = 3.14159265359;
 const double g = 9.8065;                        // m/s^2
 
 // Mecanical constants
-const double m = 0.622;//0.5468;                        // kg
+const double m = 0.5;//0.5468;                        // kg
 const double I_xx = 0.00720;                    // kg.m^2
 const double I_yy = 0.00749;                    // kg.m^2
 const double I_zz = 0.01418;                    // kg.m^2
@@ -22,14 +22,10 @@ const double Fmax = 7.0;                        // N
 const double AngleSat = 12.0 * pi / 180.0;      // Rad
 const double Fsat = Fmax * sin(AngleSat);       // N
 
-// Attitude controller gains
-// const float Ts_att = 2.0;
-// const float OS_att = 0.5;
-// const float zeta_att = -log(OS_att/100)/sqrt(pow(pi, 2) +
-// pow((log(OS_att/100)), 2)); const float wn_att = 4 / (zeta_att * Ts_att);
-// const float K1 = pow(wn_att, 2);
-// const float K2 = 2 * zeta_att * wn_att;
-// double K_theta[3] = {2.0736, 1.5915, 0.4389};
+// Attitude Estimator
+const float wc_phi = 10;
+const float alpha = (wc_phi * dt) / (1 + wc_phi * dt);
+
 
 // Horizontal estimator constants
 const double angle_flow = 42.0 * pi / 180.0;

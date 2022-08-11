@@ -1,17 +1,22 @@
 #include "attitude_estimator.h"
 #include "mbed.h"
 
-//  DirectOne(double b0, double b1, double b2, double b3, double a0, double a1, double a2, double a3);
 
 // Classe do construtor
 AttitudeEstimator::AttitudeEstimator()
     : BNO055(SDA, SCL),
-      F2theta_hat(-0.002071326157, -0.002071326157, 0.0, 0.0, 1.0, -0.6666666667, 0.0, 0.0),
-      F2d_theta_hat(0.4195206825, 0.4195206825, 0.0, 0.0, 1.0, -0.6666666667, 0.0, 0.0),
-      theta2theta_hat(0.1666666667, 0.1666666667, 0.0, 0.0, 1.0, -0.6666666667, 0.0, 0.0),
-      theta2d_theta_hat(-0.4074381382, -0.4074381382, 0.0, 0.0, 1.0, -0.6666666667, 0.0, 0.0),
-      d_theta2theta_hat(0.004166666667, 0.004166666667, 0.0, 0.0, 1.0, -0.6666666667, 0.0, 0.0),
-      d_theta2d_theta_hat(0.145215843, 0.145215843, 0.0, 0.0, 1.0, -0.6666666667, 0.0, 0.0)
+      F2theta_hat(0.0000004180539619, 0.000001254161886, 0.000001254161886, 0.0000004180539619, 1.0, -1.994462901, 1.325950535, -0.2938353636),
+      F2d_theta_hat(0.00002619879586, 0.00004975733258, 0.00002091827758, -0.00000264025914, 1.0, -1.994462901, 1.325950535, -0.2938353636),
+      F2dd_theta_hat(0.004478571159, -0.0009768926519, -0.003853876779, 0.001601587032, 1.0, -1.994462901, 1.325950535, -0.2938353636),
+      theta2theta_hat(0.0007910735615, -0.0005371572108, -0.0007670018425, 0.0005612289299, 1.0, -1.994462901, 1.325950535, -0.2938353636),
+      theta2d_theta_hat(0.009500787492, -0.008307025979, -0.00957698165, 0.008230831821, 1.0, -1.994462901, 1.325950535, -0.2938353636),
+      theta2dd_theta_hat(-0.07154291151, 0.04783568297, 0.07053270313, -0.04884589135, 1.0, -1.994462901, 1.325950535, -0.2938353636),
+      F2phi_hat(0.0000004180539619, 0.000001254161886, 0.000001254161886, 0.0000004180539619, 1.0, -1.994462901, 1.325950535, -0.2938353636),
+      F2d_phi_hat(0.00002619879586, 0.00004975733258, 0.00002091827758, -0.00000264025914, 1.0, -1.994462901, 1.325950535, -0.2938353636),
+      F2dd_phi_hat(0.004478571159, -0.0009768926519, -0.003853876779, 0.001601587032, 1.0, -1.994462901, 1.325950535, -0.2938353636),
+      theta2phi_hat(0.0007910735615, -0.0005371572108, -0.0007670018425, 0.0005612289299, 1.0, -1.994462901, 1.325950535, -0.2938353636),
+      theta2d_phi_hat(0.009500787492, -0.008307025979, -0.00957698165, 0.008230831821, 1.0, -1.994462901, 1.325950535, -0.2938353636),
+      theta2dd_phi_hat(-0.07154291151, 0.04783568297, 0.07053270313, -0.04884589135, 1.0, -1.994462901, 1.325950535, -0.2938353636)
       {
 
   // Observer variables init
@@ -31,9 +36,9 @@ AttitudeEstimator::AttitudeEstimator()
 
 void AttitudeEstimator::estimate(double u_x, double u_y, double theta_in, double Q_in, double phi_in, double P_in){
 
-  estimated_theta[0] = F2theta_hat.update(u_x) + theta2theta_hat.update(theta_in) + d_theta2theta_hat.update(Q_in);
-  estimated_theta[1] = F2d_theta_hat.update(u_x) + theta2d_theta_hat.update(theta_in) + d_theta2d_theta_hat.update(Q_in);
-  estimated_theta[2] = 0.0;//F2dd_theta_hat.update(u_x) + theta2dd_theta_hat.update(theta_in);// + d_theta2dd_theta_hat.update(Q_in);
+  estimated_theta[0] = F2theta_hat.update(u_x) + theta2theta_hat.update(theta_in);// + d_theta2theta_hat.update(Q_in);
+  estimated_theta[1] = F2d_theta_hat.update(u_x) + theta2d_theta_hat.update(theta_in);// + d_theta2d_theta_hat.update(Q_in);
+  estimated_theta[2] = F2dd_theta_hat.update(u_x) + theta2dd_theta_hat.update(theta_in);// + d_theta2dd_theta_hat.update(Q_in);
 
   estimated_phi[0] = F2phi_hat.update(u_y) + theta2phi_hat.update(phi_in);
   estimated_phi[1] = F2d_phi_hat.update(u_y) + theta2d_phi_hat.update(phi_in);

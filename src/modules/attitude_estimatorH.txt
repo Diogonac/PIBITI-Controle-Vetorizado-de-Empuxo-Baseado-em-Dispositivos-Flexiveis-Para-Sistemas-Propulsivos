@@ -29,21 +29,23 @@ private:
   // My estimate functions
   DirectOne F2theta_hat;
   DirectOne F2d_theta_hat;
+  DirectOne F2dd_theta_hat;
 
   DirectOne theta2theta_hat;
   DirectOne theta2d_theta_hat;
+  DirectOne theta2dd_theta_hat;
 
-  DirectOne d_theta2theta_hat;
-  DirectOne d_theta2d_theta_hat;
+//   DirectOne d_theta2theta_hat;
+//   DirectOne d_theta2d_theta_hat;
 //   DirectOne d_theta2dd_theta_hat;
 
-//   DirectOne F2phi_hat;
-//   DirectOne F2d_phi_hat;
-//   DirectOne F2dd_phi_hat;
+  DirectOne F2phi_hat;
+  DirectOne F2d_phi_hat;
+  DirectOne F2dd_phi_hat;
 
-//   DirectOne theta2phi_hat;
-//   DirectOne theta2d_phi_hat;
-//   DirectOne theta2dd_phi_hat;
+  DirectOne theta2phi_hat;
+  DirectOne theta2d_phi_hat;
+  DirectOne theta2dd_phi_hat;
 
 //   DirectOne d_theta2phi_hat;
 //   DirectOne d_theta2d_phi_hat;

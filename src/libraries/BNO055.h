@@ -179,6 +179,12 @@
 #define     ACCEL_RANGE_8G          0X02
 #define     ACCEL_RANGE_16G         0X03
 
+#define     GYRO_RANGE_125DPS          0X04
+#define     GYRO_RANGE_250DPS          0X03
+#define     GYRO_RANGE_500DPS          0X02
+#define     GYRO_RANGE_1000DPS         0X01
+#define     GYRO_RANGE_2000DPS         0X00
+
 //Define os ID's
 #define I_AM_BNO055_CHIP        0xA0    // CHIP ID
 #define I_AM_BNO055_ACC         0xFB    // ACC ID
@@ -224,6 +230,8 @@ public:
     BNO055(PinName sda, PinName scl);
 
     void config_BW(char adr, char bandwidth); // char range, char bandwidth
+
+    void config_range(char adr, char myRange); // char range, char range
 
     /** Perform a power-on reset of the BNO055 **/
     void reset();

@@ -33,7 +33,7 @@ public:
 
     // Initialization flags
     bool init_servos, init_dac;
-    double voltageValve;
+    double voltageValve, myVoltage;
     
     // Ângulos dos servos | phi --> roll(x) / theta --> pitch(y)
     double phi_servo1, theta_servo2, phi, theta, total_thruster;
