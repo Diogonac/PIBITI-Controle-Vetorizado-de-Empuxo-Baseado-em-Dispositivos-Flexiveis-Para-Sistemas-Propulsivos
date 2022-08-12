@@ -6,12 +6,10 @@
 // Classe do construtor
 AttitudeEstimator::AttitudeEstimator()
     : BNO055(SDA, SCL),
-      F2theta_hat(-0.002071326157, -0.002071326157, 0.0, 0.0, 1.0, -0.6666666667, 0.0, 0.0),
-      F2d_theta_hat(0.4195206825, 0.4195206825, 0.0, 0.0, 1.0, -0.6666666667, 0.0, 0.0),
-      theta2theta_hat(0.1666666667, 0.1666666667, 0.0, 0.0, 1.0, -0.6666666667, 0.0, 0.0),
-      theta2d_theta_hat(-0.4074381382, -0.4074381382, 0.0, 0.0, 1.0, -0.6666666667, 0.0, 0.0),
-      d_theta2theta_hat(0.004166666667, 0.004166666667, 0.0, 0.0, 1.0, -0.6666666667, 0.0, 0.0),
-      d_theta2d_theta_hat(0.145215843, 0.145215843, 0.0, 0.0, 1.0, -0.6666666667, 0.0, 0.0)
+      F2theta_hat(-0.0000182524909, 0.00275978533, 0.002778037821, 0.0, 1.0, -1.0, 0.25, 0.0),
+      F2d_theta_hat(0.4911280815, 0.4159032417, -0.07522483983, 0.0, 1.0, -1.0, 0.25, 0.0),
+      theta2theta_hat(0.4216455903, 0.1222497926, -0.2993957978, 0.0, 1.0, -1.0, 0.25, 0.0),
+      theta2d_theta_hat(10.1926796, -0.3525357129, -10.54521532, 0.0, 1.0, -1.0, 0.25, 0.0)
       {
 
   // Observer variables init
@@ -31,13 +29,13 @@ AttitudeEstimator::AttitudeEstimator()
 
 void AttitudeEstimator::estimate(double u_x, double u_y, double theta_in, double Q_in, double phi_in, double P_in){
 
-  estimated_theta[0] = F2theta_hat.update(u_x) + theta2theta_hat.update(theta_in) + d_theta2theta_hat.update(Q_in);
-  estimated_theta[1] = F2d_theta_hat.update(u_x) + theta2d_theta_hat.update(theta_in) + d_theta2d_theta_hat.update(Q_in);
+  estimated_theta[0] = F2theta_hat.update(u_x) + theta2theta_hat.update(theta_in);// + d_theta2theta_hat.update(Q_in);
+  estimated_theta[1] = F2d_theta_hat.update(u_x) + theta2d_theta_hat.update(theta_in);// + d_theta2d_theta_hat.update(Q_in);
   estimated_theta[2] = 0.0;//F2dd_theta_hat.update(u_x) + theta2dd_theta_hat.update(theta_in);// + d_theta2dd_theta_hat.update(Q_in);
 
-  estimated_phi[0] = F2phi_hat.update(u_y) + theta2phi_hat.update(phi_in);
-  estimated_phi[1] = F2d_phi_hat.update(u_y) + theta2d_phi_hat.update(phi_in);
-  estimated_phi[2] = F2dd_phi_hat.update(u_y) + theta2dd_phi_hat.update(phi_in);
+//   estimated_phi[0] = F2phi_hat.update(u_y) + theta2phi_hat.update(phi_in);
+//   estimated_phi[1] = F2d_phi_hat.update(u_y) + theta2d_phi_hat.update(phi_in);
+//   estimated_phi[2] = F2dd_phi_hat.update(u_y) + theta2dd_phi_hat.update(phi_in);
 
 }
 

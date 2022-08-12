@@ -63,8 +63,8 @@ int main() {
       
 
       // Actuate signals
-      act.actuate_servos(att_cont.f_x, att_cont.f_y, m * g * 0.35);
-      act.actuate_valve(att_cont.f_x, att_cont.f_y, m * g * 0.35);
+      act.actuate_servos(att_cont.f_x, att_cont.f_y, m * g * 0.5);
+      act.actuate_valve(att_cont.f_x, att_cont.f_y, m * g * 0.5);
 
       // Print my states
     //   pc.printf("STATE1= %f, STATE2= %f, STATE3=%f\n\r", obs.estimated[0], obs.estimated[1], obs.estimated[2]);
@@ -73,7 +73,8 @@ int main() {
     //   pc.printf("%f %f %f %f\n\r", att_cont.f_x, obs.estimated[0], obs.estimated[1], obs.estimated[2]);
     //   bt.printf("FX= %f, THETA= %f\n\r", att_cont.f_x, (180.0 * obs.estimated_theta[0] / pi));
     //   bt.printf("FX= %f, THETA= %f\n\r", att_cont.f_x, (180.0 * att_est.Theta / pi));
-         bt.printf("%f %f \n\r", theta_ref * 180.0 / pi, 180 * att_est.Theta / pi);
+        //  bt.printf("%f %f \n\r", theta_ref * 180.0 / pi, 180 * att_est.Theta / pi);
+         bt.printf("%f %f %f\n\r", att_cont.f_x, 180 * att_est.Theta / pi, 180 * att_est.estimated_theta[0] / pi);
 
         // bt.printf("IN=%f\r\n", theta_ref);
       
@@ -87,7 +88,7 @@ int main() {
 
 
       tempo = tempo + dt;
-    //   wave_input();
+      wave_input();
 
 
     }
@@ -101,18 +102,18 @@ void callback_main() { flag1 = true; }
 void callback_ref() { flag2 = !flag2; }
 
 void wave_input() {
-  //   if (flag2 == true) {
-  //     theta_ref = 0.0;//(pi * 5) / 180;
-  //     phi_ref = 0.0;//-(pi * 30) / 180;
-  //   }
-  //   if (flag2 == false) {
-  //     theta_ref = 0.0;//-(pi * 5)/180;
-  //     phi_ref = 0.0;//(pi * 30) / 180;;
-  //   }
-  if(tempo <= 10){
-      theta_ref = ((pi * 15) / 180)*tempo/10;
+    if (flag2 == true) {
+      theta_ref = 0.0;//(pi * 5) / 180;
+      phi_ref = 0.0;//-(pi * 30) / 180;
+    }
+    if (flag2 == false) {
+      theta_ref = 0.0;//-(pi * 5)/180;
+      phi_ref = 0.0;//(pi * 30) / 180;;
+    }
+//   if(tempo <= 10){
+//       theta_ref = ((pi * 15) / 180)*tempo/10;
 
-  } else {
-    tempo = -5.0;
-  }
+//   } else {
+//     tempo = -5.0;
+//   }
 }

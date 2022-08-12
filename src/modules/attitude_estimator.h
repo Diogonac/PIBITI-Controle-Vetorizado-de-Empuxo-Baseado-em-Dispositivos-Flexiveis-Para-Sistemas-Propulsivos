@@ -33,8 +33,8 @@ private:
   DirectOne theta2theta_hat;
   DirectOne theta2d_theta_hat;
 
-  DirectOne d_theta2theta_hat;
-  DirectOne d_theta2d_theta_hat;
+//   DirectOne d_theta2theta_hat;
+//   DirectOne d_theta2d_theta_hat;
 //   DirectOne d_theta2dd_theta_hat;
 
 //   DirectOne F2phi_hat;
