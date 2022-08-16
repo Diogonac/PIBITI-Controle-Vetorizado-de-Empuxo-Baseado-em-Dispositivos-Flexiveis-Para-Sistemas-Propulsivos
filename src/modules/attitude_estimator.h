@@ -33,22 +33,6 @@ private:
   DirectOne theta2theta_hat;
   DirectOne theta2d_theta_hat;
 
-//   DirectOne d_theta2theta_hat;
-//   DirectOne d_theta2d_theta_hat;
-//   DirectOne d_theta2dd_theta_hat;
-
-//   DirectOne F2phi_hat;
-//   DirectOne F2d_phi_hat;
-//   DirectOne F2dd_phi_hat;
-
-//   DirectOne theta2phi_hat;
-//   DirectOne theta2d_phi_hat;
-//   DirectOne theta2dd_phi_hat;
-
-//   DirectOne d_theta2phi_hat;
-//   DirectOne d_theta2d_phi_hat;
-//   DirectOne d_theta2dd_phi_hat;
-
   BNO055 BNO055;
 
   int status_BNO055;        // Armazena o status do BNO055

@@ -29,13 +29,9 @@ AttitudeEstimator::AttitudeEstimator()
 
 void AttitudeEstimator::estimate(double u_x, double u_y, double theta_in, double Q_in, double phi_in, double P_in){
 
-  estimated_theta[0] = F2theta_hat.update(u_x) + theta2theta_hat.update(theta_in);// + d_theta2theta_hat.update(Q_in);
-  estimated_theta[1] = F2d_theta_hat.update(u_x) + theta2d_theta_hat.update(theta_in);// + d_theta2d_theta_hat.update(Q_in);
+  estimated_theta[0] = theta_in;//F2theta_hat.update(u_x) + theta2theta_hat.update(theta_in);// + d_theta2theta_hat.update(Q_in);
+  estimated_theta[1] = Q_in;//F2d_theta_hat.update(u_x) + theta2d_theta_hat.update(theta_in);// + d_theta2d_theta_hat.update(Q_in);
   estimated_theta[2] = 0.0;//F2dd_theta_hat.update(u_x) + theta2dd_theta_hat.update(theta_in);// + d_theta2dd_theta_hat.update(Q_in);
-
-//   estimated_phi[0] = F2phi_hat.update(u_y) + theta2phi_hat.update(phi_in);
-//   estimated_phi[1] = F2d_phi_hat.update(u_y) + theta2d_phi_hat.update(phi_in);
-//   estimated_phi[2] = F2dd_phi_hat.update(u_y) + theta2dd_phi_hat.update(phi_in);
 
 }
 
@@ -95,10 +91,6 @@ void AttitudeEstimator::read(void) {
   Phi = BNO055.euler.roll;
   Theta = BNO055.euler.pitch;
   Psi = BNO055.euler.yaw;
-
-//   P = -BNO055.gyro.y;
-//   Q = BNO055.gyro.x;
-//   R = BNO055.gyro.z;
 
   P = -BNO055.gyro.y * 0.1358 + 0.1358 * P + 0.7285 * P;
   Q = BNO055.gyro.x * 0.1358 + 0.1358 * Q + 0.7285 * Q;

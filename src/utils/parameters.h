@@ -5,15 +5,13 @@
 // Iterruption time
 const float dt = 0.01;
 const float dt_range = 0.05;
-const float dt_wave = 15.0;
-
 
 // Math constants
 const double pi = 3.14159265359;
 const double g = 9.8065;                        // m/s^2
 
 // Mecanical constants
-const double m = 0.5;//0.5468;                        // kg
+const double m = 0.5;                           // kg
 const double I_xx = 0.00720;                    // kg.m^2
 const double I_yy = 0.00749;                    // kg.m^2
 const double I_zz = 0.01418;                    // kg.m^2
@@ -21,17 +19,6 @@ const double l = 0.04029;                       // m
 const double Fmax = 7.0;                        // N
 const double AngleSat = 12.0 * pi / 180.0;      // Rad
 const double Fsat = Fmax * sin(AngleSat);       // N
-
-// Attitude Estimator
-const float wc_phi = 10;
-const float alpha = (wc_phi * dt) / (1 + wc_phi * dt);
-
-
-// Horizontal estimator constants
-const double angle_flow = 42.0 * pi / 180.0;
-const double W_pixel = 420.0;
-const double sigma = (2 * tan(angle_flow / 2)) / (W_pixel * dt);
-const double l_hor = 50;
 
 // Servos
 const double offset_servo1 = 90.0;
@@ -46,22 +33,6 @@ const double phi_max = 106.119;
 const double phi_min = 75.879;
 const double theta_max = 111.014;
 const double theta_min = 74.678;
-
-
-
-// Vertical estimator constants
-const double wc = 8; //aprox. 500Hz antes estava em 8
-const double zeta = sqrt(2)/2;
-const double l1 = wc*wc;
-const double l2 = 2 * zeta * wc; 
-
-// Vertical controller gains
-const float Ts_vert = 5.0;
-const float OS_vert = 1.0;
-const float zeta_vert = -log(OS_vert/100)/sqrt(pow(pi, 2) + pow((log(OS_vert/100)), 2));
-const float wn_vert = 4 / (zeta_vert * Ts_vert);
-const float kp_vert = pow(wn_vert, 2);
-const float kd_vert = 2 * zeta_vert * wn_vert;
 
 // Valve curve fit constants
 const double coef1 = -0.004041;

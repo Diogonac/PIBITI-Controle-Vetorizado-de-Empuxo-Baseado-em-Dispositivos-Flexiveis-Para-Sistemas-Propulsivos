@@ -20,7 +20,7 @@ Ticker amostragem;
 bool flag1, flag2;
 
 // Variáveis de referencia
-double phi_ref, theta_ref, tempo;
+double phi_ref, theta_ref;
 
 // Auxiliar functions
 void wave_input(void);
@@ -31,7 +31,6 @@ int main() {
   // Defino o valor das veriáveis de referência
   phi_ref = 0.0;
   theta_ref = 0.0;
-  tempo = -5.0;
 
   flag1 = false;
   flag2 = false;
@@ -43,7 +42,7 @@ int main() {
   // Definição da taxa de amostragem
   amostragem.attach(&callback_main, dt);
 
-  input.attach(&callback_ref, dt_wave);
+//   input.attach(&callback_ref, dt_wave);
 
   // Arm the sistem to initialization
   init.arm();
@@ -61,7 +60,6 @@ int main() {
       att_est.estimate(att_cont.f_x, att_cont.f_y, att_est.Theta, att_est.Q, att_est.Phi, att_est.P);
       att_cont.control(ref_gen.u_ref_phi, ref_gen.u_ref_theta, ref_gen.ref_phi, ref_gen.ref_theta, att_est.estimated_phi, att_est.estimated_theta);
       
-
       // Actuate signals
       act.actuate_servos(att_cont.f_x, att_cont.f_y, m * g * 0.5);
       act.actuate_valve(att_cont.f_x, att_cont.f_y, m * g * 0.5);
@@ -73,47 +71,13 @@ int main() {
     //   pc.printf("%f %f %f %f\n\r", att_cont.f_x, obs.estimated[0], obs.estimated[1], obs.estimated[2]);
     //   bt.printf("FX= %f, THETA= %f\n\r", att_cont.f_x, (180.0 * obs.estimated_theta[0] / pi));
     //   bt.printf("FX= %f, THETA= %f\n\r", att_cont.f_x, (180.0 * att_est.Theta / pi));
-        //  bt.printf("%f %f \n\r", theta_ref * 180.0 / pi, 180 * att_est.Theta / pi);
-         bt.printf("%f %f %f\n\r", att_cont.f_x, 180 * att_est.Theta / pi, 180 * att_est.estimated_theta[0] / pi);
-
-        // bt.printf("IN=%f\r\n", theta_ref);
-      
-    //   bt.printf("%f %f %f %f %f %f\n\r", att_cont.f_x, (180.0 * obs.Theta / pi), (180.0 * obs.estimated_theta[0] / pi), (180.0 * obs.Q / pi), (180.0 * obs.estimated_theta[1] / pi), (180.0 * obs.estimated_theta[2] / pi));
-    //   pc.printf("Q= %f, Q_hat= %f\n\r", (180.0 * obs.Q / pi), (180.0 * obs.estimated[1] / pi));
-    //   pc.printf("%f %f\n\r", act.theta, (180.0 * obs.estimated_log[0] / pi));
-        //  bt.printf("%f %f\n\r", obs.Theta, obs.Q);
-    //   pc.printf("FX= %f\n\r", att_cont.f_x);
-    //   pc.printf("%f %f %f %f %f %f\n\r", obs.estimated[0], obs.estimated[1], obs.estimated[2], att_cont.f_x, obs.Theta, obs.Q);
-    //   bt.printf("%f %f\n\r", att_cont.f_x, (180.0 * obs.estimated_theta[0] / pi));
-
-
-      tempo = tempo + dt;
-      wave_input();
-
-
+    //   bt.printf("%f %f \n\r", theta_ref * 180.0 / pi, 180 * att_est.Theta / pi);
+    //  bt.printf("%f %f %f\n\r", att_cont.f_x, 180 * att_est.Theta / pi, 180 * att_est.estimated_theta[0] / pi);
+         bt.printf("%f\n\r",180 * att_est.estimated_theta[0] / pi);
     }
-
-    
   }
 }
 
 void callback_main() { flag1 = true; }
 
 void callback_ref() { flag2 = !flag2; }
-
-void wave_input() {
-    if (flag2 == true) {
-      theta_ref = 0.0;//(pi * 5) / 180;
-      phi_ref = 0.0;//-(pi * 30) / 180;
-    }
-    if (flag2 == false) {
-      theta_ref = 0.0;//-(pi * 5)/180;
-      phi_ref = 0.0;//(pi * 30) / 180;;
-    }
-//   if(tempo <= 10){
-//       theta_ref = ((pi * 15) / 180)*tempo/10;
-
-//   } else {
-//     tempo = -5.0;
-//   }
-}
